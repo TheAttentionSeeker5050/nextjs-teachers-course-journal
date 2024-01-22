@@ -1,10 +1,10 @@
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
-
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Post {
@@ -12,8 +12,10 @@ model Post {
   title     String
   content   String?
   published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
   authorId  Int?
+  author    User?   @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
 }
 
 model User {
@@ -21,4 +23,6 @@ model User {
   email String  @unique
   name  String?
   posts Post[]
+
+  @@map("users")
 }
