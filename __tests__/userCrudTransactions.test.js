@@ -6,6 +6,10 @@ import { createUser, getUserById, getUserByEmail, getEncryptedPasswordByEmail, c
 import { describe, expect, test } from "@jest/globals";
 import '@testing-library/jest-dom'
 
+import Prisma from "@/data/prisma";
+
+
+
 // the test data
 const userData = {
     email: "user@email.com",
@@ -21,7 +25,7 @@ describe("User CRUD Transactions", () => {
     test('Create and retrieve an user', async () => {
 
         // create an user
-        const createdUser = await createUser(userData);
+        const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
         // get the user by id
         const retrievedUser = await getUserById(createdUser.id);
@@ -31,5 +35,12 @@ describe("User CRUD Transactions", () => {
 
         // check if the user is retrieved
         expect(retrievedUser).toBeDefined();
+
+        // delete the user
+        await Prisma.user.delete({
+            where: {
+                id: createdUser.id
+            }
+        })
     })
 })

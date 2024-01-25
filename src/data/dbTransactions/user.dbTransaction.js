@@ -11,8 +11,7 @@ const createUser = async ({
     firstName,
     lastName,
     title,
-    dateCreated,
-    dateUpdated,
+    organization,
 }) => {
 
     // using the find user by id method, we will check if the user already exists
@@ -32,8 +31,7 @@ const createUser = async ({
             firstName,
             lastName,
             title,
-            dateCreated,
-            dateUpdated,
+            organization,
         }
     });
 
