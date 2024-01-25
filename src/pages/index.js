@@ -6,15 +6,16 @@ const inter = Inter({ subsets: ["latin"] });
 import prisma from "@/data/prisma";
 
 export const getServerSideProps = async () => {
-  const feed = await prisma.post.findMany({
+  // const feed = await prisma.post.findMany({
     
-  })
-  return { props: { feed } }
+  // })
+  // return { props: { feed } }
+  return { props: {  } }
 }
 
 export default function Home(props) {
 
-  console.log(props.feed)
+  // console.log(props.feed)
 
   return (
     <main
@@ -25,7 +26,7 @@ export default function Home(props) {
       </h1>
 
       <div className="flex flex-col">
-        {props.feed.map((post) => (
+        {/* {props.feed.map((post) => (
           
           <div key={post.id} className="flex flex-col">
             <h2 className="text-2xl font-bold">
@@ -35,7 +36,7 @@ export default function Home(props) {
               {post.content}
             </p>
           </div>
-        ))}
+        ))} */}
       </div>
     </main>
   );
