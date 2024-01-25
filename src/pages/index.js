@@ -4,18 +4,23 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 import prisma from "@/data/prisma";
+import { createUser, getUserById } from "@/data/dbTransactions/user.dbTransaction";
 
 export const getServerSideProps = async () => {
-  // const feed = await prisma.post.findMany({
-    
-  // })
-  // return { props: { feed } }
-  return { props: {  } }
+
+  // get the user by id
+  const user = await getUserById(1);
+
+  // transform the dates into a string, instead of this we should format the date, more on this later
+  user.dateCreated = user.dateCreated.toString();
+  user.dateUpdated = user.dateUpdated.toString();
+
+  return { props: { user } }
 }
 
 export default function Home(props) {
 
-  // console.log(props.feed)
+  console.log(props.user)
 
   return (
     <main
@@ -26,17 +31,24 @@ export default function Home(props) {
       </h1>
 
       <div className="flex flex-col">
-        {/* {props.feed.map((post) => (
-          
-          <div key={post.id} className="flex flex-col">
-            <h2 className="text-2xl font-bold">
-              {post.title}
-            </h2>
-            <p className="text-xl">
-              {post.content}
-            </p>
-          </div>
-        ))} */}
+        
+        {/* display the user email, first name, last name, organization and title */}
+        <p className="text-lg">
+          {props.user.email}
+        </p>
+        <p className="text-lg">
+          {props.user.firstName}
+        </p>
+        <p className="text-lg">
+          {props.user.lastName}
+        </p>
+        <p className="text-lg">
+          {props.user.organization}
+        </p>
+        <p className="text-lg">
+          {props.user.title}
+        </p>
+        
       </div>
     </main>
   );

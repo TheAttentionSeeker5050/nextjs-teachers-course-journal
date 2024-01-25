@@ -10,14 +10,18 @@ datasource db {
 
 model User {
     id    Int     @id @default(autoincrement())
+    
+    // force email to be unique
     email String  @unique
     password String
     firstName String?
     lastName String?
     title String?
     organization String?
-    dateCreated DateTime?
-    dateUpdated DateTime?
+
+    // these default to the current time
+    dateCreated DateTime? @default(now())
+    dateUpdated DateTime? @updatedAt
 
     @@map("users")
 }
