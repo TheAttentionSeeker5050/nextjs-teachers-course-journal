@@ -1,7 +1,7 @@
 // this test will test crud db transactions for course 
 // import all the methods from the course crud transactions, these already have the prisma client
-import { createCourse, getCoursesByUserId, getCourseById, updateCourse } from "@/data/dbTransactions/course.dbTransaction";
-import { createUser } from "@/data/dbTransactions/user.dbTransaction";
+import { createCourse, getCoursesByUserId, getCourseById, updateCourse, deleteCourse } from "@/data/dbTransactions/course.dbTransaction";
+import { createUser, getUserByEmail, getUserById } from "@/data/dbTransactions/user.dbTransaction";
 
 
 
@@ -25,6 +25,14 @@ const userData = {
 const courseData = {
     courseName: "Defense against the dark arts",
 }
+
+beforeAll(async () => {
+    // delete all the users, courses, and units
+    await Prisma.user.deleteMany();
+    await Prisma.course.deleteMany();
+    await Prisma.unit.deleteMany();
+})
+
 
 // test the courses
 describe("Course CRUD Transactions", () => {
@@ -153,4 +161,70 @@ describe("Course CRUD Transactions", () => {
             }
         })
     })
+
+    // test cascade delete of a course (user is deleted too)
+    test('Delete a course', async () => {
+                
+        // create an user
+        const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
+
+        // create a course
+        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+
+        // delete the course
+        await Prisma.course.delete({
+            where: {
+                id: createdCourse.id
+            }
+        })
+
+        try {
+            // get the course by id
+            const retrievedCourse = await getCourseById(createdCourse.id);
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+
+        // check if the course is created
+        expect(createdCourse).toBeDefined();
+
+        // delete the user
+        await Prisma.user.delete({
+            where: {
+                id: createdUser.id
+            }
+        })
+    })
+
+    // cascade delete of a user (course is deleted too)
+    test('Delete a user/cascade course', async () => {
+                    
+        // create an user
+        const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
+
+        // create a course
+        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+
+        // delete the user
+        await Prisma.user.delete({
+            where: {
+                id: createdUser.id
+            }
+        })
+
+        try {
+            // get the course by id
+            const retrievedCourse = await getCourseById(createdCourse.id);
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+
+        // check if the course is created
+        expect(createdCourse).toBeDefined();
+
+        // delete the course
+        await Prisma.course.deleteMany({});
+    })   
+
+
 })
