@@ -14,9 +14,6 @@ const createUser = async ({
     organization,
 }) => {
 
-    // // print the database url
-    // console.log(process.env.DATABASE_URL);
-
     // using the find user by id method, we will check if the user already exists
     const user = await getUserByEmail(email);
 
@@ -124,6 +121,7 @@ const getEncryptedPasswordByEmail = async (email) => {
         password: true,
         },
     });
+
     return user.password;
 }
 

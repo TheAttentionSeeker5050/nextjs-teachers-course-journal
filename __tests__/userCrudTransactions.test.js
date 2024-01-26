@@ -45,12 +45,12 @@ describe("User CRUD Transactions", () => {
         
 
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
     })
 
     // test the retrieval of an user by email
@@ -79,12 +79,12 @@ describe("User CRUD Transactions", () => {
         expect(createdUser.createdAt).toEqual(retrievedUser.createdAt);
         expect(createdUser.updatedAt).toEqual(retrievedUser.updatedAt);        
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
     })
 
     // test creation and update of user password
@@ -111,19 +111,21 @@ describe("User CRUD Transactions", () => {
         // check if the password is changed
         expect(retrievedPassword).toBeDefined();
 
+
         // check if the password is the same
         expect(retrievedPassword).toEqual(newPassword);
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
     })
 
     // change password on a user that doesnt exist
     test("Change password on a user that doesnt exist", async () => {
+
         // create an user
         const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
@@ -146,12 +148,12 @@ describe("User CRUD Transactions", () => {
             expect(error).toBeDefined();
         }
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
         
     })
 })

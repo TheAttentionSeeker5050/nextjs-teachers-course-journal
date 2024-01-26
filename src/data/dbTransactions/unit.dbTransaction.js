@@ -1,18 +1,18 @@
-import prisma from "../prisma";
+import prisma from "@/data/prisma";
 
 // create a new unit
 const createUnit = async ({
     unitName,
-    courseId,
-    courseNumber
+    unitNumber,
+    courseId
 }) => {
 
     // create a new unit
     const createdUnit = await prisma.unit.create({
         data: {
             unitName: unitName,
+            unitNumber: unitNumber,
             courseId: courseId,
-            courseNumber: courseNumber
         }
     });
 
@@ -121,3 +121,11 @@ const deleteUnit = async (id) => {
     return deletedUnit;
 }
 
+// export all the functions
+export {
+    createUnit,
+    getUnitsByCourseId,
+    getUnitById,
+    updateUnit,
+    deleteUnit,
+}

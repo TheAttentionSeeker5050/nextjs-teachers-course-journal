@@ -26,14 +26,6 @@ const courseData = {
     courseName: "Defense against the dark arts",
 }
 
-beforeAll(async () => {
-    // delete all the users, courses, and units
-    await Prisma.user.deleteMany();
-    await Prisma.course.deleteMany();
-    await Prisma.unit.deleteMany();
-})
-
-
 // test the courses
 describe("Course CRUD Transactions", () => {
     // test the creation and retrieval of a course
@@ -59,19 +51,19 @@ describe("Course CRUD Transactions", () => {
         expect(createdCourse.userId).toEqual(retrievedCourse.userId);
         
 
-        // delete the course
-        await Prisma.course.delete({
-            where: {
-                id: createdCourse.id
-            }
-        })
+        // // delete the course
+        // await Prisma.course.delete({
+        //     where: {
+        //         id: createdCourse.id
+        //     }
+        // })
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
     })
 
 
@@ -106,19 +98,19 @@ describe("Course CRUD Transactions", () => {
         expect(retrievedCourses[2].courseName).toEqual(createdCourse3.courseName);
         
 
-        // delete all the courses
-        await Prisma.course.deleteMany({
-            where: {
-                userId: createdUser.id
-            }
-        });
+        // // delete all the courses
+        // await Prisma.course.deleteMany({
+        //     where: {
+        //         userId: createdUser.id
+        //     }
+        // });
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        });
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // });
     })
 
     // test the update of a course
@@ -147,19 +139,19 @@ describe("Course CRUD Transactions", () => {
         expect(updatedCourse.userId).toEqual(retrievedCourse.userId);
         
 
-        // delete the course
-        await Prisma.course.delete({
-            where: {
-                id: retrievedCourse.id
-            }
-        })
+        // // delete the course
+        // await Prisma.course.delete({
+        //     where: {
+        //         id: retrievedCourse.id
+        //     }
+        // })
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
     })
 
     // test cascade delete of a course (user is deleted too)
@@ -188,12 +180,12 @@ describe("Course CRUD Transactions", () => {
         // check if the course is created
         expect(createdCourse).toBeDefined();
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
     })
 
     // cascade delete of a user (course is deleted too)
@@ -205,12 +197,12 @@ describe("Course CRUD Transactions", () => {
         // create a course
         const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
 
-        // delete the user
-        await Prisma.user.delete({
-            where: {
-                id: createdUser.id
-            }
-        })
+        // // delete the user
+        // await Prisma.user.delete({
+        //     where: {
+        //         id: createdUser.id
+        //     }
+        // })
 
         try {
             // get the course by id
@@ -222,8 +214,8 @@ describe("Course CRUD Transactions", () => {
         // check if the course is created
         expect(createdCourse).toBeDefined();
 
-        // delete the course
-        await Prisma.course.deleteMany({});
+        // // delete the course
+        // await Prisma.course.deleteMany({});
     })   
 
 
