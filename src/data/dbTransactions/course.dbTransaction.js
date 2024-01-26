@@ -92,9 +92,36 @@ const updateCourse = async ({
     return updatedCourse;
 }
 
+// delete course
+const deleteCourse = async (id) => {
+
+    // get the course by id
+    const course = await getCourseById(id);
+
+    // if the course is not retrieved, we will throw an error
+    if (!course) {
+        throw new Error("There was a problem retrieving the course, please try again later");
+    }
+
+    // delete the course
+    const deletedCourse = await prisma.course.delete({
+        where: {
+            id: id
+        }
+    });
+
+    // if the course is not deleted, we will throw an error
+    if (!deletedCourse) {
+        throw new Error("There was a problem deleting the course, please try again later");
+    }
+
+    return deletedCourse;
+}
+
 export {
     createCourse,
     getCoursesByUserId,
     getCourseById,
-    updateCourse
+    updateCourse,
+    deleteCourse
 }

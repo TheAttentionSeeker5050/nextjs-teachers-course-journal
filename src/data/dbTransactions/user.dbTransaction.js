@@ -155,6 +155,32 @@ const changeEncryptedPasswordByEmail = async (email, newEncryptedPassword) => {
     return user;
 }
 
+// delete an user
+const deleteUser = async (id) => {
+
+    // using the find user by id method, we will check if the user already exists
+    const user = await getUserById(id);
+
+    // if the user does not exist, we will throw an error
+    if (!user) {
+        throw new Error("User does not exists");
+    }
+
+    // if the user exists, we will delete the user
+    const deletedUser = await prisma.user.delete({
+        where: {
+            id: id,
+        }
+    });
+
+    // if the user is not deleted, we will throw an error
+    if (!deletedUser) {
+        throw new Error("There was a problem deleting the user, please try again later");
+    }
+
+    return deletedUser;
+}
+
 // export all the methods
 module.exports = {
     createUser,
@@ -163,4 +189,5 @@ module.exports = {
     getUserByEmail,
     getEncryptedPasswordByEmail,
     changeEncryptedPasswordByEmail,
+    deleteUser,
 }
