@@ -20,7 +20,7 @@ model User {
 
     // these default to the current time
     dateCreated DateTime? @default(now())
-    dateUpdated DateTime? @updatedAt
+    dateUpdated DateTime? @default(now()) @updatedAt
 
     // the relation
     courses Course[]
@@ -54,6 +54,10 @@ model Unit {
     course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     courseId   Int
 
+
+    dateCreated DateTime? @default(now())
+    dateUpdated DateTime? @default(now()) @updatedAt
+    
     lessons Lesson[]
 
     // the relation
