@@ -37,5 +37,46 @@ model Course {
     dateCreated DateTime? @default(now())
     dateUpdated DateTime? @default(now()) @updatedAt
 
+    // the relation
+    // lessons Lesson[]
+    units Unit[]
+
     @@map("courses")
+}
+
+// each course can have 0 or many lessons, lessons are grouped by units
+model Unit {
+    id Int @id @default(autoincrement())
+
+    unitNumber Int
+    unitName String
+
+    course     Course @relation(fields: [courseId], references: [id])
+    courseId   Int
+
+    lessons Lesson[]
+
+    // the relation
+    @@map("units")
+}
+model Lesson {
+    id Int @id @default(autoincrement())
+
+    lessonName String
+    lessonNumber Int
+
+
+    completionStatus String @default("not prepped") // other statuses are "prepped" and "completed"
+    epectedOutcomes String?
+    assessment String?
+
+    dateCreated DateTime? @default(now())
+    dateUpdated DateTime? @default(now()) @updatedAt
+
+    // the relations
+    // units
+    unit       Unit   @relation(fields: [unitId], references: [id])
+    unitId     Int
+
+    @@map("lessons")
 }
