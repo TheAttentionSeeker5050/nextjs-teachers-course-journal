@@ -36,6 +36,15 @@ describe("User CRUD Transactions", () => {
         // check if the user is retrieved
         expect(retrievedUser).toBeDefined();
 
+        // expect the values to be the same
+        expect(createdUser.email).toEqual(retrievedUser.email);
+        expect(createdUser.firstName).toEqual(retrievedUser.firstName);
+        expect(createdUser.lastName).toEqual(retrievedUser.lastName);
+        expect(createdUser.title).toEqual(retrievedUser.title);
+        expect(createdUser.organization).toEqual(retrievedUser.organization);
+        
+
+
         // delete the user
         await Prisma.user.delete({
             where: {
