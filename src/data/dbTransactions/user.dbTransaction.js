@@ -14,6 +14,9 @@ const createUser = async ({
     organization,
 }) => {
 
+    // // print the database url
+    // console.log(process.env.DATABASE_URL);
+
     // using the find user by id method, we will check if the user already exists
     const user = await getUserByEmail(email);
 
@@ -92,6 +95,7 @@ const getUserById = async (id) => {
         },
     });
 
+
     // convert the date to iso string
     user.dateCreated = user.dateCreated.toISOString();
     user.dateUpdated = user.dateUpdated.toISOString();
@@ -120,13 +124,20 @@ const getEncryptedPasswordByEmail = async (email) => {
         password: true,
         },
     });
-    return user;
+    return user.password;
 }
 
 // change ONLY encrypted password
 // this will receive the new encrypted password and the email as a parameter
 const changeEncryptedPasswordByEmail = async (email, newEncryptedPassword) => {
-    const user = await prisma.user.update({
+
+    // if user is not found, we will throw an error
+    const user = await getUserByEmail(email);
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const updatedUser = await prisma.user.update({
         where: {
             email: email,
         },
@@ -134,6 +145,12 @@ const changeEncryptedPasswordByEmail = async (email, newEncryptedPassword) => {
             password: newEncryptedPassword,
         },
     });
+
+    // if the user is not updated, we will throw an error
+    if (!updatedUser) {
+        throw new Error("There was a problem updating the user, please try again later");
+    }
+
 
     return user;
 }

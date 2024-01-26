@@ -3,25 +3,39 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql" 
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
-
 model User {
-    id    Int     @id @default(autoincrement())
-    
+    id Int @id @default(autoincrement())
+
     // force email to be unique
-    email String  @unique
-    password String
-    firstName String?
-    lastName String?
-    title String?
+    email        String  @unique
+    password     String
+    firstName    String?
+    lastName     String?
+    title        String?
     organization String?
 
     // these default to the current time
     dateCreated DateTime? @default(now())
     dateUpdated DateTime? @updatedAt
 
+    // the relation
+    courses Course[]
+
     @@map("users")
+}
+
+model Course {
+    id Int @id @default(autoincrement())
+
+    courseName String
+    user       User   @relation(fields: [userId], references: [id])
+    userId     Int // this is the field we use in course to relate to an instance of the User model 
+    dateCreated DateTime? @default(now())
+    dateUpdated DateTime? @default(now()) @updatedAt
+
+    @@map("courses")
 }
