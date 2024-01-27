@@ -205,9 +205,27 @@ const changeLessonNumber = async (unitId, lessonId, newLessonNumber) => {
             }
         }
 
+        
+    }
+    
+    // now we will save the lessons array to the database
+    for (let i = 0; i < lessonsArray.length; i++) {
+        const updatedLesson = await prisma.lesson.update({
+            where: {
+                id: lessonsArray[i].id
+            },
+            data: {
+                lessonNumber: lessonsArray[i].lessonNumber
+            }
+        });
+
+        // if the lesson is not updated, we will throw an error
+        if (!updatedLesson) {
+            throw new Error("There was a problem updating the lesson number, please try again later");
+        }
     }
 
-
+    
 
     return lessonsArray;
 
