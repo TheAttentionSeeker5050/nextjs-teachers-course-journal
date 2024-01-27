@@ -3,16 +3,21 @@ import prisma from "@/data/prisma";
 // create a new unit
 const createUnit = async ({
     unitName,
-    unitNumber,
     courseId
 }) => {
+
+    // get the lenght of the units for course
+    const units = await getUnitsByCourseId(courseId);
+    const unitLength = units.length;
 
     // create a new unit
     const createdUnit = await prisma.unit.create({
         data: {
             unitName: unitName,
-            unitNumber: unitNumber,
+            unitNumber: unitLength + 1,
             courseId: courseId,
+            dateCreated: new Date(),
+            dateUpdated: new Date(),
         }
     });
 
@@ -27,10 +32,14 @@ const createUnit = async ({
 // get all units for courses
 const getUnitsByCourseId = async (courseId) => {
 
+
     // get all units for the course
     const units = await prisma.unit.findMany({
         where: {
             courseId: courseId
+        },
+        orderBy: {
+            unitNumber: "asc"
         }
     });
 
@@ -121,6 +130,81 @@ const deleteUnit = async (id) => {
     return deletedUnit;
 }
 
+// same as we did with lessons, we will create a method that will update the unit number
+const updateUnitNumber = async (courseId, unitId, newUnitNumber) => {
+        
+        // get all the units for the course
+        const unitsArray = await getUnitsByCourseId(courseId);
+    
+        // save the unit number of the updating unit in a variable
+        const oldUnit = await prisma.unit.findFirst({
+            where: {
+                id: unitId
+            }
+        });
+
+        const newUnit = await prisma.unit.findFirst({
+            where: {
+                unitNumber: newUnitNumber
+            }
+        });
+        
+        // if the unit number is the same, we will just return the array of units
+        if (oldUnit.unitNumber === newUnitNumber) {
+            return unitsArray;
+        }
+
+        if (oldUnit.unitNumber > newUnit.unitNumber) {
+            for (let i = unitsArray.findIndex(unit => unit.id === newUnit.id); i < unitsArray.length; i++) {
+                // update the unit number
+                // if the id is the same as the old unit id, we will update the unit number to the new unit number
+                
+                if (unitsArray[i].id === oldUnit.id) {
+                    unitsArray[i].unitNumber = newUnit.unitNumber;
+                    break;
+                } else {
+                    unitsArray[i].unitNumber = unitsArray[i].unitNumber + 1;
+                }
+            }
+        } else {
+            for (let i = unitsArray.findIndex(unit => unit.id === oldUnit.id); i < unitsArray.length; i++) {
+                // update the unit number
+                // if the id is the same as the old unit id, we will update the unit number to the new unit number
+                if (unitsArray[i].id === oldUnit.id) {
+                    unitsArray[i].unitNumber = newUnit.unitNumber;
+                    // break;
+                } else {
+                    unitsArray[i].unitNumber = unitsArray[i].unitNumber - 1;
+                }
+
+                // if the id is the same as the new unit id, break out of the loop
+                if (unitsArray[i].id === newUnit.id) {
+                    break;
+                }
+            }
+        }
+
+        // now update the unit numbers in the database
+        for (let i = 0; i < unitsArray.length; i++) {
+            const updatedUnits = await prisma.unit.update({
+                where: {
+                    id: unitsArray[i].id
+                },
+                data: {
+                    unitNumber: unitsArray[i].unitNumber
+                }
+            });
+
+            // if the unit is not updated, we will throw an error
+            if (!updatedUnits) {
+                throw new Error("There was a problem updating the unit number, please try again later");
+            }
+        }
+
+        // return the units array
+        return unitsArray;
+    }
+
 // export all the functions
 export {
     createUnit,
@@ -128,4 +212,5 @@ export {
     getUnitById,
     updateUnit,
     deleteUnit,
+    updateUnitNumber,
 }
