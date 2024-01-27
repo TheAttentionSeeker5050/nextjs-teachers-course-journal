@@ -168,26 +168,32 @@ describe("Lesson CRUD Transactions", () => {
         
         // create a lesson
         const createdLesson5 = await createLessonForUnit({lessonName: "potions 105", lessonNumber: 5, completionStatus: lessonData.completionStatus, unitId: createdUnit.id});
+        try {
 
+        
         // shift the lesson number
-        const shiftedLesson = await changeLessonNumber(createdUnit.id, createdLesson2.id, 4);
+            const shiftedLesson = await changeLessonNumber(createdUnit.id, createdLesson2.id, 4);
 
-        // test and compare the results
-        expect(shiftedLesson).toBeDefined();
+            // test and compare the results
+            expect(shiftedLesson).toBeDefined();
 
-        // find the lesson number by lesson name
-        const lessonNumber1 = shiftedLesson.find(lesson => lesson.lessonName === "potions 101").lessonNumber;
-        const lessonNumber2 = shiftedLesson.find(lesson => lesson.lessonName === "potions 102").lessonNumber;
-        const lessonNumber3 = shiftedLesson.find(lesson => lesson.lessonName === "potions 103").lessonNumber;
-        const lessonNumber4 = shiftedLesson.find(lesson => lesson.lessonName === "potions 104").lessonNumber;
-        const lessonNumber5 = shiftedLesson.find(lesson => lesson.lessonName === "potions 105").lessonNumber;
+            // find the lesson number by lesson name
+            const lessonNumber1 = shiftedLesson.find(lesson => lesson.lessonName === "potions 101").lessonNumber;
+            const lessonNumber2 = shiftedLesson.find(lesson => lesson.lessonName === "potions 102").lessonNumber;
+            const lessonNumber3 = shiftedLesson.find(lesson => lesson.lessonName === "potions 103").lessonNumber;
+            const lessonNumber4 = shiftedLesson.find(lesson => lesson.lessonName === "potions 104").lessonNumber;
+            const lessonNumber5 = shiftedLesson.find(lesson => lesson.lessonName === "potions 105").lessonNumber;
 
-        // compare the results with array of expected results
-        expect(lessonNumber1).toEqual(expectedResultsArray[0].lessonNumber);
-        expect(lessonNumber2).toEqual(expectedResultsArray[1].lessonNumber);
-        expect(lessonNumber3).toEqual(expectedResultsArray[2].lessonNumber);
-        expect(lessonNumber4).toEqual(expectedResultsArray[3].lessonNumber);
-        expect(lessonNumber5).toEqual(expectedResultsArray[4].lessonNumber);
+            // compare the results with array of expected results
+            expect(lessonNumber1).toEqual(expectedResultsArray[0].lessonNumber);
+            expect(lessonNumber2).toEqual(expectedResultsArray[1].lessonNumber);
+            expect(lessonNumber3).toEqual(expectedResultsArray[2].lessonNumber);
+            expect(lessonNumber4).toEqual(expectedResultsArray[3].lessonNumber);
+            expect(lessonNumber5).toEqual(expectedResultsArray[4].lessonNumber);
+        } catch (error) {
+            // expect the error to not be thrown
+            expect(error).toBeUndefined();
+        }
     })
 
 
@@ -227,25 +233,32 @@ describe("Lesson CRUD Transactions", () => {
         // create a lesson
         const createdLesson5 = await createLessonForUnit({lessonName: "potions 105", lessonNumber: 5, completionStatus: lessonData.completionStatus, unitId: createdUnit.id});
 
-        // shift the lesson number
-        const shiftedLesson = await changeLessonNumber(createdUnit.id, createdLesson4.id, 2);
+        try {
+            // shift the lesson number
+            const shiftedLesson = await changeLessonNumber(createdUnit.id, createdLesson4.id, 2);
+            
+            // test and compare the results
+            expect(shiftedLesson).toBeDefined();
+    
+            // find the lesson number by lesson name
+            const lessonNumber1 = shiftedLesson.find(lesson => lesson.lessonName === "potions 101").lessonNumber;
+            const lessonNumber2 = shiftedLesson.find(lesson => lesson.lessonName === "potions 102").lessonNumber;
+            const lessonNumber3 = shiftedLesson.find(lesson => lesson.lessonName === "potions 103").lessonNumber;
+            const lessonNumber4 = shiftedLesson.find(lesson => lesson.lessonName === "potions 104").lessonNumber;
+            const lessonNumber5 = shiftedLesson.find(lesson => lesson.lessonName === "potions 105").lessonNumber;
+    
+            // compare the results with array of expected results
+            expect(lessonNumber1).toEqual(expectedResultsArray[0].lessonNumber);
+            expect(lessonNumber2).toEqual(expectedResultsArray[1].lessonNumber);
+            expect(lessonNumber3).toEqual(expectedResultsArray[2].lessonNumber);
+            expect(lessonNumber4).toEqual(expectedResultsArray[3].lessonNumber);
+            expect(lessonNumber5).toEqual(expectedResultsArray[4].lessonNumber);
 
-        // test and compare the results
-        expect(shiftedLesson).toBeDefined();
+        } catch (error) {
+            // expect the error to not be thrown
+            expect(error).toBeUndefined();
+        }
 
-        // find the lesson number by lesson name
-        const lessonNumber1 = shiftedLesson.find(lesson => lesson.lessonName === "potions 101").lessonNumber;
-        const lessonNumber2 = shiftedLesson.find(lesson => lesson.lessonName === "potions 102").lessonNumber;
-        const lessonNumber3 = shiftedLesson.find(lesson => lesson.lessonName === "potions 103").lessonNumber;
-        const lessonNumber4 = shiftedLesson.find(lesson => lesson.lessonName === "potions 104").lessonNumber;
-        const lessonNumber5 = shiftedLesson.find(lesson => lesson.lessonName === "potions 105").lessonNumber;
-
-        // compare the results with array of expected results
-        expect(lessonNumber1).toEqual(expectedResultsArray[0].lessonNumber);
-        expect(lessonNumber2).toEqual(expectedResultsArray[1].lessonNumber);
-        expect(lessonNumber3).toEqual(expectedResultsArray[2].lessonNumber);
-        expect(lessonNumber4).toEqual(expectedResultsArray[3].lessonNumber);
-        expect(lessonNumber5).toEqual(expectedResultsArray[4].lessonNumber);
     })
 
 })
