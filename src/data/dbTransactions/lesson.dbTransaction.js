@@ -94,7 +94,6 @@ const getLessonById = async (id) => {
 const updateLesson = async ({
     id,
     lessonName,
-    lessonNumber,
     completionStatus,
     expectedOutcomes,
     assessment
@@ -107,7 +106,6 @@ const updateLesson = async ({
         },
         data: {
             lessonName: lessonName,
-            lessonNumber: lessonNumber,
             completionStatus: completionStatus,
             expectedOutcomes: expectedOutcomes,
             assessment: assessment

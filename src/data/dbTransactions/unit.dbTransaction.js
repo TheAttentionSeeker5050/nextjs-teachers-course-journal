@@ -73,7 +73,6 @@ const getUnitById = async (id) => {
 const updateUnit = async ({
     id,
     newUnitName,
-    newUnitNumber,
 }) => {
     
     // get the unit by id
@@ -91,7 +90,6 @@ const updateUnit = async ({
         },
         data: {
             unitName: newUnitName ? newUnitName : unit.unitName,
-            unitNumber: newUnitNumber ? newUnitNumber : unit.unitNumber,
             dateUpdated: new Date(),
         }
     });

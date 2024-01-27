@@ -73,7 +73,7 @@ describe("Unit CRUD Transactions", () => {
         const createdUnit = await createUnit({unitName: unitData.unitName, courseId: createdCourse.id});
 
         // update the unit
-        const updatedUnit = await updateUnit({id: createdUnit.id, newUnitName: "Charms", newUnitNumber: 2});
+        const updatedUnit = await updateUnit({id: createdUnit.id, newUnitName: "Charms"});
 
         // get the unit by id
         const retrievedUnit = await getUnitById(createdUnit.id);
