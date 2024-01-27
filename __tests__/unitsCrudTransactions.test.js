@@ -58,27 +58,6 @@ describe("Unit CRUD Transactions", () => {
         expect(createdUnit.unitName).toEqual(retrievedUnit.unitName);
         expect(createdUnit.courseId).toEqual(retrievedUnit.courseId);
         
-
-        // // delete the unit
-        // await Prisma.unit.delete({
-        //     where: {
-        //         id: createdUnit.id
-        //     }
-        // })
-
-        // // delete the course
-        // await Prisma.course.delete({
-        //     where: {
-        //         id: createdCourse.id
-        //     }
-        // })
-
-        // // delete the user
-        // await Prisma.user.delete({
-        //     where: {
-        //         id: createdUser.id
-        //     }
-        // })
     })
 
     // test that will create a unit and update it
