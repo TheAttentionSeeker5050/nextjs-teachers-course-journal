@@ -153,7 +153,7 @@ const notUndefinedSchema = z.any().refine(data => data !== undefined, {
 });
 
 // Not Undefined Validation using Zod
-export function isNotUndefined(value) {
+export function isNotUndefinedZod(value) {
     try {
         // Validate the value using the Zod schema
         notUndefinedSchema.parse(value);
@@ -174,7 +174,7 @@ export function isNotEmpty(value) {
 const notEmptyStringSchema = z.string().min(1, { message: 'Value cannot be empty' });
 
 // Not Empty Validation using Zod
-export function isNotEmpty(value) {
+export function isNotEmptyZod(value) {
     try {
         // Validate the value using the Zod schema
         notEmptyStringSchema.parse(value);
