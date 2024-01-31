@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 // import cookies
 import { setCookieHandler } from './cookies';
+import { deleteCookie } from 'cookies-next';
 
 // this will store the json web token handler functions
 
@@ -50,10 +51,16 @@ export async function createToken({ req, res, userId, userEmail }) {
 
 }
 
-export function validateToken() {
+export function validateToken(req, res) {
 
 }
 
 export function renewToken() {
 
+}
+
+export function revokeToken(req, res) {
+
+    // delete the token cookie
+    deleteCookie("token", { req, res });
 }

@@ -20,14 +20,6 @@ export const setCookieHandler = (req, res, key, value) => {
     const maxCookiesHours = Number(process.env.COOKIE_AGE_HOURS);
     const cookiesAreSecure = process.env.NODE_ENV === 'production';
 
-    // set the cookie
-    // res.setHeader('Set-Cookie', serialize(key, value, {
-    //     maxAge: maxCookiesHours * 60 * 60, // Cookie expiration in seconds (30 days)
-    //     sameSite: 'lax', // Strict or lax, or false to disable
-    //     path: '/', // Path for the cookie
-    //     secure: cookiesAreSecure, // Enable if using HTTPS
-    // }));
-
     const cookieOptions = {
         req,
         res,
