@@ -1,5 +1,7 @@
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+
+// import cookies
+import { setCookieHandler } from './cookies';
 
 // this will store the json web token handler functions
 
@@ -22,16 +24,26 @@ export async function createToken({ req, res, userId, userEmail }) {
         {
             expiresIn: expiration
         },
-        (error, token) => {
-            // console.log("Error:", error);
-            // console.log("Token:", token);
+        async (error, token) => {
+            if (error) {
+                res.status(401).json({
+                    success: false,
+                    message: "User authentication failed!"
+                });
+            };
+
+            const tokenStr = "Bearer " + token;
+
+            // set the cookie
+            setCookieHandler(req, res, "token", tokenStr)
+
 
             // it then returns a http response with bearer token. However
             // the best solution would be setting cookies.
             res.status(200).json({
                 success: true,
-                token: "Bearer " + token
-            })
+                message: "Authentication successful"
+            });
 
         }
     )

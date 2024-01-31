@@ -3,8 +3,5 @@
 import { createToken } from "@/utils/validation/jwt";
 
 export default function handler(req, res) {
-  // test run the jwt create function
-  createToken({ req: req, res: res, userId: 1, userEmail: "johndoe@email.com" });
-  return;
-  // res.status(200).json({ name: "John Doe", token: token });
+  res.status(200).json({ name: "John Doe" });
 }
