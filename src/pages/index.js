@@ -25,6 +25,10 @@ export const getServerSideProps = async (context) => {
   // const refreshToken = cookies.split("refreshToken=")[1]?.split(";")[0];
   // console.log('refreshToken', refreshToken);
   
+  // // get user from req.user
+  // const user2 = context.req.user;
+  // console.log('user', context.req.user);
+  
   return { props: { user } }
 }
 

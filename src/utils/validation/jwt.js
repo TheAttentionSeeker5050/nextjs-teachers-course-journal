@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 
 
+import * as jose from 'jose'
+
+
 // this will store the json web token handler functions
 
 // a create generic token function, this Is for the access token and the refresh token
@@ -31,7 +34,6 @@ export function createToken(req, res, payload, secret, expiration) {
         exp
     }, secret);
 
-    console.log('token', token);
 
     // return the token
     return token;
@@ -52,8 +54,31 @@ export function createRefreshToken(req, res, payload) {
     return token;
 }
 
-// a verify access token function
+// a decode access token function
+export async function decodeAccessToken(token) {
+    try {
+        if (token === undefined || token === null || token === "" || typeof token !== "string") {
+            throw new Error('Invalid token format');
+        }
 
+        // decode the token using jose
+        const decoded = await jose.jwtVerify(
+            token, 
+            new TextEncoder().encode(process.env.JWT_SECRET),
+        );
+
+        return decoded;
+        
+
+        // let decoded = jwt.verify(token, process.env.JWT_SECRET.toString());
+        // return decoded;
+
+    } catch (error) {
+        throw new Error(error);
+    
+    }
+
+}
 
 // a refresh access token function
 

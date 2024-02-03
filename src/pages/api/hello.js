@@ -6,7 +6,6 @@ import { getCookieHandler } from "@/utils/validation/cookies";
 
 export default async function handler(req, res) {
 
-  console.log("the cookie", getCookie("token", { req, res }))
 
   res.status(200).json({ name: "John Doe" });
 }
