@@ -18,7 +18,12 @@ export const getServerSideProps = async (context) => {
 
   // // get the cookies foo=bar, just for testing at this moment
   // const cookies = context.req.headers.cookie;
-  // const bar = cookies.split("foo=")[1]?.split(";")[0];
+  // const accessToken = cookies.split("accessToken=")[1]?.split(";")[0];
+  // console.log('accessToken', accessToken);
+
+  // // get the refresh token
+  // const refreshToken = cookies.split("refreshToken=")[1]?.split(";")[0];
+  // console.log('refreshToken', refreshToken);
   
   return { props: { user } }
 }

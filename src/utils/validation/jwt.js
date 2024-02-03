@@ -1,66 +1,61 @@
 import jwt from 'jsonwebtoken';
 
-// import cookies
-import { setCookieHandler } from './cookies';
-import { deleteCookie } from 'cookies-next';
 
 // this will store the json web token handler functions
 
-export async function createToken({ req, res, userId, userEmail }) {
-    // create a payload object, it will store some info about the user
-    const payload = {
-        id: userId,
-        email: userEmail
-    };
+// a create generic token function, this Is for the access token and the refresh token
+// it receives params: request, response, payload, secret, and expiration
+// returns a token
+export function createToken(req, res, payload, secret, expiration) {
+    // create the expiration string, this will be passed to the jwt.sign function
+    // in the format of "30m", "1h", "7d", etc.
+    let expirationStr = "30m"
 
-    // expiration time in seconds
-    const expiration = process.env.JWT_TOKEN_EXPIRATION_HOURS * 1000 * 60 * 60
+    // if not a valid expiration, do not change the expirationStr
+    if (expiration === undefined || typeof expiration !== Number || expiration <=0 );
+    // else change to the correct expiration format
+    else if (expiration < 1 ) {
+        // convert from hours to minutes, round up
+        expirationStr = `${Math.ceil(expiration * 60)}m`;
+    } else {
+        // round up to hours
+        expirationStr = `${Math.ceil(expiration)}h`;
+    }
 
-    // now create or sign the token, meaning add the user info, the expiration and encrypt it
-    var myToken = "";
+    // create an exp value
+    const exp = Math.floor(Date.now() / 1000) + expiration * 60 * 60;
 
-    myToken = await jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        {
-            expiresIn: expiration
-        },
-        async (error, token) => {
-            if (error) {
-                res.status(401).json({
-                    success: false,
-                    message: "User authentication failed!"
-                });
-            };
+    // create the token
+    const token = jwt.sign({
+        ...payload,
+        exp
+    }, secret);
 
-            const tokenStr = "Bearer " + token;
+    console.log('token', token);
 
-            // set the cookie
-            setCookieHandler(req, res, "token", tokenStr)
-
-
-            // it then returns a http response with bearer token. However
-            // the best solution would be setting cookies.
-            res.status(200).json({
-                success: true,
-                message: "Authentication successful"
-            });
-
-        }
-    )
-
+    // return the token
+    return token;
 }
 
-export function validateToken(req, res) {
 
+// a create access token function
+export function createAccessToken(req, res, payload) {
+    const token = createToken(req, res, payload, process.env.JWT_SECRET, process.env.JWT_ACCESS_TOKEN_EXPIRATION_HOURS);
+
+    return token;
 }
 
-export function renewToken() {
+// a create refresh token function
+export function createRefreshToken(req, res, payload) {
+    const token = createToken(req, res, payload, process.env.JWT_SECRET, process.env.JWT_REFRSH_TOKEN_EXPIRATION_HOURS);
 
+    return token;
 }
 
-export function revokeToken(req, res) {
+// a verify access token function
 
-    // delete the token cookie
-    deleteCookie("token", { req, res });
-}
+
+// a refresh access token function
+
+
+// a revoke access and refresh token function
