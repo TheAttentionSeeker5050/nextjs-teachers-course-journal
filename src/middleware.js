@@ -29,18 +29,21 @@ export async function middleware(req) {
       // for now, we will just return the user payload
       req.user = user.payload;
 
-      // return next response 
+      // return next response, we will use headers because we are using getServerSideProps
+      // also this way the payload is not exposed to the client and not available on the 
+      // other pages that don't use the middleware
       let response = NextResponse.next({
         user: user.payload,
         headers: {
           'X-User-Payload': JSON.stringify(user.payload)
         }
       });
+      
       return response;
 
       
     } catch (error) {
-      console.log('error: ', error.message);
+      // console.log('error: ', error.message);
       return NextResponse.redirect(new URL("/unauthorized", req.nextUrl).toString());
     }
     
