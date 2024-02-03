@@ -6,7 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 import prisma from "@/data/prisma";
 import { createUser, getUserById } from "@/data/dbTransactions/user.dbTransaction";
 
-export const getServerSideProps = async () => {
+// here we will also get cookies
+export const getServerSideProps = async (context) => {
 
   // get the user by id
   const user = await getUserById(1);
@@ -15,6 +16,10 @@ export const getServerSideProps = async () => {
   user.dateCreated = user.dateCreated.toString();
   user.dateUpdated = user.dateUpdated.toString();
 
+  // // get the cookies foo=bar, just for testing at this moment
+  // const cookies = context.req.headers.cookie;
+  // const bar = cookies.split("foo=")[1]?.split(";")[0];
+  
   return { props: { user } }
 }
 

@@ -7,7 +7,11 @@ export default function handler(req, res) {
         return res.status(405).json({ message: 'Method not allowed' })
     }
 
-    const newCookie = serialize("foo", "bar", cookieConfig)
+    // we need to update cookie to expire
+    const newCookieConfig = cookieConfig;
+    newCookieConfig.maxAge = -1;
+
+    const newCookie = serialize("foo", "bar", newCookieConfig)
 
     res.setHeader("Set-Cookie", newCookie)
 
