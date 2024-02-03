@@ -68,10 +68,6 @@ export async function decodeAccessToken(token) {
         );
 
         return decoded;
-        
-
-        // let decoded = jwt.verify(token, process.env.JWT_SECRET.toString());
-        // return decoded;
 
     } catch (error) {
         throw new Error(error);

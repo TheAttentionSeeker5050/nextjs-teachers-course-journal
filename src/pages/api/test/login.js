@@ -6,9 +6,9 @@ import { cookieConfig } from "@/utils/validation/cookies";
 import { createAccessToken, createRefreshToken } from "@/utils/validation/jwt";
 
 export default function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' })
-    }
+    // if (req.method !== 'POST') {
+    //     return res.status(405).json({ message: 'Method not allowed' })
+    // }
 
     // create the access token and refresh token
     const accessToken = createAccessToken(req, res, { userId: 1, email: "john.doe@gmail.com" });

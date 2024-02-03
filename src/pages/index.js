@@ -27,7 +27,7 @@ export const getServerSideProps = async (context) => {
   
   // // get user from req.user
   // const user2 = context.req.user;
-  // console.log('user', context.req.user);
+  // console.log('user', context.req.headers['x-user-payload']);
   
   return { props: { user } }
 }

@@ -3,8 +3,8 @@ import { decodeAccessToken } from '@/utils/validation/jwt';
 
  
 // This function can be marked `async` if using `await` inside
-export async function middleware(req, res, next) {
-    // get the cookies foo=bar
+export async function middleware(req) {
+    // get the cookies 
     let accessToken = req.cookies.get("accessToken");
     let refreshToken = req.cookies.get("refreshToken");
 
@@ -18,12 +18,26 @@ export async function middleware(req, res, next) {
       // decode the access token
       const user = await decodeAccessToken(accessToken['value']);
       // console.log('user', user.payload);
+
+      // verify if the expiration date is valid
+      if (user.payload.exp < Math.floor(Date.now() / 1000)) {
+        return NextResponse
+          .redirect(new URL("/unauthorized", req.nextUrl).toString());
+      }
   
-      req.user = user;
-      
+      // on per request basis, we will use the userId and/or email to get the user from the database
+      // for now, we will just return the user payload
+      req.user = user.payload;
+
       // return next response 
-      let response = NextResponse.next();
+      let response = NextResponse.next({
+        user: user.payload,
+        headers: {
+          'X-User-Payload': JSON.stringify(user.payload)
+        }
+      });
       return response;
+
       
     } catch (error) {
       console.log('error: ', error.message);
