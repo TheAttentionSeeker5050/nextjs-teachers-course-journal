@@ -58,15 +58,39 @@ export function isSanitizedStringZod(input) {
 
 // Size of Characters with Zod
 // Define a Zod schema for size of characters
-const sizeSchema = z.string().min(5, { message: 'Input must be at least 5 characters long' }).max(10, { message: 'Input must be at most 10 characters long' });
+
+
+// const sizeSchema = z.string().min(5, { message: 'Input must be at least 5 characters long' }).max(10, { message: 'Input must be at most 10 characters long' });
+
+// // Size of Characters Validation using Zod
+// export function isValidSizeZod(input) {
+//     try {
+//         // Parse and validate the input using the Zod schema
+//         sizeSchema.parse(input);
+//         // If parsing is successful, the input is valid
+//         return { isValid: true, error: null };
+//     } catch (error) {
+//         // If parsing fails, the input is invalid, and the first error message is provided
+//         return { isValid: false, error: error.errors[0] };
+//     }
+// }
+
+// Define a Zod schema for size of characters
+const sizeSchema = z.string().min(5, { message: 'Input must be at least 5 characters long' });
 
 // Size of Characters Validation using Zod
 export function isValidSizeZod(input) {
     try {
         // Parse and validate the input using the Zod schema
         sizeSchema.parse(input);
-        // If parsing is successful, the input is valid
-        return { isValid: true, error: null };
+        // If parsing is successful, check the input length
+        if (input.length >= 5) {
+            // If the length is valid, return a success response
+            return { isValid: true, error: null };
+        } else {
+            // If the length is invalid, return a failure response
+            return { isValid: false, error: { message: 'Input must be at least 5 characters long' } };
+        }
     } catch (error) {
         // If parsing fails, the input is invalid, and the first error message is provided
         return { isValid: false, error: error.errors[0] };

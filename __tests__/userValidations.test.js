@@ -3,121 +3,143 @@ import { describe, expect, test } from "@jest/globals";
 import '@testing-library/jest-dom';
 
 import {
-    isValidEmail,
     isValidEmailZod,
-    // isValidPassword,
-    // isValidPasswordZod,
-    // isSanitizedString,
-    // isSanitizedStringZod,
-    // isValidSize,
-    // isValidSizeZod,
-    // isValidDate,
-    // isValidDateZod,
-    // isMatchingString,
-    // isMatchingStringZod,
-    // isNotUndefined,
-    // isNotEmpty,
-    // isNotUndefinedZod,
-    // isNotEmptyZod,
+    isValidPasswordZod,
+    isSanitizedStringZod,
+    isValidSizeZod,
+    isValidDateZod,
+    isMatchingStringZod,
+    isNotUndefinedZod,
+    isNotEmptyZod,
 } from "@/utils/validation/validations";
 
-
-describe("Validation Functions", () => {
+describe('Validation Functions', () => {
     // Email Validation
-    describe("isValidEmail", () => {
-        it("should validate a valid email", () => {
-            const validEmail = "test@example.com";
-            expect(isValidEmail(validEmail)).toBe(true);
-        });
-
-        it("should invalidate an invalid email", () => {
-            const invalidEmail = "invalid_email";
-            expect(isValidEmail(invalidEmail)).toBe(false);
-        });
+    test('isValidEmailZod should validate a correct email', () => {
+        const validEmail = 'test@example.com';
+        const result = isValidEmailZod(validEmail);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
     });
 
-    // Email Validation with Zod
-    describe("isValidEmailZod", () => {
-        it("should validate a valid email using Zod", () => {
-            const validEmail = "test@example.com";
-            expect(isValidEmailZod(validEmail)).toEqual({ isValid: true, error: null });
-        });
-
-        it("should invalidate an invalid email using Zod", () => {
-            const invalidEmail = "invalid_email";
-            expect(isValidEmailZod(invalidEmail)).toEqual({ isValid: false, error: "Invalid email format" });
-        });
+    test('isValidEmailZod should invalidate an incorrect email', () => {
+        const invalidEmail = 'invalid-email';
+        const result = isValidEmailZod(invalidEmail);
+        expect(result.isValid).toBe(false);
+        expect(result.error).toBe('Invalid email format');
     });
 
-    // // Password Validation
-    // describe("isValidPassword", () => {
-    //     // Add test cases for isValidPassword
-    // });
+    // Password Validation
+    test('isValidPasswordZod should validate a correct password', () => {
+        const validPassword = 'StrongP@ssword1';
+        const result = isValidPasswordZod(validPassword);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Password Validation with Zod
-    // describe("isValidPasswordZod", () => {
-    //     // Add test cases for isValidPasswordZod
-    // });
+    test('isValidPasswordZod should invalidate a weak password', () => {
+        const weakPassword = 'weakpassword';
+        const result = isValidPasswordZod(weakPassword);
+        expect(result.isValid).toBe(false);
+        // Check if the error message includes the expected pattern
+        expect(result.error.message).toMatch(/Password must include at least one lowercase letter, one uppercase letter, one digit, and one special character/);
+    });
 
-    // // Sanitized String Input
-    // describe("isSanitizedString", () => {
-    //     // Add test cases for isSanitizedString
-    // });
+    // isSanitizedStringZod Validation
+    test('isSanitizedStringZod should validate a sanitized string input', () => {
+        const sanitizedString = 'ValidSanitizedString123';
+        const result = isSanitizedStringZod(sanitizedString);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Sanitized String Input with Zod
-    // describe("isSanitizedStringZod", () => {
-    //     // Add test cases for isSanitizedStringZod
-    // });
+    test('isSanitizedStringZod should invalidate a non-sanitized string input', () => {
+        const nonSanitizedString = 'Invalid!@#$%^String';
+        const result = isSanitizedStringZod(nonSanitizedString);
+        expect(result.isValid).toBe(false);
+        // Adjust the error message based on your validation logic
+        expect(result.error.message).toContain('Input must contain only alphanumeric characters');
+    });
 
-    // // Size of Characters
-    // describe("isValidSize", () => {
-    //     // Add test cases for isValidSize
-    // });
+    // isValidSizeZod Validation
+    test('isValidSizeZod should validate input with correct size', () => {
+        const validInput = 'ValidInput';
+        const result = isValidSizeZod(validInput);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Size of Characters with Zod
-    // describe("isValidSizeZod", () => {
-    //     // Add test cases for isValidSizeZod
-    // });
+    test('isValidSizeZod should invalidate input with incorrect size', () => {
+        const invalidInput = 'Invalid';
+        const result = isValidSizeZod(invalidInput);
+        expect(result.isValid).toBe(false);
+        // Adjust the error message based on your validation logic
+        expect(result.error.message).toMatch(/Input must be at least 5 characters long/);
+    });
 
-    // // Date Validation
-    // describe("isValidDate", () => {
-    //     // Add test cases for isValidDate
-    // });
+    // isValidDateZod Validation
+    test('isValidDateZod should validate a correct date', () => {
+        const validDate = '2022-02-05';
+        const result = isValidDateZod(validDate);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Date Validation with Zod
-    // describe("isValidDateZod", () => {
-    //     // Add test cases for isValidDateZod
-    // });
+    test('isValidDateZod should invalidate an incorrect date', () => {
+        const invalidDate = '2022-02-32';
+        const result = isValidDateZod(invalidDate);
+        expect(result.isValid).toBe(false);
+        // Adjust the error message based on your validation logic
+        expect(result.error.message).toMatch(/Date must be in the YYYY-MM-DD format/);
+    });
 
-    // // Match Strings
-    // describe("isMatchingString", () => {
-    //     // Add test cases for isMatchingString
-    // });
+    // isMatchingStringZod Validation
+    test('isMatchingStringZod should validate a matching string', () => {
+        const matchingString = 'prepped';
+        const result = isMatchingStringZod(matchingString);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Matched Strings with Zod
-    // describe("isMatchingStringZod", () => {
-    //     // Add test cases for isMatchingStringZod
-    // });
+    test('isMatchingStringZod should invalidate a non-matching string', () => {
+        const nonMatchingString = 'invalid';
+        const result = isMatchingStringZod(nonMatchingString);
+        expect(result.isValid).toBe(false);
+        // Adjust the error message based on your validation logic
+        expect(result.error.message).toContain('Invalid enum value');
+    });
 
-    // // Not Undefined
-    // describe("isNotUndefined", () => {
-    //     // Add test cases for isNotUndefined
-    // });
+    // isNotUndefinedZod Validation
+    test('isNotUndefinedZod should validate a defined value', () => {
+        const definedValue = 'defined';
+        const result = isNotUndefinedZod(definedValue);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Not Undefines using Zod
-    // describe("isNotUndefinedZod", () => {
-    //     // Add test cases for isNotUndefinedZod
-    // });
+    test('isNotUndefinedZod should invalidate an undefined value', () => {
+        const undefinedValue = undefined;
+        const result = isNotUndefinedZod(undefinedValue);
+        expect(result.isValid).toBe(false);
+        // Adjust the error message based on your validation logic
+        expect(result.error.message).toContain('Value cannot be undefined');
+    });
 
-    // // Not Empty
-    // describe("isNotEmpty", () => {
-    //     // Add test cases for isNotEmpty
-    // });
+    // isNotEmptyZod Validation
+    test('isNotEmptyZod should validate a non-empty string', () => {
+        const nonEmptyString = 'NonEmpty';
+        const result = isNotEmptyZod(nonEmptyString);
+        expect(result.isValid).toBe(true);
+        expect(result.error).toBe(null);
+    });
 
-    // // Not Empty using Zod
-    // describe("isNotEmptyZod", () => {
-    //     // Add test cases for isNotEmptyZod
-    // });
+    test('isNotEmptyZod should invalidate an empty string', () => {
+        const emptyString = '';
+        const result = isNotEmptyZod(emptyString);
+        expect(result.isValid).toBe(false);
+        // Adjust the error message based on your validation logic
+        expect(result.error.message).toContain('Value cannot be empty');
+    });
 });
 
 
