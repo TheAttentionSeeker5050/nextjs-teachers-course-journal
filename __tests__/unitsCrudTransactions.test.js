@@ -206,10 +206,10 @@ describe("Unit CRUD Transactions", () => {
             // find the unit number of the expected unit name
             const retrievedUnitNumber = retrievedUnits.find(unit => unit.unitName === expectedUnit.unitName).unitNumber;
 
-            console.log(retrievedUnitNumber, 
-                expectedUnit.unitNumber,
-                expectedUnit.unitName
-            );
+            // console.log(retrievedUnitNumber, 
+            //     expectedUnit.unitNumber,
+            //     expectedUnit.unitName
+            // );
 
             // expect the retrieved unit number to be the same as the expected unit number
             expect(retrievedUnitNumber).toEqual(expectedUnit.unitNumber);

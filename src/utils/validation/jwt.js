@@ -70,16 +70,21 @@ export async function refreshAccessToken(refreshToken) {
         // decode the refresh token
         const decoded = await decodeToken(refreshToken);
 
+        // verify if the token has expired
+        if (decoded.exp < Date.now()) {
+            throw new Error('Token has expired');
+        }
+
         // create a new access token
-        const accessToken = createAccessToken(req, res, decoded);
+        const newAccessToken = createAccessToken(decoded);
 
         // create a new refresh token
-        const refreshToken = createRefreshToken(req, res, decoded);
+        const newRefreshToken = createRefreshToken(decoded);
 
         // return the new access token and refresh token
         return [
-            accessToken,
-            refreshToken
+            newAccessToken,
+            newRefreshToken
         ];
 
     } catch (error) {
