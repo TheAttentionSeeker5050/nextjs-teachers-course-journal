@@ -70,7 +70,7 @@ describe('Validation Functions', () => {
     });
 
     test('isValidSizeZod should invalidate input with incorrect size', () => {
-        const invalidInput = 'Invalid';
+        const invalidInput = 'abc';
         const result = isValidSizeZod(invalidInput);
         expect(result.isValid).toBe(false);
         // Adjust the error message based on your validation logic

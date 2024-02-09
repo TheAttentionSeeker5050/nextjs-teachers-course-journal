@@ -83,14 +83,20 @@ export function isValidSizeZod(input) {
     try {
         // Parse and validate the input using the Zod schema
         sizeSchema.parse(input);
+
+        // no need to revaildate the length of the input
+        // as it is already validated by the zod schema
+        // ***
         // If parsing is successful, check the input length
-        if (input.length >= 5) {
-            // If the length is valid, return a success response
-            return { isValid: true, error: null };
-        } else {
-            // If the length is invalid, return a failure response
-            return { isValid: false, error: { message: 'Input must be at least 5 characters long' } };
-        }
+        // if (input.length >= 5) {
+        //     // If the length is valid, return a success response
+        // } else {
+        //     // If the length is invalid, return a failure response
+        //     return { isValid: false, error: { message: 'Input must be at least 5 characters long' } };
+        // }
+        // ***
+        
+        return { isValid: true, error: null };
     } catch (error) {
         // If parsing fails, the input is invalid, and the first error message is provided
         return { isValid: false, error: error.errors[0] };
@@ -102,15 +108,26 @@ export function isValidSizeZod(input) {
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Date must be in the YYYY-MM-DD format', });
 
 // Date Validation using Zod
-export function isValidDateZod(date) {
+// receives a ISO date string and returns an object with the properties isValid and error
+export function isValidDateZod(strDate) {
+    // the datetime parser
+    // const datetime = z.string().datetime();
+    
     try {
+        // make Date object from the string
+        const date = new Date(strDate);
         // Parse and validate the date using the Zod schema
-        dateSchema.parse(date);
+        
+        // we will use datetime parser instead
         // If parsing is successful, the date is valid
-        return { isValid: true, error: null };
+        if (z.date().safeParse(date).success == true && dateSchema.safeParse(strDate).success == true) {
+            return { isValid: true, error: null };
+        } else {
+            return { isValid: false, error: { message: "Date must be in the YYYY-MM-DD format" } };
+        }
     } catch (error) {
         // If parsing fails, the date is invalid, and the first error message is provided
-        return { isValid: false, error: error.errors[0] };
+        return { isValid: false, error: { message: "Date must be in the YYYY-MM-DD format" } };
     }
 }
 
