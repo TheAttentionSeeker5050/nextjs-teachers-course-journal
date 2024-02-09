@@ -24,11 +24,11 @@ export const getServerSideProps = async (context) => {
   // // get the refresh token
   // const refreshToken = cookies.split("refreshToken=")[1]?.split(";")[0];
   // console.log('refreshToken', refreshToken);
-  
+
   // // get user from req.user
   // const user2 = context.req.user;
   // console.log('user', context.req.headers['x-user-payload']);
-  
+
   return { props: { user } }
 }
 
@@ -44,7 +44,7 @@ export default function Home(props) {
       </h1>
 
       <div className="flex flex-col">
-        
+
         {/* display the user email, first name, last name, organization and title */}
         <p className="text-lg">
           {props.user.email}
@@ -61,7 +61,25 @@ export default function Home(props) {
         <p className="text-lg">
           {props.user.title}
         </p>
-        
+
+
+        {/* display the user email, first name, last name, organization and title */}
+        <p className="text-lg">
+          {props.user.email}
+        </p>
+        <p className="text-lg">
+          {props.user.firstName}
+        </p>
+        <p className="text-lg">
+          {props.user.lastName}
+        </p>
+        <p className="text-lg">
+          {props.user.organization}
+        </p>
+        <p className="text-lg">
+          {props.user.title}
+        </p>
+
       </div>
     </main>
   );
