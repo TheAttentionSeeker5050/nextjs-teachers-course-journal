@@ -54,6 +54,7 @@ export default function Home(props) {
 
   // for the moment we have a dummy image, which we get from the following url
   const imageUrl = "/api/images?imageName=course-image.png"
+
   return (
     <main
       className={`${inter.className} flex flex-col items-center min-h-screen gap-5 py-2 px-3`}
@@ -69,20 +70,21 @@ export default function Home(props) {
       {
         props.error 
         ? 
-        <p className="text-lg text-red-500 ">{props.error}</p>
+          <p className="text-lg text-red-500 ">{props.error}</p>
         :
-        <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-3 ">
+        <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
           {
             props.courses.map((course) => {
               return (
-                <div key={course.id} className="mx-auto p-2">
+                <div key={course.id} className="mx-auto flex flex-col justify-start gap-2">
                   <Image
                     src={imageUrl}
                     alt={course.courseName + " Thumbnail"}
                     width={200}
                     height={200}
-                    className="mx-auto w-full object-cover rounded-lg my-2"
+                    className="mx-auto w-fit h-fit object-cover rounded-lg"
                   />
+
                   {/* if the course name is longer than 30 characters, we will show the first 30 characters and add "..." */}
                   <p className="text-large-content-size text-secondary-500 text-center">{
                     course.courseName.length > 30 ? course.courseName.substring(0, 30) + "..." : course.courseName
