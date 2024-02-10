@@ -15,7 +15,7 @@ export const getServerSideProps = async (context) => {
 
   // if we can't find the user, we will redirect to the unauthorized page
   // in the future, we will redirect to the login page
-  if (!user || !user.userId) {
+  if (!user || !user.userId || !user.email) {
     return {
       redirect: {
         destination: '/unauthorized',
@@ -52,7 +52,8 @@ export const getServerSideProps = async (context) => {
 
 export default function Home(props) {
 
-
+  // for the moment we have a dummy image, which we get from the following url
+  const imageUrl = "/api/images?imageName=course-image.png"
   return (
     <main
       className={`${inter.className}`}
@@ -60,7 +61,7 @@ export default function Home(props) {
       <h1 className="">
         Courses Dashboard
       </h1>
-      <h2 className=""> Faculty: {props.user.firstName} {props.user.lastName}</h2>
+      <h2 className=""> Faculty email: {props.user.email}</h2>
 
       {
         props.error 
@@ -72,6 +73,12 @@ export default function Home(props) {
             props.courses.map((course) => {
               return (
                 <div key={course.id}>
+                  <Image
+                    src={imageUrl}
+                    alt={course.courseName + " Thumbnail"}
+                    width={200}
+                    height={200}
+                  />
                   <p className="text-lg">{course.courseName}</p>
                 </div>
               )
