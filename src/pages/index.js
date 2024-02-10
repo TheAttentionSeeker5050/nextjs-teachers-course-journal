@@ -56,30 +56,37 @@ export default function Home(props) {
   const imageUrl = "/api/images?imageName=course-image.png"
   return (
     <main
-      className={`${inter.className}`}
+      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 py-2 px-3`}
     >
-      <h1 className="">
+      <h1 className="text-main-title-size text-primary-600 text-center my-3">
         Courses Dashboard
       </h1>
-      <h2 className=""> Faculty email: {props.user.email}</h2>
+
+      <h2 className="text-secondary-title-size text-primary-500 text-center"> 
+        Faculty email: {props.user.email}
+      </h2>
 
       {
         props.error 
         ? 
-        <p className="text-lg text-red-500">{props.error}</p>
+        <p className="text-lg text-red-500 ">{props.error}</p>
         :
-        <div className="grid">
+        <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-3 ">
           {
             props.courses.map((course) => {
               return (
-                <div key={course.id}>
+                <div key={course.id} className="mx-auto p-2">
                   <Image
                     src={imageUrl}
                     alt={course.courseName + " Thumbnail"}
                     width={200}
                     height={200}
+                    className="mx-auto w-full object-cover rounded-lg my-2"
                   />
-                  <p className="text-lg">{course.courseName}</p>
+                  {/* if the course name is longer than 30 characters, we will show the first 30 characters and add "..." */}
+                  <p className="text-large-content-size text-secondary-500 text-center">{
+                    course.courseName.length > 30 ? course.courseName.substring(0, 30) + "..." : course.courseName
+                  }</p>
                 </div>
               )
             })
