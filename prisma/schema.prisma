@@ -1,86 +1,77 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id Int @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  firstName    String?
+  lastName     String?
+  title        String?
+  organization String?
+  dateCreated  DateTime? @default(now())
+  dateUpdated  DateTime? @default(now()) @updatedAt
+  courses      Course[]
+  thumbnails   Thumbnail[]
 
-    // force email to be unique
-    email        String  @unique
-    password     String
-    firstName    String?
-    lastName     String?
-    title        String?
-    organization String?
-
-    // these default to the current time
-    dateCreated DateTime? @default(now())
-    dateUpdated DateTime? @default(now()) @updatedAt
-
-    // the relation
-    courses Course[]
-
-    @@map("users")
+  @@map("users")
 }
 
 model Course {
-    id Int @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
+  courseName  String
+  userId      Int
+  dateCreated DateTime? @default(now())
+  dateUpdated DateTime? @default(now()) @updatedAt
+  isArchived  Boolean   @default(false)
+  thumbnail   String?   @db.VarChar(250)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  units       Unit[]
 
-    courseName String
-    user       User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId     Int // this is the field we use in course to relate to an instance of the User model 
-    dateCreated DateTime? @default(now())
-    dateUpdated DateTime? @default(now()) @updatedAt
-
-    // the relation
-    // lessons Lesson[]
-    units Unit[]
-
-    @@map("courses")
+  @@map("courses")
 }
 
-// each course can have 0 or many lessons, lessons are grouped by units
 model Unit {
-    id Int @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
+  unitNumber  Int
+  unitName    String
+  courseId    Int
+  dateCreated DateTime? @default(now())
+  dateUpdated DateTime? @default(now()) @updatedAt
+  lessons     Lesson[]
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-    unitNumber Int
-    unitName String
-
-    course     Course @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    courseId   Int
-
-
-    dateCreated DateTime? @default(now())
-    dateUpdated DateTime? @default(now()) @updatedAt
-    
-    lessons Lesson[]
-
-    // the relation
-    @@map("units")
+  @@map("units")
 }
+
 model Lesson {
-    id Int @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
+  lessonName       String
+  lessonNumber     Int
+  completionStatus String    @default("not prepped")
+  epectedOutcomes  String?
+  assessment       String?
+  dateCreated      DateTime? @default(now())
+  dateUpdated      DateTime? @default(now()) @updatedAt
+  unitId           Int
+  unit             Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
-    lessonName String
-    lessonNumber Int
+  @@map("lessons")
+}
 
+// a model for thumbnails and users
+// we have this just for the purpose of validating if a user owns the thumbnail
+model Thumbnail {
+  id         Int       @id @default(autoincrement())
+  thumbnail  String    @db.VarChar(250) 
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    completionStatus String @default("not prepped") // other statuses are "prepped" and "completed"
-    epectedOutcomes String?
-    assessment String?
-
-    dateCreated DateTime? @default(now())
-    dateUpdated DateTime? @default(now()) @updatedAt
-
-    // the relations
-    // units
-    unit       Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    unitId     Int
-
-    @@map("lessons")
+  @@map("thumbnails")
 }
