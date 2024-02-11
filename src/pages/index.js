@@ -5,6 +5,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
 
+
+// import component CourseDashCard and Navbar
+import CourseDashCard from '@/components/CourseDashCard';
+import Navbar from '@/components/Navbar';
+
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
 
@@ -57,13 +62,19 @@ export default function Home(props) {
 
   return (
     <main
-      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 py-2 px-3`}
+      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 px-3`}
     >
-      <h1 className="text-main-title-size text-primary-600 text-center my-3">
+      {/* 
+        because we would not be in this page otherwise, have the isLoggedIn 
+        property set as true in this page, if no value is passed, it will default to undefined
+        which will keep the login and register buttons as if it was set to false 
+      */}
+      <Navbar isLoggedIn={true} />
+      <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3">
         Courses Dashboard
       </h1>
 
-      <h2 className="text-secondary-title-size text-primary-500 text-center"> 
+      <h2 className="text-secondary-title-size font-semibold text-primary-500 text-center"> 
         Faculty email: {props.user.email}
       </h2>
 
@@ -75,22 +86,8 @@ export default function Home(props) {
         <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
           {
             props.courses.map((course) => {
-              return (
-                <div key={course.id} className="mx-auto flex flex-col justify-start gap-2">
-                  <Image
-                    src={imageUrl}
-                    alt={course.courseName + " Thumbnail"}
-                    width={200}
-                    height={200}
-                    className="mx-auto w-fit h-fit object-cover rounded-lg"
-                  />
-
-                  {/* if the course name is longer than 30 characters, we will show the first 30 characters and add "..." */}
-                  <p className="text-large-content-size text-secondary-500 text-center">{
-                    course.courseName.length > 30 ? course.courseName.substring(0, 30) + "..." : course.courseName
-                  }</p>
-                </div>
-              )
+              return CourseDashCard({ course: course, imageUrl: imageUrl });
+              
             })
           }
         </div>
