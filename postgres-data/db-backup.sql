@@ -1,6 +1,6 @@
 -- Adminer 4.8.1 PostgreSQL 16.1 dump
 
-\connect "courseGridDB";
+-- \connect "courseGridDB";
 
 DROP TABLE IF EXISTS "courses";
 DROP SEQUENCE IF EXISTS courses_id_seq;

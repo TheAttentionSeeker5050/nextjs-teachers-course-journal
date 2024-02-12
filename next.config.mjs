@@ -7,6 +7,10 @@ const nextConfig = {
         hostname: "localhost",
         pathname: "/api/images",
       },
+      {
+        hostname: "https://capstone-course-grid-development-repo.vercel.app/",
+        pathname: "/api/images",
+      }
     ],
   },
 };
