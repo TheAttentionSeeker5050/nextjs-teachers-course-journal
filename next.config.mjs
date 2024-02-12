@@ -8,8 +8,7 @@ const nextConfig = {
         pathname: "/api/images",
       },
       {
-        hostname: "capstone-course-grid-development-repo.vercel.app",
-        pathname: "/api/images",
+        hostname: "**",
       }
     ],
   },
