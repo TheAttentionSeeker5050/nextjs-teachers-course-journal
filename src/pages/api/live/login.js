@@ -28,7 +28,6 @@ export default async function handler(req, res) {
     const newCookie = [
         serialize("accessToken", accessToken, cookieConfig),
         serialize("refreshToken", refreshToken, cookieConfig),
-        // serialize("foo", "bar", cookieConfig)
     ]
 
     res.setHeader("Set-Cookie", newCookie)
