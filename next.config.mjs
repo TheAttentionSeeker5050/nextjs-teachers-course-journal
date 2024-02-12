@@ -8,6 +8,7 @@ const nextConfig = {
         pathname: "/api/images",
       },
       {
+        protocol: "https",
         hostname: "**",
       }
     ],
