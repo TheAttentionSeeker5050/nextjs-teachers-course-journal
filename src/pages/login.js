@@ -19,6 +19,7 @@ export default function Login() {
         try {
             // Call login API function
             const response = await login(email, password);
+            console.log("the code broke here")
 
             // If login successful, redirect to dashboard
             if (response.success) {

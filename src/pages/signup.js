@@ -1,15 +1,85 @@
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
+import { useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    // login logic will be implemented here
-
-};
-
 export default function Signup() {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [title, setTitle] = useState('');
+    const [organization, setOrganization] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        title: "",
+        organization: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    });
+    const [error, setError] = useState("");
+    const router = useRouter();
+
+    // const handleChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData({ ...formData, [name]: value });
+    // };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+        console.log(formData);
+
+        try {
+            console.log('Firstname:', firstName);
+            console.log('Lastname:', lastName);
+            console.log('Title:', title);
+            console.log('Organization:', organization);
+            console.log('Email:', email);
+            console.log('Password:', password);
+            console.log('Confirm Password:', confirmPassword);
+
+            // Check if passwords match
+            if (password.trim() !== confirmPassword.trim()) {
+                setError("Passwords do not match");
+                return;
+            }
+
+            // Send form data to backend API endpoint
+            const response = await fetch("/api/live/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    title: title,
+                    organization: organization,
+                })
+            });
+
+            if (response.ok) {
+                // Signup successful, redirect to login page
+                router.push("/login");
+            } else {
+                // Signup failed, display error message
+                const data = await response.json();
+                setError(data.message || "Signup failed");
+            }
+        } catch (error) {
+            console.error("Signup error:", error);
+            setError("An error occurred during signup.");
+        }
+    };
 
     return (
         // <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -24,13 +94,13 @@ export default function Signup() {
                         <div>
                             <label htmlFor="first-name" className="sr-only">First Name</label>
                             <input
-                                id="first-name"
-                                name="first-name"
+                                id="firstName"
+                                name="firstName"
                                 type="text"
                                 autoComplete="given-name"
                                 required
-                                // value={firstName}
-                                // onChange={(e) => setFirstName(e.target.value)}
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="First Name"
                             />
@@ -38,13 +108,13 @@ export default function Signup() {
                         <div>
                             <label htmlFor="last-name" className="sr-only">Last Name</label>
                             <input
-                                id="last-name"
-                                name="last-name"
+                                id="lastName"
+                                name="lastName"
                                 type="text"
                                 autoComplete="family-name"
                                 required
-                                // value={lastName}
-                                // onChange={(e) => setLastName(e.target.value)}
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="Last Name"
                             />
@@ -57,8 +127,8 @@ export default function Signup() {
                                 type="text"
                                 autoComplete="title"
                                 required
-                                // value={title}
-                                // onChange={(e) => setTitle(e.target.value)}
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="Title"
                             />
@@ -71,8 +141,8 @@ export default function Signup() {
                                 type="text"
                                 autoComplete="organization"
                                 required
-                                // value={organization}
-                                // onChange={(e) => setOrganization(e.target.value)}
+                                value={organization}
+                                onChange={(e) => setOrganization(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="Organization"
                             />
@@ -85,8 +155,8 @@ export default function Signup() {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                // value={email}
-                                // onChange={(e) => setEmail(e.target.value)}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="Email address"
                             />
@@ -99,8 +169,8 @@ export default function Signup() {
                                 type="password"
                                 autoComplete="new-password"
                                 required
-                                // value={password}
-                                // onChange={(e) => setPassword(e.target.value)}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="Password"
                             />
@@ -108,24 +178,24 @@ export default function Signup() {
                         <div>
                             <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
                             <input
-                                id="confirm-password"
-                                name="confirm-password"
+                                id="confirmPassword"
+                                name="confirmPassword"
                                 type="password"
                                 autoComplete="new-password"
                                 required
-                                // value={confirmPassword}
-                                // onChange={(e) => setConfirmPassword(e.target.value)}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                                 placeholder="Confirm Password"
                             />
                         </div>
                     </div>
 
-                    {/* {error && (
+                    {error && (
                         <div className="text-red-500 text-sm mt-2">
                             {error}
                         </div>
-                    )} */}
+                    )}
 
                     <div>
                         <button

@@ -2,6 +2,8 @@ import { serialize } from "cookie";
 import { hashPassword, comparePassword } from "@/utils/validation/passwordEncryption";
 import { createAccessToken, createRefreshToken } from "@/utils/validation/jwt";
 import { getUserByEmail } from "@/data/dbTransactions/user.dbTransaction";
+import { cookieConfig } from "@/utils/validation/cookies";
+
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -22,12 +24,21 @@ export default async function handler(req, res) {
     const accessToken = createAccessToken({ userId: user.id, email: user.email });
     const refreshToken = createRefreshToken({ userId: user.id, email: user.email });
 
-    // Set cookies in the response
+    // // Set cookies in the response
+    // const newCookie = [
+    //     serialize("accessToken", accessToken, { ...cookieConfig, httpOnly: true }),
+    //     serialize("refreshToken", refreshToken, { ...cookieConfig, httpOnly: true }),
+    // ];
+    // res.setHeader("Set-Cookie", newCookie);
+
+    // make an array of the serialized cookies
     const newCookie = [
-        serialize("accessToken", accessToken, { ...cookieConfig, httpOnly: true }),
-        serialize("refreshToken", refreshToken, { ...cookieConfig, httpOnly: true }),
-    ];
-    res.setHeader("Set-Cookie", newCookie);
+        serialize("accessToken", accessToken, cookieConfig),
+        serialize("refreshToken", refreshToken, cookieConfig),
+        // serialize("foo", "bar", cookieConfig)
+    ]
+
+    res.setHeader("Set-Cookie", newCookie)
 
     res.status(200).json({ user });
 }
