@@ -1,6 +1,6 @@
 
 
-// create a component navbar with login, logout and register
+// create a component navbar with login, logout and signup
 import React from 'react';
 import Link from 'next/link';
 

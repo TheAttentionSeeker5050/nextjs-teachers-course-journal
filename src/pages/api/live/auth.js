@@ -2,7 +2,7 @@
 export async function login(email, password) {
     try {
         // Make a request to backend API endpoint for user authentication
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/live/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
