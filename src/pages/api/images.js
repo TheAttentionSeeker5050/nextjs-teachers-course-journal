@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     // the buffer that will hold the image file to send over http
     let imgFile = null;
-    const IMG_ERROR_IMG = "img-error.png"
+    const IMG_ERROR_IMG = process.env.IMG_ERROR_IMG;
 
     // get current working directory
     const cwd = process.cwd();
@@ -43,22 +43,20 @@ export default async function handler(req, res) {
         // from the user payload, we will redirectot to unauthorized
         if (!thumbnail || thumbnail.userId !== userId) {
             // get the default error image from the folder cwd/src/media/images
-            imgFile = fs.readFileSync(`${cwd}/src/media/images/${IMG_ERROR_IMG}`);
+            imgFile = fs.readFileSync(`${cwd}/src/media/images/default/${IMG_ERROR_IMG}`);
 
         } else {
             // get the image from the folder cwd/src/media/images using the url parameter
             imgFile = fs.readFileSync(`${cwd}/src/media/images/${imageName}`);
 
         }
-
         
 
     } catch (error) {
         // if anything goes wrong, we will send the default error image
-        imgFile = fs.readFileSync(`${cwd}/src/media/images/${IMG_ERROR_IMG}`);
+        imgFile = fs.readFileSync(`${cwd}/src/media/images/default/${IMG_ERROR_IMG}`);
     
     }
-
 
     // add the content type header so it forces the response to be an image
     await res.setHeader('Content-Type', 'image/png');
