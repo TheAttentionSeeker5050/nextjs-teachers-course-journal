@@ -24,13 +24,6 @@ export default async function handler(req, res) {
     const accessToken = createAccessToken({ userId: user.id, email: user.email });
     const refreshToken = createRefreshToken({ userId: user.id, email: user.email });
 
-    // // Set cookies in the response
-    // const newCookie = [
-    //     serialize("accessToken", accessToken, { ...cookieConfig, httpOnly: true }),
-    //     serialize("refreshToken", refreshToken, { ...cookieConfig, httpOnly: true }),
-    // ];
-    // res.setHeader("Set-Cookie", newCookie);
-
     // make an array of the serialized cookies
     const newCookie = [
         serialize("accessToken", accessToken, cookieConfig),
