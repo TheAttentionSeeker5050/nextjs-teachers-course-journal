@@ -6,7 +6,7 @@ const cookieMaxAge = process.env.COOKIE_AGE_HOURS || 24;
 export const cookieConfig = {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    // sameSite: "strict",
     path: "/",
     maxAge: 60 * 60 * cookieMaxAge, 
 }
