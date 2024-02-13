@@ -19,6 +19,8 @@ model User {
   dateUpdated  DateTime?   @default(now()) @updatedAt
   courses      Course[]
   thumbnails   Thumbnail[]
+  files        FileUpload[]
+  notes        Note[]
 
   @@map("users")
 }
@@ -61,6 +63,8 @@ model Lesson {
   dateUpdated      DateTime? @default(now()) @updatedAt
   unitId           Int
   unit             Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  files            FileUpload[]
+  notes            Note[]
 
   @@map("lessons")
 }
@@ -74,4 +78,29 @@ model Thumbnail {
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("thumbnails")
+}
+
+// add a relation to file and user
+model FileUpload {
+  id        Int    @id @default(autoincrement())
+  fileDisplayName      String @db.VarChar(250)
+  fileUniqueName String @db.VarChar(250) 
+  userId    Int
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId  Int
+  lesson    Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("fileuploads")
+}
+
+// notes model in string, relation to user and lesson
+model Note {
+  id        Int    @id @default(autoincrement())
+  note      String
+  userId    Int
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId  Int
+  lesson    Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("notes")
 }
