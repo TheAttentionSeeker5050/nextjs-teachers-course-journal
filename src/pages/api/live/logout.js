@@ -8,7 +8,7 @@ export default function handler(req, res) {
 
     // we need to update cookie to expire
     const newCookieConfig = cookieConfig;
-    newCookieConfig.maxAge = -1;
+    // newCookieConfig.maxAge = 0;
 
     const newCookie = [
         serialize("accessToken", "", newCookieConfig),
