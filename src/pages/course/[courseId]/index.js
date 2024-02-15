@@ -123,7 +123,7 @@ export default function SingleCourse(
       */}
       <Navbar isLoggedIn={true} />
       
-      <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full">
+      <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
         {"Course - " + props.course?.courseName || props.error || "Course Page"}
       </h1>
 
@@ -146,7 +146,7 @@ export default function SingleCourse(
         <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 max-w-72 mx-auto">
           {props.course?.units.map((unit, i) => (
             <div key={i} className="flex flex-col gap-3">
-              <h2 className="text-secondary-title-size font-semibold text-primary-600 hover:text-primary-300">
+              <h2 className="text-secondary-title-size font-semibold text-primary-600 hover:text-primary-300 text-ellipsis break-words">
                 <Link href={`#`}>
                   Unit {unit.unitNumber} - {unit.unitName}
                 </Link>
@@ -154,7 +154,7 @@ export default function SingleCourse(
               <div className="flex flex-col gap-3">
                 {unit.lessons.map((lesson, j) => (
                   <div key={j} className="flex flex-col gap-3">
-                    <h3 className="text-sub-title-size font-semibold text-slate-800 hover:text-slate-500">
+                    <h3 className="text-sub-title-size font-semibold text-slate-800 hover:text-slate-500 text-ellipsis break-words">
                       <Link href={`#`}>
                         Lesson {lesson.lessonNumber} - {lesson.lessonName}
                       </Link>

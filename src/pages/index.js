@@ -62,7 +62,7 @@ export default function Home(props) {
 
   return (
     <main
-      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 w-screen`}
+      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 w-full overflow-hidden`}
     >
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
@@ -74,9 +74,9 @@ export default function Home(props) {
         Courses Dashboard
       </h1>
 
-      <p className="text-secondary-title-size font-semibold text-primary-500 text-center break-all"> 
+      <p className="text-secondary-title-size font-semibold text-primary-500 w-full text-center text-ellipsis break-words"> 
         Faculty email: 
-        <span> {props.user.email} </span>
+        {props.user.email}
 
       </p>
 
