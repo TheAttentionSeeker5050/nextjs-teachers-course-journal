@@ -61,6 +61,31 @@ const getCourseById = async (id) => {
     return course;
 }
 
+// get course by id, and all its children units, and all the children lessons of all the units
+const getCourseByIdWithChildrenById = async (id) => {
+    
+    // get the course by id
+    const course = await prisma.course.findUnique({
+        where: {
+            id: id
+        },
+        include: {
+            units: {
+                include: {
+                    lessons: true
+                }
+            }
+        }
+    });
+
+    // if the course is not retrieved, we will throw an error
+    if (!course) {
+        throw new Error("There was a problem retrieving the course, please try again later");
+    }
+
+    return course;
+}
+
 const updateCourse = async ({
     id,
     newCourseName
@@ -123,5 +148,6 @@ export {
     getCoursesByUserId,
     getCourseById,
     updateCourse,
-    deleteCourse
+    deleteCourse,
+    getCourseByIdWithChildrenById
 }
