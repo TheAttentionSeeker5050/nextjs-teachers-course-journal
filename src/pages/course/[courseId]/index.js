@@ -176,25 +176,28 @@ export default function SingleCourse(
           Go back to Home
         </button>
       :
-      <div className="flex flex-col mobile:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl">
+      <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
 
         {/* if props.course, show a layered list of the units and lessons */}
-        <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 max-w-72 mx-auto">
+        <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 tablet:max-w-72">
+          <h2 className="text-secondary-title-size font-semibold text-primary-600">
+            Units and Lessons
+          </h2>
           {props.course?.units.map((unit, i) => (
             <div key={i} className="flex flex-col gap-3">
-              <h2 className="text-secondary-title-size font-semibold text-primary-600 hover:text-primary-300 text-ellipsis break-words">
+              <h3 className="text-tertiary-title-size font-semibold text-primary-600 hover:text-primary-300 text-ellipsis break-words">
                 <Link href={`/course/1?unit=${unit.unitNumber}`}>
                   Unit {unit.unitNumber} - {unit.unitName}
                 </Link>
-              </h2>
+              </h3>
               <div className="flex flex-col gap-3">
                 {unit.lessons.map((lesson, j) => (
                   <div key={j} className="flex flex-col gap-3">
-                    <h3 className="text-sub-title-size font-semibold text-slate-800 hover:text-slate-500 text-ellipsis break-words">
-                      <Link href={`#`}>
+                    <h4 className="normal-content-size font-semibold text-slate-800 hover:text-slate-500 text-ellipsis break-words">
+                      <Link href={`/course/1?unit=${unit.unitNumber}&lesson=${lesson.lessonNumber}`}>
                         Lesson {lesson.lessonNumber} - {lesson.lessonName}
                       </Link>
-                    </h3>
+                    </h4>
                   </div>
                 ))}
               </div>
@@ -203,7 +206,7 @@ export default function SingleCourse(
         </aside>
 
         {/* a section that shows the content of the lesson */}
-        <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full  border-2">
+        <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
           <h2 className="text-secondary-title-size font-semibold text-primary-600">
             {props.selectedLesson?.lessonName || "Lesson Name"}
           </h2>
@@ -307,7 +310,6 @@ export default function SingleCourse(
             </ul>
           </div>
         </section>
-
       </div>
       }
     </main>
