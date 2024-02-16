@@ -103,10 +103,28 @@ export const getServerSideProps = async (context) => {
 
     // if unitNumber and lessonNumber are not defined, default to first lesson of first unit
     // use filter to get the selected lesson
-    const selectedLesson = courseFromDb.units?.filter((u, i) => u.unitNumber === parseInt(unit))[0]?.lessons?.filter((l, i) => l.lessonNumber === parseInt(lesson))[0] || null;
+    const selectedUnit = courseFromDb.units?.filter((u, i) => u.unitNumber === parseInt(unit))[0]
+    // console.log("selectedUnit", selectedUnit);
+    if (!selectedUnit) {
+      return {
+        props: {
+          course: null,
+          error: "Unit or lesson not found",
+          selectedLesson: null
+        }
+      }
+    }
+    const selectedLesson = selectedUnit.lessons?.filter((l, i) => l.lessonNumber === parseInt(lesson))[0] || selectedUnit.lessons[0] || null;
 
-    
-
+    if (!selectedLesson) {
+      return {
+        props: {
+          course: null,
+          error: "Lesson not found",
+          selectedLesson: null
+        }
+      }
+    }
 
     return { 
       props: {
@@ -134,7 +152,7 @@ export default function SingleCourse(
 
   return (
     <main
-      className={`${inter.className} flex flex-col items-baseline min-h-screen w-screen gap-5`}
+      className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
@@ -148,7 +166,7 @@ export default function SingleCourse(
       </h1>
 
       {/* if props.error, have a button go back to page "/" */}
-      {props.error && (
+      {props.error !== null ?
         <button
           onClick={() => {
             window.location.href = "/";
@@ -157,9 +175,7 @@ export default function SingleCourse(
         >
           Go back to Home
         </button>
-      )}
-
-
+      :
       <div className="flex flex-col mobile:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl">
 
         {/* if props.course, show a layered list of the units and lessons */}
@@ -167,7 +183,7 @@ export default function SingleCourse(
           {props.course?.units.map((unit, i) => (
             <div key={i} className="flex flex-col gap-3">
               <h2 className="text-secondary-title-size font-semibold text-primary-600 hover:text-primary-300 text-ellipsis break-words">
-                <Link href={`#`}>
+                <Link href={`/course/1?unit=${unit.unitNumber}`}>
                   Unit {unit.unitNumber} - {unit.unitName}
                 </Link>
               </h2>
@@ -238,19 +254,62 @@ export default function SingleCourse(
             ) || "No assessments to show"}
           </div>
           {/* make the files section, for uploading and downloading files, this feature will be added later */}
+          {/* make a button to direct to add new note page */}
+          <button
+            className="bg-primary-600 text-white px-4 py-2 rounded-md mobile:w-fit"> 
+            <Link href={`#`}>
+              Upload a file
+            </Link>
+          </button>
+
+          {/* display a list of files, add replace and delete buttons */}
           <div>
-            <form className="flex flex-col gap-2">
-              <h3 className="text-large-content-size font-semibold">
-                Upload a file
-              </h3>
-              <input type="file" />
-              <button className="bg-primary-600 text-white px-4 py-2 rounded-md mobile:w-fit">
-                Upload
-              </button>
-            </form>
+            <h3 className="text-large-content-size font-semibold">
+              Recorded Files
+            </h3>
+            <ul className="pl-4">
+              <li className="text-normal-content-size my-2">
+                <span className="mr-8 hover:text-primary-300 text-primary-500">
+                  <Link href={`#`}>
+                    File-name-1.docx
+                  </Link>
+                </span>
+                <button className="bg-slate-600 hover:bg-slate-500 text-white px-2 py-1 rounded-md mx-2">Replace</button>
+                <button className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded-md">Delete</button>
+              </li>
+            </ul>
+          </div>
+          {/* make a button to direct to add new note page */}
+          <button
+            className="bg-primary-600 text-white px-4 py-2 rounded-md mobile:w-fit"> 
+            <Link href={`#`}>
+              Add a note
+            </Link>
+          </button>
+
+          {/* have a list of notes, display the titles, and the edit/delete buttons */}
+          <div>
+            <h3 className="text-large-content-size font-semibold">
+              Saved Notes
+            </h3>
+
+            <ul className="pl-4">
+              <li className="text-normal-content-size my-2">
+                <span className="mr-8 hover:text-primary-300 text-primary-500 break-words">
+                  <Link href={`#`}>
+                    Note name 1
+
+                  </Link>
+                </span>
+                <button className="bg-slate-600 hover:bg-slate-500 text-white px-2 py-1 rounded-md mx-2">Edit</button>
+                <button className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded-md">Delete</button>
+              </li>
+            </ul>
           </div>
         </section>
+
       </div>
+      }
     </main>
   );
 }
