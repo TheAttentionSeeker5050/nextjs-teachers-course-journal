@@ -64,7 +64,7 @@ const getCourseById = async (id) => {
 // get course by id, and all its children units, and all the children lessons of all the units
 const getCourseByIdWithChildrenById = async (id) => {
     
-    // get the course by id
+    // get the course by id and order by the units and lessons number
     const course = await prisma.course.findUnique({
         where: {
             id: id
@@ -75,7 +75,8 @@ const getCourseByIdWithChildrenById = async (id) => {
                     lessons: true
                 }
             }
-        }
+        },
+        
     });
 
     // if the course is not retrieved, we will throw an error

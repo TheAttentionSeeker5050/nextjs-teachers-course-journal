@@ -88,10 +88,31 @@ export const getServerSideProps = async (context) => {
       });
     });
 
+    
+
+    // select selected lesson and unit number from ?a=b query params, default to first lesson of first unit
+    let { unit, lesson } = await context.query;
+    // query is: /course/[courseId]?unit=1&lesson=1
+    
+    if (!unit || !parseInt(unit) || parseInt(unit) < 1) {
+      unit = "1";
+    }
+    if (!lesson || !parseInt(lesson) || parseInt(lesson) < 1) {
+      lesson = "1";
+    }
+
+    // if unitNumber and lessonNumber are not defined, default to first lesson of first unit
+    // use filter to get the selected lesson
+    const selectedLesson = courseFromDb.units?.filter((u, i) => u.unitNumber === parseInt(unit))[0]?.lessons?.filter((l, i) => l.lessonNumber === parseInt(lesson))[0] || null;
+
+    
+
+
     return { 
       props: {
         course: courseFromDb,
-        error: null
+        error: null,
+        selectedLesson: selectedLesson
       } 
     }
     
@@ -99,7 +120,9 @@ export const getServerSideProps = async (context) => {
     return {
       props: {
         course: null,
-        error: error.message
+        error: error.message,
+        selectedLesson: null
+
       }
     }
   }
@@ -108,9 +131,6 @@ export const getServerSideProps = async (context) => {
 export default function SingleCourse(
     props
 ) {
-
-//   // for the moment we have a dummy image, which we get from the following url
-//   const imageUrl = "/api/images?imageName=course-image.png"
 
   return (
     <main
@@ -167,22 +187,70 @@ export default function SingleCourse(
         </aside>
 
         {/* a section that shows the content of the lesson */}
-        <section className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 w-full  border-2">
+        <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full  border-2">
           <h2 className="text-secondary-title-size font-semibold text-primary-600">
-            Lesson name
+            {props.selectedLesson?.lessonName || "Lesson Name"}
           </h2>
           {/* show completion status */}
-          <p className="text-label-size text-slate-800">
-            Completion status: {" "}
-            <span className="text-tertiary-700">
-              {props.course?.isComplete ? "Complete" : "Incomplete"}
+          <p className="">
+            <span className="text-large-content-size">Completion status: </span> 
+            <span className="text-secondary-500 normal-content-size">
+              {props.selectedLesson?.completionStatus || "Not prepped"}
             </span>
           </p>
+          {/* show the unit and lesson number */}
+          <p className="">
+            <span className="text-large-content-size">Lesson number: </span>
+            <span className="normal-content-size">
+              {props.selectedLesson?.lessonNumber || "NA"}
+            </span>
+          </p>
+          <p className="">
+            <span className="text-large-content-size">Unit number: </span>
+            <span className="normal-content-size">
+              {/* find the unit number from the courses object, search for the unit within the course that has the same unitId as id */}
+              {props.course.units?.filter((unit, i) => unit.id === props.selectedLesson?.unitId)[0]?.unitNumber || "NA"}
+            </span>
+          </p>
+          {/* show expected outcomes, this is stored in a text and is to show in creen with new lines and taps */}
+          <div>
+            <h3 className="text-large-content-size font-semibold">
+              Expected outcomes
+            </h3>
+            <ul className="list-disc list-inside pl-4">
+              {props.selectedLesson?.epectedOutcomes?.split("\n").map((outcome, i) => (
+                <li key={i} className="text-normal-content-size my-2">{outcome}</li>
+                ))}
+            </ul>
+          </div>
+
+        {/* show the assessment of the lesson, stored the same way and displayed on page the same way as the expected outcomes */}
+          <div>
+            <h3 className="text-large-content-size font-semibold">
+              Assessment
+            </h3>
+            {props.selectedLesson?.assessment && (
+            <ul className="list-disc list-inside pl-4">
+              {props.selectedLesson?.assessment?.split("\n").map((assessment, i) => (
+                <li key={i} className="text-normal-content-size my-2">{assessment}</li>
+                ))}
+            </ul>
+            ) || "No assessments to show"}
+          </div>
+          {/* make the files section, for uploading and downloading files, this feature will be added later */}
+          <div>
+            <form className="flex flex-col gap-2">
+              <h3 className="text-large-content-size font-semibold">
+                Upload a file
+              </h3>
+              <input type="file" />
+              <button className="bg-primary-600 text-white px-4 py-2 rounded-md mobile:w-fit">
+                Upload
+              </button>
+            </form>
+          </div>
         </section>
-
       </div>
-
-      
     </main>
   );
 }

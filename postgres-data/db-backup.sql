@@ -74,14 +74,30 @@ CREATE TABLE "public"."lessons" (
 ) WITH (oids = false);
 
 INSERT INTO "lessons" ("id", "lessonName", "lessonNumber", "completionStatus", "epectedOutcomes", "assessment", "dateCreated", "dateUpdated", "unitId") VALUES
-(1,	'Lesson Name 1',	1,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 13:59:26.841',	'2024-02-13 13:59:26.841',	1),
-(2,	'Lesson Name 2',	2,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:00:41.818',	'2024-02-13 14:00:41.818',	1),
-(3,	'Lesson Name 3',	3,	'prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:05.337',	'2024-02-13 14:01:05.337',	2),
-(4,	'Lesson Name 4',	4,	'done',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:22.764',	'2024-02-13 14:01:22.764',	2),
-(5,	'Lesson Name 5',	5,	'done',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:47.124',	'2024-02-13 14:01:47.124',	3),
-(6,	'Lesson Name 6',	6,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:02:07.912',	'2024-02-13 14:02:07.912',	3),
-(7,	'Lesson Name 7',	7,	'done',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:02:39.538',	'2024-02-13 14:02:39.538',	4),
-(8,	'Lesson Name 8',	8,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:02:59.13',	'2024-02-13 14:02:59.13',	4);
+(1,	'Lesson Name 1',	1,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 13:59:26.841',	'2024-02-13 13:59:26.841',	1),
+(2,	'Lesson Name 2',	2,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:00:41.818',	'2024-02-13 14:00:41.818',	1),
+(3,	'Lesson Name 3',	3,	'prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:05.337',	'2024-02-13 14:01:05.337',	2),
+(4,	'Lesson Name 4',	4,	'done',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:22.764',	'2024-02-13 14:01:22.764',	2),
+(5,	'Lesson Name 5',	5,	'done',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:47.124',	'2024-02-13 14:01:47.124',	3),
+(6,	'Lesson Name 6',	6,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:02:07.912',	'2024-02-13 14:02:07.912',	3),
+(7,	'Lesson Name 7',	7,	'done',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:02:39.538',	'2024-02-13 14:02:39.538',	4),
+(8,	'Lesson Name 8',	8,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:02:59.13',	'2024-02-13 14:02:59.13',	4);
 
 CREATE SEQUENCE notes_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
