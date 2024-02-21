@@ -2,12 +2,16 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 
+import NoteListElement from "@/components/NoteListElement";
+
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
 import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 import Navbar from '@/components/Navbar';
+import FileListElement from "@/components/FileListElement";
+import AsideCourseMenu from "@/components/AsideCourseMenu";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -16,7 +20,6 @@ export const getServerSideProps = async (context) => {
   const userPayloadStr = context.req.headers['x-user-payload'];
   
   if (!userPayloadStr) {
-    console.log("no user payload");
     return {
     redirect: {
       destination: '/unauthorized',
@@ -134,7 +137,6 @@ export const getServerSideProps = async (context) => {
 export default function SingleCourse(
     props
 ) {
-  // console.log("props", props.selectedLesson);
   return (
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
@@ -169,24 +171,8 @@ export default function SingleCourse(
             Units and Lessons
           </h2>
           {props.course?.units.map((unit, i) => (
-            <div key={i} className="flex flex-col gap-3">
-              <h3 className="text-tertiary-title-size font-semibold text-primary-600 hover:text-primary-300 text-ellipsis break-words">
-                <Link href={`/course/${props.courseId}/unit/${unit.unitNumber}`}>
-                  Unit {unit.unitNumber} - {unit.unitName}
-                </Link>
-              </h3>
-              <div className="flex flex-col gap-3">
-                {unit.lessons.map((lesson, j) => (
-                  <div key={j} className="flex flex-col gap-3">
-                    <h4 className="normal-content-size font-semibold text-slate-800 hover:text-slate-500 text-ellipsis break-words">
-                      <Link href={`/course/${props.courseId}/lesson/${lesson.lessonNumber}`}>
-                        Lesson {lesson.lessonNumber} - {lesson.lessonName}
-                      </Link>
-                    </h4>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <AsideCourseMenu key={i} courseId={props.courseId} unit={unit} selectedLesson={props.selectedLesson.lessonNumber} selectedUnit={null} />
+            
           ))}
         </aside>
 
@@ -201,7 +187,6 @@ export default function SingleCourse(
             <button
               className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
               <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.lessonNumber}/edit`}>
-              {/* <Link href={`/course/${props.courseId}/lesson/`}> */}
                 Edit lesson
               </Link>
             </button>
@@ -274,23 +259,8 @@ export default function SingleCourse(
               Recorded Files
             </h3>
             <ul className="pl-4">
-              <li className="text-normal-content-size my-2">
-                <span className="mr-8 hover:text-primary-300 text-primary-500">
-                  <Link href={`#`}>
-                    File-name-1.docx
-                  </Link>
-                </span>
-                <button className="bg-slate-600 hover:bg-slate-500 text-white px-2 py-1 rounded-md mx-2">
-                  <Link href={`#`}>
-                    Replace
-                  </Link>
-                </button>
-                <button className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded-md">
-                  <Link href={`#`}>
-                    Delete
-                  </Link>
-                </button>
-              </li>
+              <FileListElement fileUrl="#" fileName="File-name-1.docx" />
+              <FileListElement fileUrl="#" fileName="File-name-2.docx" />
             </ul>
           </div>
           {/* make a button to direct to add new note page */}
@@ -308,23 +278,8 @@ export default function SingleCourse(
             </h3>
 
             <ul className="pl-4">
-              <li className="text-normal-content-size my-2">
-                <span className="mr-8 hover:text-primary-300 text-primary-500 break-words">
-                  <Link href={`#`}>
-                    Note name 1
-                  </Link>
-                </span>
-                <button className="bg-slate-600 hover:bg-slate-500 text-white px-2 py-1 rounded-md mx-2">
-                  <Link href={`#`}>
-                    Edit
-                  </Link>
-                </button>
-                <button className="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded-md">
-                  <Link href={`#`}>
-                    Delete
-                  </Link>
-                </button>
-              </li>
+              <NoteListElement noteUrl="#" noteName="Note name 1" />
+              <NoteListElement noteUrl="#" noteName="Note name 2" />
             </ul>
           </div>
         </section>
