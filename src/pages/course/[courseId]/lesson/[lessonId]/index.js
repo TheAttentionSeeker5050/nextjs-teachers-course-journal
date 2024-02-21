@@ -12,6 +12,7 @@ import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/
 import Navbar from '@/components/Navbar';
 import FileListElement from "@/components/FileListElement";
 import AsideCourseMenu from "@/components/AsideCourseMenu";
+import DisplayErrorCard from "@/components/DisplayErrorCard";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -154,14 +155,7 @@ export default function SingleCourse(
 
       {/* if props.error, have a button go back to page "/" */}
       {props.error !== null ?
-        <button
-          onClick={() => {
-            window.location.href = "/";
-          }}
-          className="bg-primary-600 text-white px-3 mx-auto py-2 rounded-md"
-        >
-          Go back to Home
-        </button>
+        <DisplayErrorCard error={props.error} />
       :
       <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
 
