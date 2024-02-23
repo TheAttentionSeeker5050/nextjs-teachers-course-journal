@@ -5,7 +5,7 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById,getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 
 // import component CourseDashCard and Navbar
@@ -19,16 +19,16 @@ export const getServerSideProps = async (context) => {
 
   // the the x-user-payload from the headers
   const userPayloadStr = context.req.headers['x-user-payload'];
-  
+
   if (!userPayloadStr) {
     return {
-    redirect: {
-      destination: '/unauthorized',
-      permanent: false,
+      redirect: {
+        destination: '/unauthorized',
+        permanent: false,
       },
     }
   }
-  
+
 
   // transform the string into an object
   const user = JSON.parse(userPayloadStr);
@@ -74,7 +74,7 @@ export const getServerSideProps = async (context) => {
 
     // filter the unit from the course
     let selectedUnit = courseFromDb.units.filter(unit => unit.unitNumber === parseInt(unitId));
-    
+
     // if the unit does not exist, return a 404
     if (selectedUnit.length === 0) {
       return {
@@ -86,15 +86,15 @@ export const getServerSideProps = async (context) => {
     }
 
 
-    return { 
+    return {
       props: {
         selectedUnit: selectedUnit[0],
         error: null,
         courseId: courseId,
         course: courseFromDb
-      } 
+      }
     }
-    
+
   } catch (error) {
     return {
       props: {
@@ -108,7 +108,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function SingleCourse(
-    props
+  props
 ) {
   return (
     <main
@@ -120,64 +120,64 @@ export default function SingleCourse(
         which will keep the login and register buttons as if it was set to false 
       */}
       <Navbar isLoggedIn={true} />
-      
+
       <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
-        {"Unit - " + props.course?.courseName || props.error || "Course Page"}
+        {"Course - " + props.course?.courseName || props.error || "Course Page"}
       </h1>
 
       {/* if props.error, have a button go back to page "/" */}
       {props.error !== null ?
         <DisplayErrorCard error={props.error} />
-      :
-      <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
+        :
+        <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
 
-        {/* if props.course, show a layered list of the units and lessons */}
-        <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 tablet:max-w-72">
-          <h2 className="text-secondary-title-size font-semibold text-primary-600">
-            Units and Lessons
-          </h2>
-          {props.course?.units.map((unit, i) => (
-            <AsideCourseMenu courseId={props.courseId} key={i} unit={unit} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={null} />
-          ))}
-        </aside>
-
-        {/* a section that shows the content of the lesson */}
-        <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
-          <h2 className="text-secondary-title-size font-semibold text-primary-600">
-            {props.selectedUnit?.unitName || "Unit Name"}
-          </h2>
-
-        {/* show buttons edit and delete lesson wrap it with div */}
-          <div className="flex gap-3">
-            <button
-              className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-              <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.unitNumber}/edit`}>
-              {/* <Link href={`/course/${props.courseId}/lesson/`}> */}
-                Edit Unit
-              </Link>
-            </button>
-            <button
-              className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-              <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.unitNumber}/delete`}>
-                Delete Unit
-              </Link>
-            </button>
-          </div>
-
-          {/* make a list with the unit lesson name and number */}
-          <ul className="flex flex-col gap-2 my-3">
-            {props.selectedUnit?.lessons.map((lesson, i) => (
-              <li key={i} className="flex flex-col gap-3">
-                <h3 className="text-tertiary-title-size font-semibold text-slate-800 hover:text-slate-600">
-                  <Link href={`/course/${props.courseId}/lesson/${lesson.lessonNumber}`}>
-                    Lesson {lesson.lessonNumber} - {lesson.lessonName}
-                  </Link>
-                </h3>
-              </li>
+          {/* if props.course, show a layered list of the units and lessons */}
+          <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 tablet:max-w-72">
+            <h2 className="text-secondary-title-size font-semibold text-primary-600">
+              Units and Lessons
+            </h2>
+            {props.course?.units.map((unit, i) => (
+              <AsideCourseMenu courseId={props.courseId} key={i} unit={unit} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={null} />
             ))}
-          </ul>
-        </section>
-      </div>
+          </aside>
+
+          {/* a section that shows the content of the lesson */}
+          <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
+            <h2 className="text-secondary-title-size font-semibold text-primary-600">
+              {props.selectedUnit?.unitName || "Unit Name"}
+            </h2>
+
+            {/* show buttons edit and delete lesson wrap it with div */}
+            <div className="flex gap-3">
+              <button
+                className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit">
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.unitNumber}/edit`}>
+                  {/* <Link href={`/course/${props.courseId}/lesson/`}> */}
+                  Edit Unit
+                </Link>
+              </button>
+              <button
+                className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit">
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.unitNumber}/delete`}>
+                  Delete Unit
+                </Link>
+              </button>
+            </div>
+
+            {/* make a list with the unit lesson name and number */}
+            <ul className="flex flex-col gap-2 my-3">
+              {props.selectedUnit?.lessons.map((lesson, i) => (
+                <li key={i} className="flex flex-col gap-3">
+                  <h3 className="text-tertiary-title-size font-semibold text-slate-800 hover:text-slate-600">
+                    <Link href={`/course/${props.courseId}/lesson/${lesson.lessonNumber}`}>
+                      Lesson {lesson.lessonNumber} - {lesson.lessonName}
+                    </Link>
+                  </h3>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
       }
     </main>
   );

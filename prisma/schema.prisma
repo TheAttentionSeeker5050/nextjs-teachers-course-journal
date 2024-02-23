@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  email        String      @unique
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
   password     String
   firstName    String?
   lastName     String?
   title        String?
   organization String?
-  dateCreated  DateTime?   @default(now())
-  dateUpdated  DateTime?   @default(now()) @updatedAt
+  dateCreated  DateTime?    @default(now())
+  dateUpdated  DateTime?    @default(now()) @updatedAt
   courses      Course[]
-  thumbnails   Thumbnail[]
   files        FileUpload[]
   notes        Note[]
+  thumbnails   Thumbnail[]
 
   @@map("users")
 }
@@ -53,24 +53,22 @@ model Unit {
 }
 
 model Lesson {
-  id               Int       @id @default(autoincrement())
+  id               Int          @id @default(autoincrement())
   lessonName       String
   lessonNumber     Int
-  completionStatus String    @default("not prepped")
+  completionStatus String       @default("not prepped")
   epectedOutcomes  String?
   assessment       String?
-  dateCreated      DateTime? @default(now())
-  dateUpdated      DateTime? @default(now()) @updatedAt
+  dateCreated      DateTime?    @default(now())
+  dateUpdated      DateTime?    @default(now()) @updatedAt
   unitId           Int
-  unit             Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
   files            FileUpload[]
+  unit             Unit         @relation(fields: [unitId], references: [id], onDelete: Cascade)
   notes            Note[]
 
   @@map("lessons")
 }
 
-// a model for thumbnails and users
-// we have this just for the purpose of validating if a user owns the thumbnail
 model Thumbnail {
   id        Int    @id @default(autoincrement())
   thumbnail String @db.VarChar(250)
@@ -80,27 +78,25 @@ model Thumbnail {
   @@map("thumbnails")
 }
 
-// add a relation to file and user
 model FileUpload {
-  id        Int    @id @default(autoincrement())
-  fileDisplayName      String @db.VarChar(250)
-  fileUniqueName String @db.VarChar(250) 
-  userId    Int
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lessonId  Int
-  lesson    Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  id              Int    @id @default(autoincrement())
+  fileDisplayName String @db.VarChar(250)
+  fileUniqueName  String @db.VarChar(250)
+  userId          Int
+  lessonId        Int
+  lesson          Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("fileuploads")
 }
 
-// notes model in string, relation to user and lesson
 model Note {
-  id        Int    @id @default(autoincrement())
-  note      String
-  userId    Int
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lessonId  Int
-  lesson    Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  id       Int    @id @default(autoincrement())
+  note     String
+  userId   Int
+  lessonId Int
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notes")
 }
