@@ -3,11 +3,14 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Navbar from "@/components/Navbar";
+import DisplayErrorCard from "@/components/DisplayErrorCard";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById,getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -42,8 +45,6 @@ export const getServerSideProps = async (context) => {
 
   // get the course slug
   const { courseId } = context.query;
-  // console.log("courseId", courseId);
-  // console.log("user", user);
 
   try {
 
@@ -61,6 +62,7 @@ export const getServerSideProps = async (context) => {
       }
     }
     
+
     // verify if the current user owns the course using column userId on course table
     if (courseFromDb.userId !== user.userId) {
       return {
@@ -72,18 +74,21 @@ export const getServerSideProps = async (context) => {
     }
 
     // we will get the first value only, so we are going to use the first index
-    const selectedLesson = courseFromDb.units[0].lessons[0] || null;
+    const selectedLesson = courseFromDb.units[0]?.lessons[0] || null;
+    if (!selectedLesson) {
+      throw new Error("No lessons found in this course");
+    }
 
     // serialize the lesson dates
-    selectedLesson.dateCreated = selectedLesson.dateCreated?.toString() || null;
     selectedLesson.dateUpdated = selectedLesson.dateUpdated?.toString() || null;
+    selectedLesson.dateCreated = selectedLesson.dateCreated?.toString() || null;
 
     return { 
       props: {
         course: courseFromDb.id,
         error: null,
         selectedLesson: selectedLesson,
-        courseId: courseId
+        courseId: parseInt(courseId)
       } 
     }
     
@@ -93,7 +98,7 @@ export const getServerSideProps = async (context) => {
         course: null,
         error: error.message,
         selectedLesson: null,
-        courseId: null
+        courseId: parseInt(courseId)
 
       }
     }
@@ -108,8 +113,35 @@ export default function SingleCourse(
 
   // wait until the component is mounted to redirect
   useEffect(() => {
-    router.push(`/course/${props.courseId}/lesson/${props.selectedLesson.id}`);
+    if (!props.selectedLesson) {
+      return;
+    }
+    router.push(`/course/${props.courseId}/lesson/${props.selectedLesson?.id}`);
   } ,[]);
   
-  return (<></>)
+  return (
+    <main
+      className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
+    >
+      {/* 
+        because we would not be in this page otherwise, have the isLoggedIn 
+        property set as true in this page, if no value is passed, it will default to undefined
+        which will keep the login and register buttons as if it was set to false 
+      */}
+      <Navbar isLoggedIn={true} />
+
+      <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
+        {"Course - " + props.course?.courseName || props.error || "Course Page"}
+      </h1>
+
+      {/* if props.error, have a button go back to page "/" */}
+          <p className="text-center text-md mx-auto">
+            {props.error ? props.error : "An error occurred, please try again later"}
+          </p>
+          {/* add a button to add a new unit */}
+          <Link href={`/course/${props.courseId}/unit/new`} className="bg-primary-600 text-white px-3 mx-auto py-2 rounded-md">
+            Add a new unit
+          </Link>
+    </main>
+  );
 }
