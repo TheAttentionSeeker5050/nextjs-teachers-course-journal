@@ -1,22 +1,20 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import DisplayErrorCard from "@/components/DisplayErrorCard";
 
 
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 // here we will also get cookies
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (ctx) => {
 
   // the the x-user-payload from the headers
-  const userPayloadStr = context.req.headers['x-user-payload'];
+  const userPayloadStr = ctx.req.headers['x-user-payload'];
   
   if (!userPayloadStr) {
     console.log("no user payload");
@@ -44,7 +42,7 @@ export const getServerSideProps = async (context) => {
   }
 
   // get the course slug
-  const { courseId } = context.query;
+  const { courseId } = ctx.query;
 
   try {
 
