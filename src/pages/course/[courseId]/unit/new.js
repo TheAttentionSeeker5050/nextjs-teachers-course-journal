@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import DisplayErrorCard from "@/components/DisplayErrorCard";
 import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
+import { useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,6 +39,7 @@ export default function NewUnit(
     props
 ) {
     const router = useRouter();
+    const [error, setError] = useState(null);
 
     // on submit form, we will send a POST request to the server
     const handleSubmit = async (e) => {
@@ -51,40 +53,55 @@ export default function NewUnit(
             courseId: formData.get("courseId")
         }
 
-        // validate the unit name is sanitized string
-        if (!isSanitizedStringZod(formObject.unitName) || formObject.unitName.length > 50 || !isNotEmpty(formObject.unitName) || !isNotUndefined(formObject.unitName)) {
-            alert("Unit name is not valid");
-            return;
+        try {
+            // validate the unit name is sanitized string
+            if (!isSanitizedStringZod(formObject.unitName) || formObject.unitName.length > 50 || !isNotEmpty(formObject.unitName) || !isNotUndefined(formObject.unitName)) {
+                throw new Error("Unit name is not valid");
+            }
+
+            if (!formObject.unitNumber) {
+                // alert("Unit name is required");
+                // return;
+                throw new Error("Unit number is required");
+            }
+
+            if ( parseInt(formObject.unitNumber) > props.defaultNewUnitNumber) {
+                // alert("Unit number is not valid, please make sure that is not greater than the last unit number + 1");
+                // return;
+                throw new Error("Unit number is not valid, please make sure that is not greater than the last unit number + 1");
+            }
+
+            // make the fetch request
+            const res = await fetch(`/api/course/${props.courseId}/unit/new`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formObject)
+            });
+
+            // if the response is ok, redirect to the course page
+            if (res.ok) {
+                alert("Unit created successfully");
+            } else {
+                // alert("There was an error creating the unit");
+                throw new Error("There was an error creating the unit");
+            }
+        } catch (e) {
+            // console.error(e);
+            // alert("There was an error creating the unit");
+            setError(e.message);
         }
-
-
-        if ( parseInt(formObject.unitNumber) > props.defaultNewUnitNumber) {
-            alert("Unit number is not valid, please make sure that is not greater than the last unit number + 1");
-            return;
-        }
-
-        if (!formObject.unitName) {
-            alert("Unit name is required");
-            return;
-        }
-
-        // make the fetch request
-        const res = await fetch(`/api/course/${props.courseId}/unit/new`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formObject)
-        });
-
-        // if the response is ok, redirect to the course page
-        if (res.ok) {
-            alert("Unit created successfully");
-        } else {
-            alert("There was an error creating the unit");
-        }
-
     }
+
+    // use effect on error message change
+    useEffect(() => {
+        // after 3 seconds, remove the error message
+        setTimeout(() => {
+            setError(null);
+        }, 8*1000);
+
+    }, [error]);
     return (
         <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
@@ -99,6 +116,12 @@ export default function NewUnit(
       <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
         New Unit
       </h1>
+
+      {error && 
+        <p className="text-red-600 text-center mx-auto">
+            {error}
+        </p>
+      }
 
       {/* 
         The form to submit create a new unit
@@ -150,6 +173,9 @@ export default function NewUnit(
                         {num}
                     </option>
                 ))}
+                <option value={props.defaultNewUnitNumber + 1}>
+                    {props.defaultNewUnitNumber + 1}
+                </option>
             </select>
 
             <input
