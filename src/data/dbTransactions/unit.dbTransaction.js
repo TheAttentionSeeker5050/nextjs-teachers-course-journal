@@ -6,7 +6,7 @@ const createUnit = async ({
     courseId
 }) => {
 
-    // get the lenght of the units for course
+    // get the length of the units for course
     const units = await getUnitsByCourseId(courseId);
     const unitLength = units.length;
 

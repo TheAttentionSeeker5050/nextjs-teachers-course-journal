@@ -17,7 +17,6 @@ export async function middleware(req) {
     try {
       // decode the access token
       const user = await decodeToken(accessToken['value']);
-      // console.log('user', user.payload);
 
       // verify if the expiration date is valid
       // in the future, this will direct to logout api route, which will clear the 
@@ -52,5 +51,5 @@ export async function middleware(req) {
  
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/profile', "/", "/api/images", "/course/:path*"],
+  matcher: ['/profile', "/", "/api/images", "/course/:path*", "/api/course/:path*"],
 }

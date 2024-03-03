@@ -23,7 +23,6 @@ export const getServerSideProps = async (ctx) =>  {
     // for the new unit number
     const course = await getCourseByIdWithChildren(parseInt(courseId));
     const defaultNewUnitNumber = course.units.length + 1;
-    // console.log(defaultNewUnitNumber);
 
     
     return {
@@ -49,8 +48,7 @@ export default function NewUnit(
         const formData = new FormData(e.target);
         const formObject = {
             unitName: formData.get("unitName"),
-            unitNumber: formData.get("unitNumber"),
-            courseId: formData.get("courseId")
+            unitNumber: formData.get("unitNumber")
         }
 
         try {
@@ -77,8 +75,9 @@ export default function NewUnit(
             });
 
             // if the response is ok, redirect to the course page
-            if (res.ok) {
-                alert("Unit created successfully");
+            if (res.ok) {                
+                // redirect to the course page index
+                router.push(`/course/${props.courseId}`);
             } else {
                 throw new Error("There was an error creating the unit");
             }
@@ -127,8 +126,6 @@ export default function NewUnit(
       */}
 
         <form
-            // action={`/api/course/${props.courseId}/unit/new`}
-            // method="POST"
             onSubmit={handleSubmit}
             className="flex flex-col gap-3 mx-auto"
         >
@@ -167,12 +164,6 @@ export default function NewUnit(
                     </option>
                 ))}
             </select>
-
-            <input
-                type="hidden"
-                name="courseId"
-                value={props.courseId}
-            />
 
             <button
                 type="submit"

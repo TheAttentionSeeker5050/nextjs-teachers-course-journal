@@ -17,7 +17,6 @@ export const getServerSideProps = async (ctx) => {
   const userPayloadStr = ctx.req.headers['x-user-payload'];
   
   if (!userPayloadStr) {
-    console.log("no user payload");
     return {
     redirect: {
       destination: '/unauthorized',
@@ -70,9 +69,16 @@ export const getServerSideProps = async (ctx) => {
         },
       }
     }
-
+    
     // we will get the first value only, so we are going to use the first index
-    const selectedLesson = courseFromDb.units[0]?.lessons[0] || null;
+    const selectedLesson = courseFromDb.units.reduce((acc, unit) => {
+      if (unit.lessons.length > 0) {
+        acc.push(unit.lessons[0]);
+      }
+      return acc;
+    }
+    , [])[0] || null;
+
     if (!selectedLesson) {
       throw new Error("No lessons found in this course");
     }

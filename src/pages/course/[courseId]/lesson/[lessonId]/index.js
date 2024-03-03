@@ -150,7 +150,7 @@ export default function SingleCourse(
       <Navbar isLoggedIn={true} />
       
       <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
-        {"Course - " + props.course?.courseName || props.error || "Course Page"}
+        {"Course - " + props.course?.courseName || props.error || "Lesson Page"}
       </h1>
 
       {/* if props.error, have a button go back to page "/" */}
