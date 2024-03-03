@@ -130,7 +130,6 @@ const deleteUnit = async (id) => {
 
 // same as we did with lessons, we will create a method that will update the unit number
 const updateUnitNumber = async (courseId, unitId, newUnitNumber) => {
-        
         // get all the units for the course
         const unitsArray = await getUnitsByCourseId(courseId);
     

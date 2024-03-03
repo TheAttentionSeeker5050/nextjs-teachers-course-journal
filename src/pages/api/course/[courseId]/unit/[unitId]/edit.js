@@ -1,6 +1,8 @@
 import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 import { updateUnit, updateUnitNumber } from "@/data/dbTransactions/unit.dbTransaction";
 
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         res.status(405).json({ error: "Method not allowed" });
@@ -26,23 +28,22 @@ export default async function handler(req, res) {
 
     // get the user payload and parse it
     const userPayloadStr = req.headers["x-user-payload"];
-    const user = JSON.parse(userPayloadStr);
+    // const user = JSON.parse(userPayloadStr);
 
     try {
         // search the course from the database
         const courseFromDB = await getCourseById(parseInt(courseId));
-        // if the course is not found, return redirect not found
-        if (courseFromDB === null) {
-            res.status(404).json({ error: "Not found" });
-            return
+
+        // validate course ownership
+        const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
+
+        // if the courseValidationResult is not null, return redirect
+        if (courseValidationResult === "/unauthorized") {
+            res.status(401).json({ error: "Unauthorized" });
+        } else if (courseValidationResult === "/500") {
+            res.status(500).json({ error: "Internal server error" });
         }
         
-        // if the course is not found, or the user is not authorized, return redirect unauthorized
-        if (!user || !user.userId || user.userId !== courseFromDB.userId) {
-            res.status(401).json({ error: "Unauthorized" });
-            return
-        }
-
         // if the unitId is not a number, return redirect not found
         if (isNaN(unitId) || !parseInt(unitId)) {
             res.status(404).json({ error: "Not found" });
@@ -63,7 +64,6 @@ export default async function handler(req, res) {
 
 
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: error.message });
         return
     }

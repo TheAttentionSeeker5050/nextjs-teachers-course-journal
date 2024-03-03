@@ -5,14 +5,15 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 
 // import component CourseDashCard and Navbar
-// import CourseDashCard from '@/components/CourseDashCard';
 import Navbar from '@/components/Navbar';
 import DisplayErrorCard from "@/components/DisplayErrorCard";
 import AsideCourseMenu from "@/components/AsideCourseMenu";
+
+
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -20,22 +21,16 @@ export const getServerSideProps = async (context) => {
   // the the x-user-payload from the headers
   const userPayloadStr = context.req.headers['x-user-payload'];
 
-  if (!userPayloadStr) {
-    return {
-      redirect: {
-        destination: '/unauthorized',
-        permanent: false,
-      },
+  try {
+    // transform the string into an object
+    const user = JSON.parse(userPayloadStr);
+
+    // if we can't find the user, we will redirect to the unauthorized page
+    // in the future, we will redirect to the login page
+    if (!userPayloadStr || !user || !user.userId || !user.email) {
+      throw new Error("User not found");
     }
-  }
-
-
-  // transform the string into an object
-  const user = JSON.parse(userPayloadStr);
-
-  // if we can't find the user, we will redirect to the unauthorized page
-  // in the future, we will redirect to the login page
-  if (!user || !user.userId || !user.email) {
+  } catch (error) {
     return {
       redirect: {
         destination: '/unauthorized',

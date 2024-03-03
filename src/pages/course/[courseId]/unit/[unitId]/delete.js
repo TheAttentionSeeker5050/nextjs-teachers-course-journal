@@ -10,7 +10,80 @@ import DisplayErrorCard from "@/components/DisplayErrorCard";
 import { getUnitById } from "@/data/dbTransactions/unit.dbTransaction";
 import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 
+// validation
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
+
+export async function getServerSideProps(ctx) {
+
+    // get the unit from the database using the unitId url parameter
+    const unitId = ctx.params.unitId;
+    const courseId = ctx.params.courseId;
+
+    // if the unitId is not a number, return redirect not found
+    if (isNaN(unitId) || !parseInt(unitId) || isNaN(courseId) || !parseInt(courseId)) {
+        return {
+            redirect: {
+                destination: "/404",
+                permanent: false
+            }
+        }
+    }
+
+    try {
+        // get the user payload from the headers x-user-payload
+        const userPayloadStr = ctx.req.headers["x-user-payload"];
+
+        // get the course from database
+        const courseFromDB = await getCourseById(parseInt(courseId));
+        
+        // validate course ownership
+        const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
+
+        // if the courseValidationResult is not null, return redirect
+        if (courseValidationResult) {
+            return {
+                redirect: {
+                    destination: courseValidationResult,
+                    permanent: false
+                }
+            }
+        }
+
+        // search the database for the unit with the unitId
+        const unitFromDB = await getUnitById(parseInt(unitId));
+
+        // if the unit is not found, return redirect not found
+        if (unitFromDB === null) {
+            return {
+                redirect: {
+                    destination: "/404",
+                    permanent: false
+                }
+            }
+        }
+
+        // parse string the dates from from the unit
+        unitFromDB.dateCreated = unitFromDB.dateCreated.toString();
+        unitFromDB.dateUpdated = unitFromDB.dateUpdated.toString();
+
+        return {
+            props: {
+                error: null,
+                unit: unitFromDB,
+                courseId: unitFromDB.courseId,
+            }
+        }
+    } catch (error) {
+        return {
+            props: {
+                error: error.message,
+                unit: null,
+                courseId: null,
+            }
+        }
+    }
+}
 
 export default function DeleteUnit(
     props
@@ -67,83 +140,4 @@ export default function DeleteUnit(
         </main>
         
     )
-}
-
-export async function getServerSideProps(ctx) {
-
-    // get the unit from the database using the unitId url parameter
-    const unitId = ctx.params.unitId;
-    const courseId = ctx.params.courseId;
-
-    // if the unitId is not a number, return redirect not found
-    if (isNaN(unitId) || !parseInt(unitId) || isNaN(courseId) || !parseInt(courseId)) {
-        return {
-            redirect: {
-                destination: "/404",
-                permanent: false
-            }
-        }
-    }
-
-    try {
-        
-
-        // get the user payload from the headers x-user-payload
-        const userPayloadStr = ctx.req.headers["x-user-payload"];
-        const user = JSON.parse(userPayloadStr);
-
-        // get the course from database
-        const courseFromDB = await getCourseById(parseInt(courseId));
-
-        if (!user || !user.userId || !user.email) {
-            return {
-                redirect: {
-                    destination: "/unauthorized",
-                    permanent: false
-                }
-            }
-        }
-
-        if (courseFromDB.userId !== user.userId) {
-            return {
-                redirect: {
-                    destination: "/unauthorized",
-                    permanent: false
-                }
-            }
-        }
-
-        // search the database for the unit with the unitId
-        const unitFromDB = await getUnitById(parseInt(unitId));
-
-        // if the unit is not found, return redirect not found
-        if (unitFromDB === null) {
-            return {
-                redirect: {
-                    destination: "/404",
-                    permanent: false
-                }
-            }
-        }
-
-        // parse string the dates from from the unit
-        unitFromDB.dateCreated = unitFromDB.dateCreated.toString();
-        unitFromDB.dateUpdated = unitFromDB.dateUpdated.toString();
-
-        return {
-            props: {
-                error: null,
-                unit: unitFromDB,
-                courseId: unitFromDB.courseId,
-            }
-        }
-    } catch (error) {
-        return {
-            props: {
-                error: error.message,
-                unit: null,
-                courseId: null,
-            }
-        }
-    }
 }

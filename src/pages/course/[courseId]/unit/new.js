@@ -3,10 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
 import { useState } from "react";
-import { redirect } from "next/dist/server/api-utils";
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,8 +14,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const getServerSideProps = async (ctx) =>  {
 
+    
+
     // get the course id from url param slug
     const { courseId } = ctx.query;
+
     if (!courseId) {
         return {
             redirect: {
@@ -28,38 +31,24 @@ export const getServerSideProps = async (ctx) =>  {
     try {
         // get the default new unit number
         const courseFromDB = await getCourseById(parseInt(courseId));
-        if (!courseFromDB) {
+
+        // get the user payload from the headers x-user-payload and parse it
+        const userPayloadStr = ctx.req.headers["x-user-payload"];
+
+        // validate course ownership
+        const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
+
+        // if the courseValidationResult is not null, return redirect
+        if (courseValidationResult) {
             return {
                 redirect: {
-                    destination: "/500",
+                    destination: courseValidationResult,
                     permanent: false
                 }
             }
         }
 
         const defaultNewUnitNumber = courseFromDB._count.units + 1;
-
-        // get the user payload from the headers x-user-payload and parse it
-        const userPayloadStr = ctx.req.headers["x-user-payload"];
-        const user = JSON.parse(userPayloadStr);
-        if (!user || !user.userId) {
-            return {
-                redirect: {
-                    destination: "/unauthorized",
-                    permanent: false
-                }
-            }
-        }
-
-        // if the user.userId is not the same as the unitFromDB.userId, return redirect not found
-        if (user.userId !== courseFromDB.userId || !courseFromDB.userId || !user.userId) {
-            return {
-                redirect: {
-                    destination: "/unauthorized",
-                    permanent: false
-                }
-            }
-        }
         
         return {
             props: {
@@ -70,7 +59,6 @@ export const getServerSideProps = async (ctx) =>  {
         }
 
     } catch (e) {
-        console.error(e);
         return {
             props: {
                 error: e.message,

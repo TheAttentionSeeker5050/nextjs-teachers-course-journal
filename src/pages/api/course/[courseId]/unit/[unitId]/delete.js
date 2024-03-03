@@ -1,5 +1,6 @@
 import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 import { deleteUnit } from "@/data/dbTransactions/unit.dbTransaction";
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
 export default async function handler(req, res) {
     // get the unit number from url params
@@ -13,16 +14,19 @@ export default async function handler(req, res) {
 
     // get the user payload from the headers x-user-payload
     const userPayloadStr = req.headers["x-user-payload"];
-    const user = JSON.parse(userPayloadStr);
 
     try {
         // search the course from the database
         const courseFromDB = await getCourseById(parseInt(courseId));
-        
-        // if the course is not found, or the user is not authorized, return redirect unauthorized
-        if (!user || !user.userId || user.userId !== courseFromDB.userId) {
+
+        // validate course ownership
+        const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
+
+        // if the courseValidationResult is not null, return redirect
+        if (courseValidationResult === "/unauthorized") {
             res.status(401).redirect("/unauthorized");
-            return
+        } else if (courseValidationResult === "/500") {
+            res.status(500).redirect("/500");
         }
 
         // attempt to delete the unit from the database
