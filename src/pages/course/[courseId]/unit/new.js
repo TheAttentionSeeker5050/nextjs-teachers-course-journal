@@ -60,14 +60,10 @@ export default function NewUnit(
             }
 
             if (!formObject.unitNumber) {
-                // alert("Unit name is required");
-                // return;
                 throw new Error("Unit number is required");
             }
 
             if ( parseInt(formObject.unitNumber) > props.defaultNewUnitNumber) {
-                // alert("Unit number is not valid, please make sure that is not greater than the last unit number + 1");
-                // return;
                 throw new Error("Unit number is not valid, please make sure that is not greater than the last unit number + 1");
             }
 
@@ -84,12 +80,9 @@ export default function NewUnit(
             if (res.ok) {
                 alert("Unit created successfully");
             } else {
-                // alert("There was an error creating the unit");
                 throw new Error("There was an error creating the unit");
             }
         } catch (e) {
-            // console.error(e);
-            // alert("There was an error creating the unit");
             setError(e.message);
         }
     }
