@@ -166,9 +166,6 @@ export default function NewUnit(
                         {num}
                     </option>
                 ))}
-                <option value={props.defaultNewUnitNumber + 1}>
-                    {props.defaultNewUnitNumber + 1}
-                </option>
             </select>
 
             <input
