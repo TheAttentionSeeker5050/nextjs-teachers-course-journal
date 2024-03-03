@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import DisplayErrorCard from "@/components/DisplayErrorCard";
 import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
-import { isNotEmpty, isNotUndefined, isSanitizedString } from "@/utils/validation/validationAll";
+import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,10 +52,11 @@ export default function NewUnit(
         }
 
         // validate the unit name is sanitized string
-        if (!isSanitizedString(formObject.unitName) || formObject.unitName.length > 50 || !isNotEmpty(formObject.unitName) || !isNotUndefined(formObject.unitName)) {
+        if (!isSanitizedStringZod(formObject.unitName) || formObject.unitName.length > 50 || !isNotEmpty(formObject.unitName) || !isNotUndefined(formObject.unitName)) {
             alert("Unit name is not valid");
             return;
         }
+
 
         if ( parseInt(formObject.unitNumber) > props.defaultNewUnitNumber) {
             alert("Unit number is not valid, please make sure that is not greater than the last unit number + 1");

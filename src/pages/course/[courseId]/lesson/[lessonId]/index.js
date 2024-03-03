@@ -160,15 +160,7 @@ export default function SingleCourse(
       <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
 
         {/* if props.course, show a layered list of the units and lessons */}
-        <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 tablet:max-w-72">
-          <h2 className="text-secondary-title-size font-semibold text-primary-600">
-            Units and Lessons
-          </h2>
-          {props.course?.units.map((unit, i) => (
-            <AsideCourseMenu key={i} courseId={props.courseId} unit={unit} selectedLesson={props.selectedLesson.lessonNumber} selectedUnit={null} />
-            
-          ))}
-        </aside>
+        <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={props.selectedLesson.lessonNumber} />
 
         {/* a section that shows the content of the lesson */}
         <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
