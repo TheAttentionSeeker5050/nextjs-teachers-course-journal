@@ -1,13 +1,12 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import DisplayErrorCard from "@/components/DisplayErrorCard";
-import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
 import { useState } from "react";
+import { redirect } from "next/dist/server/api-utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,19 +16,67 @@ export const getServerSideProps = async (ctx) =>  {
 
     // get the course id from url param slug
     const { courseId } = ctx.query;
+    if (!courseId) {
+        return {
+            redirect: {
+                destination: "/404",
+                permanent: false
+            }
+        }
+    }
 
-    // find all the course units to find the size of the array
-    // this way we will define the last unit number add one up and set it as the default value
-    // for the new unit number
-    const course = await getCourseByIdWithChildren(parseInt(courseId));
-    const defaultNewUnitNumber = course.units.length + 1;
+    try {
+        // get the default new unit number
+        const courseFromDB = await getCourseById(parseInt(courseId));
+        if (!courseFromDB) {
+            return {
+                redirect: {
+                    destination: "/500",
+                    permanent: false
+                }
+            }
+        }
 
-    
-    return {
-        props: {
-            error: null,
-            courseId: parseInt(courseId),
-            defaultNewUnitNumber: defaultNewUnitNumber
+        const defaultNewUnitNumber = courseFromDB._count.units + 1;
+
+        // get the user payload from the headers x-user-payload and parse it
+        const userPayloadStr = ctx.req.headers["x-user-payload"];
+        const user = JSON.parse(userPayloadStr);
+        if (!user || !user.userId) {
+            return {
+                redirect: {
+                    destination: "/unauthorized",
+                    permanent: false
+                }
+            }
+        }
+
+        // if the user.userId is not the same as the unitFromDB.userId, return redirect not found
+        if (user.userId !== courseFromDB.userId || !courseFromDB.userId || !user.userId) {
+            return {
+                redirect: {
+                    destination: "/unauthorized",
+                    permanent: false
+                }
+            }
+        }
+        
+        return {
+            props: {
+                error: null,
+                courseId: parseInt(courseId),
+                defaultNewUnitNumber: defaultNewUnitNumber
+            }
+        }
+
+    } catch (e) {
+        console.error(e);
+        return {
+            props: {
+                error: e.message,
+                courseId: parseInt(courseId),
+                defaultNewUnitNumber: null
+            }
         }
     }
 }
@@ -38,7 +85,9 @@ export default function NewUnit(
     props
 ) {
     const router = useRouter();
-    const [error, setError] = useState(null);
+
+    const [error, setError] = useState(props.error);
+    const [message, setMessage] = useState(null);
 
     // on submit form, we will send a POST request to the server
     const handleSubmit = async (e) => {
@@ -77,7 +126,11 @@ export default function NewUnit(
             // if the response is ok, redirect to the course page
             if (res.ok) {                
                 // redirect to the course page index
-                router.push(`/course/${props.courseId}`);
+                setMessage("Unit was created successfully");
+                setTimeout(() => {
+                    setMessage(null);
+                    router.push(`/course/${props.courseId}`);
+                } , 4*1000);
             } else {
                 throw new Error("There was an error creating the unit");
             }
@@ -88,32 +141,39 @@ export default function NewUnit(
 
     // use effect on error message change
     useEffect(() => {
-        // after 3 seconds, remove the error message
+        // after 8 seconds, remove the error message
         setTimeout(() => {
             setError(null);
         }, 8*1000);
 
     }, [error]);
+
     return (
         <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
-      {/* 
-        because we would not be in this page otherwise, have the isLoggedIn 
-        property set as true in this page, if no value is passed, it will default to undefined
-        which will keep the login and register buttons as if it was set to false 
-      */}
-      <Navbar isLoggedIn={true} />
+        {/* 
+            because we would not be in this page otherwise, have the isLoggedIn 
+            property set as true in this page, if no value is passed, it will default to undefined
+            which will keep the login and register buttons as if it was set to false 
+        */}
+        <Navbar isLoggedIn={true} />
 
-      <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
-        New Unit
-      </h1>
+        <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
+            New Unit
+        </h1>
 
-      {error && 
-        <p className="text-red-600 text-center mx-auto">
-            {error}
-        </p>
-      }
+        {error && 
+            <p className="text-red-600 text-center mx-auto">
+                {error}
+            </p>
+        }
+
+        {message &&
+            <p className="text-green-600 text-center mx-auto">
+                {message}
+            </p>
+        }
 
       {/* 
         The form to submit create a new unit
@@ -122,7 +182,6 @@ export default function NewUnit(
         arguments:
         unitName: string
         unitNumber: number
-        courseId: number hidden input
       */}
 
         <form
@@ -153,7 +212,7 @@ export default function NewUnit(
                 name="unitNumber"
                 id="unitNumber"
                 className="p-2 border-2 bg-slate-100 border-primary-600 rounded-md"
-                // value={props.defaultNewUnitNumber}
+                defaultValue={props.defaultNewUnitNumber}
             >
                 {Array.from({length: props.defaultNewUnitNumber}, (_, i) => i + 1).map((num, i) => (
                     <option
@@ -165,12 +224,18 @@ export default function NewUnit(
                 ))}
             </select>
 
-            <button
-                type="submit"
-                className="p-2 bg-primary-600 text-white rounded-lg w-1/2 mx-auto"
-            >
-                Create Unit
-            </button>
+            <div className="flex gap-3 justify-stretch text-white  my-4 text-center">
+                <button
+                    type="submit"
+                    className="p-2 bg-primary-600 rounded-lg flex-grow"
+                >
+                    Create Unit
+                </button>
+
+                <Link href={`/course/${props.courseId}`} className="p-2 bg-slate-600 rounded-lg flex-grow">
+                    Cancel
+                </Link>
+            </div>
         </form>
       </main>
     );

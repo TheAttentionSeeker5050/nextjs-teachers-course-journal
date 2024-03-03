@@ -4,16 +4,22 @@ import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/valida
 
 export default async function handler(req, res)  {
 
+    if (req.method !== "POST") {
+        res.status(405).json({ error: "Method not allowed" });
+        return;
+    }
+
     // get the form data from fields
     const formData = req.body;
     // get the course id from url param slug
     const { courseId } = req.query;
 
-    try {
-        // get the user id from the user payload
-        const userPayloadStr = req.headers['x-user-payload'];
-        const user = await JSON.parse(userPayloadStr);
+    // get the user id from the user payload
+    const userPayloadStr = req.headers['x-user-payload'];
+    const user = await JSON.parse(userPayloadStr);
 
+    try {
+        
         // get the user id from the user payload
         if (!user || !user.userId) {
             throw new Error("Unauthorized");
@@ -21,7 +27,7 @@ export default async function handler(req, res)  {
 
         // search the course by id and verify that the user owns the course
         // if not, return a unauthorized response
-        let courseFromDb = await getCourseById(parseInt(courseId));
+        const courseFromDb = await getCourseById(parseInt(courseId));
         // if the course does not exist, return a a not found response
         if (!courseFromDb) {
             res.status(404).json({ error: "Not found" });
@@ -62,11 +68,8 @@ export default async function handler(req, res)  {
             // use the updateUnitNumber method to update the unit numbers
             await updateUnitNumber(parseInt(courseId), newUnit.id, parseInt(formData.unitNumber));
         }
-
-
     
     } catch (error) {
-        console.error("Error creating unit", error);
         res.status(401).json({ error: error.message });
         return;
     }

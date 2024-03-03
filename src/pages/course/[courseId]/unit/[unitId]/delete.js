@@ -15,7 +15,7 @@ import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 export default function DeleteUnit(
     props
 ) {
-    
+
     return (
         <main className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`} >
             {/* 
@@ -33,31 +33,33 @@ export default function DeleteUnit(
             {(props.error !== null && props.error !== undefined) ?
                 <DisplayErrorCard error={props.error} />
             :
+                
                 <form
                     method="POST"
                     action={`/api/course/${props.courseId}/unit/${props.unit.id}/delete`}
                     className="flex flex-col gap-3 mx-auto"
                 >
+                    {/* 
+                        The form to delete a unit
+                        method: POST
+                        endpoint: /api/course/[courseId]/unit/[unitId]/delete
+                        arguments: none
+                    */}
                     <p className="text-center mx-auto">
                         Are you sure you want to delete <span className="font-semibold text-red-500">
                             {props.unit.unitName}
                         </span> ?
                     </p>
 
-                    <div className="flex gap-3 justify-center my-4">
+                    <div className="flex gap-3 justify-stretch text-white my-4 text-center">
                         <button
                             type="submit"
-                            className="bg-red-600 text-white p-2 rounded-md"
+                            className="p-2 bg-primary-600 rounded-lg flex-grow"
                         >
                             Delete
                         </button>
-                        <Link href={`/course/${props.courseId}`}>
-                            <button
-                                type="button"
-                                className="bg-slate-600 text-white p-2 rounded-md"
-                            >
-                                Cancel
-                            </button>
+                        <Link href={`/course/${props.courseId}`} className="p-2 bg-slate-600 rounded-lg flex-grow">
+                            Cancel
                         </Link>
                     </div>
                 </form>
@@ -74,7 +76,7 @@ export async function getServerSideProps(ctx) {
     const courseId = ctx.params.courseId;
 
     // if the unitId is not a number, return redirect not found
-    if (isNaN(unitId) || !parseInt(unitId)) {
+    if (isNaN(unitId) || !parseInt(unitId) || isNaN(courseId) || !parseInt(courseId)) {
         return {
             redirect: {
                 destination: "/404",
@@ -82,26 +84,16 @@ export async function getServerSideProps(ctx) {
             }
         }
     }
-        try {
-        // search the database for the unit with the unitId
-        const unitFromDB = await getUnitById(parseInt(unitId));
 
-        // if the unit is not found, return redirect not found
-        if (unitFromDB === null) {
-            return {
-                redirect: {
-                    destination: "/404",
-                    permanent: false
-                }
-            }
-        }
+    try {
+        
 
         // get the user payload from the headers x-user-payload
         const userPayloadStr = ctx.req.headers["x-user-payload"];
         const user = JSON.parse(userPayloadStr);
 
         // get the course from database
-        const courseFromDB = await getCourseById(unitFromDB.courseId);
+        const courseFromDB = await getCourseById(parseInt(courseId));
 
         if (!user || !user.userId || !user.email) {
             return {
@@ -116,6 +108,19 @@ export async function getServerSideProps(ctx) {
             return {
                 redirect: {
                     destination: "/unauthorized",
+                    permanent: false
+                }
+            }
+        }
+
+        // search the database for the unit with the unitId
+        const unitFromDB = await getUnitById(parseInt(unitId));
+
+        // if the unit is not found, return redirect not found
+        if (unitFromDB === null) {
+            return {
+                redirect: {
+                    destination: "/404",
                     permanent: false
                 }
             }
