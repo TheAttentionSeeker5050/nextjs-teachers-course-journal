@@ -5,14 +5,15 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 
 // import component CourseDashCard and Navbar
-// import CourseDashCard from '@/components/CourseDashCard';
 import Navbar from '@/components/Navbar';
 import DisplayErrorCard from "@/components/DisplayErrorCard";
 import AsideCourseMenu from "@/components/AsideCourseMenu";
+
+
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -20,22 +21,16 @@ export const getServerSideProps = async (context) => {
   // the the x-user-payload from the headers
   const userPayloadStr = context.req.headers['x-user-payload'];
 
-  if (!userPayloadStr) {
-    return {
-      redirect: {
-        destination: '/unauthorized',
-        permanent: false,
-      },
+  try {
+    // transform the string into an object
+    const user = JSON.parse(userPayloadStr);
+
+    // if we can't find the user, we will redirect to the unauthorized page
+    // in the future, we will redirect to the login page
+    if (!userPayloadStr || !user || !user.userId || !user.email) {
+      throw new Error("User not found");
     }
-  }
-
-
-  // transform the string into an object
-  const user = JSON.parse(userPayloadStr);
-
-  // if we can't find the user, we will redirect to the unauthorized page
-  // in the future, we will redirect to the login page
-  if (!user || !user.userId || !user.email) {
+  } catch (error) {
     return {
       redirect: {
         destination: '/unauthorized',
@@ -130,16 +125,8 @@ export default function SingleCourse(
         <DisplayErrorCard error={props.error} />
         :
         <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
-
-          {/* if props.course, show a layered list of the units and lessons */}
-          <aside className="flex flex-col gap-3 px-4 py-3 rounded-md border-primary-500 border-2 tablet:max-w-72">
-            <h2 className="text-secondary-title-size font-semibold text-primary-600">
-              Units and Lessons
-            </h2>
-            {props.course?.units.map((unit, i) => (
-              <AsideCourseMenu courseId={props.courseId} key={i} unit={unit} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={null} />
-            ))}
-          </aside>
+          {/* a section that shows the course details */}
+          <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={null} />
 
           {/* a section that shows the content of the lesson */}
           <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
@@ -149,16 +136,21 @@ export default function SingleCourse(
 
             {/* show buttons edit and delete lesson wrap it with div */}
             <div className="flex gap-3">
+              <button className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit">
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/lesson/new`}>
+                  Add a new lesson
+                </Link>
+              </button>
               <button
                 className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit">
-                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.unitNumber}/edit`}>
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/edit`}>
                   {/* <Link href={`/course/${props.courseId}/lesson/`}> */}
                   Edit Unit
                 </Link>
               </button>
               <button
                 className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit">
-                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.unitNumber}/delete`}>
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/delete`}>
                   Delete Unit
                 </Link>
               </button>

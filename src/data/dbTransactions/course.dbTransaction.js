@@ -46,19 +46,32 @@ const getCoursesByUserId = async (userId) => {
 // get course by id
 const getCourseById = async (id) => {
 
-    // get the course by id
-    const course = await prisma.course.findUnique({
-        where: {
-            id: id
+    try {
+        // get the course by id
+        const course = await prisma.course.findUnique({
+            where: {
+                id: id
+            },
+            // get course with also the number of children units in a field called unitsCount
+            include: {
+                _count: {
+                    select: {
+                        units: true
+                    }
+                }
+            }
+        });
+
+        // if the course is not retrieved, we will throw an error
+        if (!course) {
+            throw new Error("There was a problem retrieving the course data, please try again later");
         }
-    });
 
-    // if the course is not retrieved, we will throw an error
-    if (!course) {
-        throw new Error("There was a problem retrieving the course, please try again later");
+        return course;
+
+    } catch (error) {
+        throw new Error("There was a problem retrieving the course data, please try again later");
     }
-
-    return course;
 }
 
 // get course by id, and all its children units, and all the children lessons of all the units
