@@ -77,7 +77,7 @@ const AsideCourseMenu = (props) => {
                             </div>
                         ))}
                         </div>
-                        
+                        <div className='border-b-2 border-primary-500 my-3'></div>
                     </div>
                 ))}
             </div>
