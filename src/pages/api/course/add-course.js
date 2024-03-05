@@ -4,6 +4,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         const { courseName } = req.body;
         try {
+            console.log("Yes");
             const newCourse = await createCourse({ courseName });
             res.status(201).json(newCourse);
         } catch (error) {
