@@ -120,6 +120,26 @@ const deleteUnit = async (id) => {
         }
     });
 
+    // now get all the units for the course, this is already ordered by unit number
+    const unitsArray = await getUnitsByCourseId(unit.courseId);
+
+    // now update the unit numbers in the database
+    for (let i = 0; i < unitsArray.length; i++) {
+        const updatedUnits = await prisma.unit.update({
+            where: {
+                id: unitsArray[i].id
+            },
+            data: {
+                unitNumber: i + 1
+            }
+        });
+
+        // if the unit is not updated, we will throw an error
+        if (!updatedUnits) {
+            throw new Error("There was a problem updating the unit number, please try again later");
+        }
+    }
+
     // if the unit is not deleted, we will throw an error
     if (!deletedUnit) {
         throw new Error("There was a problem deleting the unit, please try again later");
@@ -201,6 +221,7 @@ const updateUnitNumber = async (courseId, unitId, newUnitNumber) => {
         // return the units array
         return unitsArray;
     }
+
 
 // export all the functions
 export {
