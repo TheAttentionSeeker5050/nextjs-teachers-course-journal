@@ -16,7 +16,7 @@ export default async function handler(req, res) {
             const newCourse = await createCourse({ courseName: courseName, userId: userId });
             res.status(201).json(newCourse);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             res.status(500).json({ error: 'Failed to create course' });
         }
     } else {
