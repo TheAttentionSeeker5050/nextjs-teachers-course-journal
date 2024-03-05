@@ -120,6 +120,10 @@ export default function NewUnit(
                     router.push(`/course/${props.courseId}`);
                 } , 4*1000);
             } else {
+                // if the response status code is 401 unauthorized, go redirect to the 401
+                if (res.status === 401) {
+                    router.push("/unauthorized")
+                } 
                 throw new Error("There was an error creating the unit");
             }
         } catch (e) {
