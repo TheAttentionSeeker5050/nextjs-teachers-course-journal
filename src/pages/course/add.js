@@ -11,10 +11,13 @@ export default function AddCourse() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/course/add-course', {
+            // Retrieve user payload 
+            // const userPayloadStr = JSON.stringify(userPayload);
+
+            const response = await fetch('/api/course/new', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ courseName }),
             });
@@ -29,6 +32,7 @@ export default function AddCourse() {
             console.error('Error adding course:', error);
         }
     };
+
 
     return (
         <div>
