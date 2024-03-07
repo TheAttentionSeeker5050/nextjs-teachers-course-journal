@@ -11,9 +11,9 @@ export default function Custom500() {
 
     return (
       <main
-        className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
+        className={`${inter.className} flex flex-col items-baseline justify-center min-h-screen gap-5`}
       >
-        <Navbar isLoggedIn={false} />
+        {/* <Navbar isLoggedIn={false} /> */}
 
         <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
           Something went wrong
