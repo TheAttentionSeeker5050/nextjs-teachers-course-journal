@@ -9,6 +9,8 @@ import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
 // import component CourseDashCard and Navbar
 import CourseDashCard from '@/components/CourseDashCard';
 import Navbar from '@/components/Navbar';
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -60,10 +62,21 @@ export default function Home(props) {
   // for the moment we have a dummy image, which we get from the following url
   const imageUrl = "/api/images?imageName=course-image.png"
 
+  // the isLoading state variable
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, 
+  []);
+
   return (
     <main
       className={`${inter.className} flex flex-col items-center min-h-screen gap-5 w-full overflow-hidden`}
     >
+      {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
         property set as true in this page, if no value is passed, it will default to undefined

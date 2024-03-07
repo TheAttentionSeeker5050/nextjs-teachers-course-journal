@@ -14,6 +14,10 @@ import FileListElement from "@/components/FileListElement";
 import AsideCourseMenu from "@/components/AsideCourseMenu";
 import DisplayErrorCard from "@/components/DisplayErrorCard";
 
+
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
+
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
 
@@ -138,10 +142,24 @@ export const getServerSideProps = async (context) => {
 export default function SingleCourse(
     props
 ) {
+
+
+  // the isLoading state variable
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, 
+  []);
   return (
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
+
+      {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
+
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
         property set as true in this page, if no value is passed, it will default to undefined

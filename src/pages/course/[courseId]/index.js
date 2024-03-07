@@ -1,8 +1,11 @@
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
+
+
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -123,10 +126,22 @@ export default function SingleCourse(
     router.push(`/course/${props.courseId}/lesson/${props.selectedLesson?.id}`);
   } ,[]);
   
+  // the isLoading state variable
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, 
+  []);
+  
   return (
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
+
+      {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
         property set as true in this page, if no value is passed, it will default to undefined

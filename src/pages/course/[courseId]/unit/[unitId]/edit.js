@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,6 +16,10 @@ import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 // import the validation functions
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
 import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+
+
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 
 export async function getServerSideProps(ctx) {
@@ -154,8 +157,19 @@ export default function EditUnit(
 
     }, [error]);
 
+    // the isLoading state variable
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, []);
+
     return (
         <main className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`} >
+
+            {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
             {/* 
                 because we would not be in this page otherwise, have the isLoggedIn 
                 property set as true in this page, if no value is passed, it will default to undefined
