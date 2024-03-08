@@ -86,6 +86,9 @@ const getCourseByIdWithChildren = async (id) => {
             units: {
                 include: {
                     lessons: true
+                },
+                orderBy: {
+                    unitNumber: 'asc'
                 }
             }
         },

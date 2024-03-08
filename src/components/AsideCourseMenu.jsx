@@ -62,7 +62,7 @@ const AsideCourseMenu = (props) => {
                 {props.course?.units.sort((a, b) => a.unitNumber - b.unitNumber).map((unit, i) => (
                     <div key={i} className="flex flex-col gap-3">
                         <h3 className={`text-tertiary-title-size font-semibold text-ellipsis break-words`} >
-                            <Link href={`/course/${props.courseId}/unit/${unit.unitNumber}`} onClick={() => setIsMenuExpanded(false)} className={`${unit.unitNumber === props.selectedUnit ? "text-primary-600 hover:text-primary-300" : "text-slate-600 hover:text-slate-300"}`}>
+                            <Link href={`/course/${props.courseId}/unit/${unit.id}`} onClick={() => setIsMenuExpanded(false)} className={`${unit.unitNumber === props.selectedUnit ? "text-primary-600 hover:text-primary-300" : "text-slate-600 hover:text-slate-300"}`}>
                                 Unit {unit.unitNumber} - {unit.unitName}
                             </Link>
                         </h3>
@@ -70,7 +70,7 @@ const AsideCourseMenu = (props) => {
                         {unit.lessons.sort((a, b) => a.lessonNumber - b.lessonNumber).map((lesson, j) => (
                             <div key={j} className="flex flex-col gap-3">
                                 <h4 className={`normal-content-size font-semibold   text-ellipsis break-words`} >
-                                    <Link href={`/course/${props.courseId}/lesson/${lesson.lessonNumber}`} onClick={() => setIsMenuExpanded(false)} className={`${lesson.lessonNumber === props.selectedLesson ? "text-primary-600 hover:text-primary-300" : "text-slate-600 hover:text-slate-300"}`}>
+                                    <Link href={`/course/${props.courseId}/lesson/${lesson.id}`} onClick={() => setIsMenuExpanded(false)} className={`${lesson.lessonNumber === props.selectedLesson ? "text-primary-600 hover:text-primary-300" : "text-slate-600 hover:text-slate-300"}`}>
                                         Lesson {lesson.lessonNumber} - {lesson.lessonName}
                                     </Link>
                                 </h4>

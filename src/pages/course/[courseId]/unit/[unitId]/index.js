@@ -70,7 +70,7 @@ export const getServerSideProps = async (context) => {
     const { unitId } = context.query;
 
     // filter the unit from the course
-    let selectedUnit = courseFromDb.units.filter(unit => unit.unitNumber === parseInt(unitId));
+    let selectedUnit = courseFromDb.units.filter(unit => unit.id === parseInt(unitId));
 
     // if the unit does not exist, return a 404
     if (selectedUnit.length === 0) {

@@ -70,7 +70,6 @@ export default async function handler(req, res)  {
         }
     
     } catch (error) {
-        console.log(error.message)
         res.status(401).json({ error: error.message });
         return;
     }

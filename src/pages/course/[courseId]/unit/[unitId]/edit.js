@@ -137,7 +137,7 @@ export default function EditUnit(
                 setMessage("Unit was edited successfully");
                 setTimeout(() => {
                     setMessage(null);
-                    router.push(`/course/${props.courseId}`);
+                    router.push(`/course/${props.courseId}/unit/${props.unit.id}`);
                 } , 4*1000);
             } else {
                 throw new Error("There was an error editing the unit");

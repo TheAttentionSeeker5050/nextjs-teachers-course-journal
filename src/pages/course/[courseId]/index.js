@@ -83,7 +83,22 @@ export const getServerSideProps = async (ctx) => {
     , [])[0] || null;
 
     if (!selectedLesson) {
-      throw new Error("No lessons found in this course");
+
+      // if no lessons but there is at least one unit, return unit
+      if (courseFromDb.units.length > 0) {
+        
+        return { 
+          props: {
+            course: courseFromDb.id,
+            error: null,
+            selectedLesson: null,
+            selectedUnitId: courseFromDb.units[0].id,
+            courseId: parseInt(courseId)
+          } 
+        }
+      } else {
+        throw new Error("No lessons found in this course");
+      }
     }
 
     // serialize the lesson dates
@@ -120,9 +135,15 @@ export default function SingleCourse(
 
   // wait until the component is mounted to redirect
   useEffect(() => {
-    if (!props.selectedLesson) {
+    if (props.selectedUnitId) {
+      router.push(`/course/${props.courseId}/unit/${props.selectedUnitId}`);
       return;
     }
+
+    if (!props.selectedLesson) {
+      return;
+    } 
+    
     router.push(`/course/${props.courseId}/lesson/${props.selectedLesson?.id}`);
   } ,[]);
   

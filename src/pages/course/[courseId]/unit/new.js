@@ -34,8 +34,6 @@ export const getServerSideProps = async (ctx) =>  {
         // get the default new unit number
         const courseFromDB = await getCourseById(parseInt(courseId));
 
-        // console.log(courseFromDB);
-
         // get the user payload from the headers x-user-payload and parse it
         const userPayloadStr = ctx.req.headers["x-user-payload"];
 
@@ -53,8 +51,6 @@ export const getServerSideProps = async (ctx) =>  {
         }
 
         const defaultNewUnitNumber = courseFromDB._count.units + 1;
-
-        // console.log("default unit number:", defaultNewUnitNumber);
         
         return {
             props: {

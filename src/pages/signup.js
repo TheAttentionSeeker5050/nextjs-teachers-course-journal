@@ -34,16 +34,8 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        console.log(formData);
 
         try {
-            console.log('Firstname:', firstName);
-            console.log('Lastname:', lastName);
-            console.log('Title:', title);
-            console.log('Organization:', organization);
-            console.log('Email:', email);
-            console.log('Password:', password);
-            console.log('Confirm Password:', confirmPassword);
 
             // Check if passwords match
             if (password.trim() !== confirmPassword.trim()) {
@@ -76,7 +68,6 @@ export default function Signup() {
                 setError(data.message || "Signup failed");
             }
         } catch (error) {
-            console.error("Signup error:", error);
             setError("An error occurred during signup.");
         }
     };
