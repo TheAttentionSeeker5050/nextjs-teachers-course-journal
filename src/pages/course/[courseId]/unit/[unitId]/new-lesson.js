@@ -22,7 +22,10 @@ import CustomEditor from "@/components/editorComponent";
 
 // import the validation functions
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
-import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+
+
 
 
 export default function newPage(props) {
@@ -263,6 +266,32 @@ export async function getServerSideProps(ctx) {
 
     // get the unit id
     const unitId = ctx.query.unitId;
+
+    // verify the user is owner of the course
+    // using our validateCourseOwnership function
+    
+    try {
+        const course = await getCourseById(parseInt(courseId))
+        const userPayloadStr = JSON.parse(ctx.req.headers["x-user-payload"]);
+
+        const validationResult = validateCourseOwnership(course, userPayloadStr);
+        if (validationResult) {
+            return {
+                redirect: {
+                    destination: validationResult,
+                    permanent: false
+                }
+            }
+        }
+
+    } catch (error) {
+        return {
+            redirect: {
+                destination: "/404",
+                permanent: false
+            }
+        }
+    }
 
     try {
         // get the number of lessons to determine the last index
