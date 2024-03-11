@@ -5,7 +5,6 @@ export default async function handler(req, res) {
         const { courseName } = req.body;
         // Get userId from user payload
         const userId = req.headers['x-user-payload'] ? JSON.parse(req.headers['x-user-payload']).userId : null;
-        console.log(typeof userId);
 
         // Check if userId is available
         if (!userId) {
@@ -16,7 +15,6 @@ export default async function handler(req, res) {
             const newCourse = await createCourse({ courseName: courseName, userId: userId });
             res.status(201).json(newCourse);
         } catch (error) {
-            console.log(error);
             res.status(500).json({ error: 'Failed to create course' });
         }
     } else {

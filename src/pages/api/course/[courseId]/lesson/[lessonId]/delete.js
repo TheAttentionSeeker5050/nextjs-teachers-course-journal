@@ -37,5 +37,5 @@ export default async function (req, res) {
     } catch (error) {
         return res.status(500).redirect("/500");
     }
-    res.status(200).json({ name: 'Example' })
+ 
 }

@@ -76,8 +76,6 @@ export default async function (req, res) {
         // if lesson number is not the same as the created lesson number, change the lesson number to the new one
         // and shift the following lesson values for the unit using our dbTransaction function
         if (formData.lessonNumber !== createdLesson.lessonNumber) {
-            console.log("lesson number is different");
-            console.log(createdLesson.id);
             const updatedLesson = await changeLessonNumber(
                 parseInt(formData.unitId),
                 parseInt(createdLesson.id),
@@ -91,7 +89,6 @@ export default async function (req, res) {
         }
 
     } catch (error) {
-        // console.log(error.message);
         return res.status(500).json({ message: error.message });
     }
     

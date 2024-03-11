@@ -142,7 +142,6 @@ export async function getServerSideProps(ctx) {
         lessonFromDB.dateCreated = lessonFromDB.dateCreated.toString();
         lessonFromDB.dateUpdated = lessonFromDB.dateUpdated.toString();
 
-        console.log(lessonFromDB);
         return {
             props: {
                 error: null,
