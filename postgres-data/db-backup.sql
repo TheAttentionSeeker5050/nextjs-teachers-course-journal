@@ -130,7 +130,7 @@ CREATE TABLE "public"."lessons" (
     "lessonName" text NOT NULL,
     "lessonNumber" integer NOT NULL,
     "completionStatus" text DEFAULT 'not prepped' NOT NULL,
-    "epectedOutcomes" text,
+    "expectedOutcomes" text,
     "assessment" text,
     "dateCreated" timestamp(3) DEFAULT CURRENT_TIMESTAMP,
     "dateUpdated" timestamp(3) DEFAULT CURRENT_TIMESTAMP,
@@ -140,7 +140,7 @@ CREATE TABLE "public"."lessons" (
 
 INSERT INTO
     "lessons" (
-        "lessonName", "lessonNumber", "completionStatus", "epectedOutcomes", "assessment", "dateCreated", "dateUpdated", "unitId"
+        "lessonName", "lessonNumber", "completionStatus", "expectedOutcomes", "assessment", "dateCreated", "dateUpdated", "unitId"
     )
 VALUES (
         'Lesson Name 1', 1, 'not prepped', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
@@ -295,7 +295,7 @@ ALTER TABLE ONLY "public"."units" ADD CONSTRAINT "units_courseId_fkey" FOREIGN K
 --     "lessonName" text NOT NULL,
 --     "lessonNumber" integer NOT NULL,
 --     "completionStatus" text DEFAULT 'not prepped' NOT NULL,
---     "epectedOutcomes" text,
+--     "expectedOutcomes" text,
 --     "assessment" text,
 --     "dateCreated" timestamp(3) DEFAULT CURRENT_TIMESTAMP,
 --     "dateUpdated" timestamp(3) DEFAULT CURRENT_TIMESTAMP,
@@ -391,7 +391,7 @@ ALTER TABLE ONLY "public"."units" ADD CONSTRAINT "units_courseId_fkey" FOREIGN K
 -- (3,	3,	'Unit Name 3',	1,	'2024-02-13 13:56:51.283',	'2024-02-13 13:56:51.283'),
 -- (4,	4,	'Unit Name 4',	1,	'2024-02-13 13:57:03.042',	'2024-02-13 13:57:03.042');
 
--- INSERT INTO "lessons" ("id", "lessonName", "lessonNumber", "completionStatus", "epectedOutcomes", "assessment", "dateCreated", "dateUpdated", "unitId") VALUES
+-- INSERT INTO "lessons" ("id", "lessonName", "lessonNumber", "completionStatus", "expectedOutcomes", "assessment", "dateCreated", "dateUpdated", "unitId") VALUES
 -- (1,	'Lesson Name 1',	1,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 13:59:26.841',	'2024-02-13 13:59:26.841',	1),
 -- (2,	'Lesson Name 2',	2,	'not prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:00:41.818',	'2024-02-13 14:00:41.818',	1),
 -- (3,	'Lesson Name 3',	3,	'prepped',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.',	'2024-02-13 14:01:05.337',	'2024-02-13 14:01:05.337',	2),

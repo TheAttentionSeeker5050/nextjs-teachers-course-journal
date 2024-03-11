@@ -12,6 +12,10 @@ import { useEffect, useState } from "react";
 import SpinnerComponent from "@/components/spinnerComponent";
 import { useRouter } from "next/router";
 
+// import the tinyMCE editor
+import React, { useRef } from 'react';
+// import { Editor } from '@tinymce/tinymce-react';
+import CustomEditor from "@/components/editorComponent";
 
 export default function newPage(props) {
 
@@ -22,6 +26,9 @@ export default function newPage(props) {
 
     const [error, setError] = useState(props.error);
     const [message, setMessage] = useState(null);
+
+    // // the tinyMCE editor reference hook
+    // const editorRef = useRef(null);
 
     useEffect(() => {
         setIsLoading(false);
@@ -137,9 +144,21 @@ export default function newPage(props) {
             >
                 Expected Outcomes
             </label>
-            
-            
+            <CustomEditor
+                apiKey={props.apiKey}
+                fieldName="expectedOutcomes"
+            />
 
+            <label
+                htmlFor="assessment"
+                className="text-primary-600"
+            >
+                Assessment
+            </label>
+            <CustomEditor
+                apiKey={props.apiKey}
+                fieldName="assessment"
+            />
 
 
             <button
@@ -154,9 +173,11 @@ export default function newPage(props) {
 }
 
 export async function getServerSideProps(ctx) {
+    // get the tinyMCE editor api key
+    const apiKey = process.env.TINYMCE_API_KEY;
     return {
         props: {
-            
+            apiKey: apiKey
         }
     };
 }
