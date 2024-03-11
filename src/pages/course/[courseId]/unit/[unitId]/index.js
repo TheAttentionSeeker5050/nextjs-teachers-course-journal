@@ -172,7 +172,7 @@ export default function SingleCourse(
 
             {/* make a list with the unit lesson name and number */}
             <ul className="flex flex-col gap-2 my-3">
-              {props.selectedUnit?.lessons.map((lesson, i) => (
+              {props.selectedUnit?.lessons.sort((a, b) => a.lessonNumber - b.lessonNumber).map((lesson, i) => (
                 <li key={i} className="flex flex-col gap-3">
                   <h3 className="text-tertiary-title-size font-semibold text-slate-800 hover:text-slate-600">
                     <Link href={`/course/${props.courseId}/lesson/${lesson.id}`}>

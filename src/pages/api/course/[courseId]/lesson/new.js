@@ -1,8 +1,8 @@
 // import the validation functions
-import { createLessonForUnit } from "@/data/dbTransactions/lesson.dbTransaction";
+import { createLessonForUnit, changeLessonNumber } from "@/data/dbTransactions/lesson.dbTransaction";
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
 
-export default function (req, res) {
+export default async function (req, res) {
     // if different to post request, return 405 method not allowed
     if (req.method !== "POST") {
         return res.status(405).json({ message: "Method not allowed" });
@@ -60,7 +60,7 @@ export default function (req, res) {
 
     try {
         // save the data to the database
-        const createdLesson = createLessonForUnit({
+        const createdLesson = await createLessonForUnit({
             unitId: parseInt(formData.unitId),
             lessonName: formData.lessonName,
             completionStatus: formData.completedStatus,
@@ -70,9 +70,28 @@ export default function (req, res) {
 
         // if the lesson is not created, return a 500 response
         if (!createdLesson) {
-            return res.status(500).json({ message: "There was a problem creating the lesson, please try again later" });
+            throw new Error("There was a problem creating the lesson, please try again later");
         }
+
+        // if lesson number is not the same as the created lesson number, change the lesson number to the new one
+        // and shift the following lesson values for the unit using our dbTransaction function
+        if (formData.lessonNumber !== createdLesson.lessonNumber) {
+            console.log("lesson number is different");
+            console.log(createdLesson.id);
+            const updatedLesson = await changeLessonNumber(
+                parseInt(formData.unitId),
+                parseInt(createdLesson.id),
+                parseInt(formData.lessonNumber)
+            );
+
+            // if the lesson is not updated, return a 500 response
+            if (!updatedLesson) {
+                throw new Error("There was a problem updating the lesson number, please try again later");
+            }
+        }
+
     } catch (error) {
+        // console.log(error.message);
         return res.status(500).json({ message: error.message });
     }
     

@@ -136,7 +136,7 @@ export default function newPage(props) {
         <Navbar isLoggedIn={true} />
 
         <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
-            New Lesson
+            New Lesson for Unit {props.unitId}
         </h1>
 
         {error && 
@@ -177,13 +177,23 @@ export default function newPage(props) {
             >
                 Lesson Number
             </label>
-            <input
-                type="number"
+            <select
                 name="lessonNumber"
                 id="lessonNumber"
                 className="border border-primary-600 rounded-md px-3 py-2"
                 defaultValue={props.defaultLessonNumber}
-            />
+            >
+                {[...Array(parseInt(props.defaultLessonNumber)).keys()].map((number) => {
+                    return (
+                        <option
+                            key={number}
+                            value={number + 1}
+                        >
+                            {number + 1}
+                        </option>
+                    )
+                })}
+            </select>
 
             <label
                 htmlFor="completedStatus"
