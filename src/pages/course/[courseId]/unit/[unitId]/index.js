@@ -151,7 +151,7 @@ export default function SingleCourse(
             {/* show buttons edit and delete lesson wrap it with div */}
             <div className="flex gap-3">
               <button className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit">
-                <Link href={`/course/${props.courseId}/lesson/new`}>
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/new-lesson`}>
                   Add a new lesson
                 </Link>
               </button>
@@ -175,7 +175,7 @@ export default function SingleCourse(
               {props.selectedUnit?.lessons.map((lesson, i) => (
                 <li key={i} className="flex flex-col gap-3">
                   <h3 className="text-tertiary-title-size font-semibold text-slate-800 hover:text-slate-600">
-                    <Link href={`/course/${props.courseId}/lesson/${lesson.lessonNumber}`}>
+                    <Link href={`/course/${props.courseId}/lesson/${lesson.id}`}>
                       Lesson {lesson.lessonNumber} - {lesson.lessonName}
                     </Link>
                   </h3>

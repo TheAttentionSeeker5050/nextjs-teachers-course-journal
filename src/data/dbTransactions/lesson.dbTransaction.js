@@ -22,7 +22,8 @@ const createLessonForUnit = async ({
     expectedOutcomes,
     assessment
 }) => {
-    
+    console.log("unitId", unitId);
+    console.log("typeof unitId", typeof unitId);
     // we want to make sure the lesson number is unique for the unit
     // and that it is the last lesson number for the unit when we insert it
     const lessons = await getLessonsForUnit(unitId);
@@ -51,7 +52,8 @@ const createLessonForUnit = async ({
 
 // get all lessons for unit
 const getLessonsForUnit = async (unitId) => {
-
+    // console.log("unitId", unitId);
+    // console.log("typeof unitId", typeof unitId);
     // get all lessons for the unit, in order of lesson number ascending
     const lessons = await prisma.lesson.findMany({
         where: {

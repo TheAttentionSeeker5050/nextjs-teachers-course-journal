@@ -5,9 +5,10 @@ import { Editor } from '@tinymce/tinymce-react';
 const CustomEditor = ({
     apiKey,
     fieldName,
+    editorRef
 }) => {
-    // the tinyMCE editor reference hook
-    const editorRef = useRef(null);
+    // // the tinyMCE editor reference hook
+    // const editorRef = useRef(null);
     
     return (
         <Editor

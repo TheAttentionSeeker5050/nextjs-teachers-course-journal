@@ -12,10 +12,18 @@ import { useEffect, useState } from "react";
 import SpinnerComponent from "@/components/spinnerComponent";
 import { useRouter } from "next/router";
 
+// import the getLessonsForUnit function
+import { getLessonsForUnit } from "@/data/dbTransactions/lesson.dbTransaction";
+
 // import the tinyMCE editor
 import React, { useRef } from 'react';
 // import { Editor } from '@tinymce/tinymce-react';
 import CustomEditor from "@/components/editorComponent";
+
+// import the validation functions
+import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
+import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+
 
 export default function newPage(props) {
 
@@ -27,8 +35,9 @@ export default function newPage(props) {
     const [error, setError] = useState(props.error);
     const [message, setMessage] = useState(null);
 
-    // // the tinyMCE editor reference hook
-    // const editorRef = useRef(null);
+    // the tinyMCE editor reference hook
+    const assessmentEditorRef = useRef(null);
+    const expectedOutcomesEditorRef = useRef(null);
 
     useEffect(() => {
         setIsLoading(false);
@@ -39,12 +48,72 @@ export default function newPage(props) {
 
         setIsLoading(true);
 
+        // do something
+        setMessage("Lesson created successfully");
+
+        // get the body of the form
+        const formData = new FormData(e.target);
+        const formDataObj = {
+            lessonName: formData.get("lessonName").toString(),
+            lessonNumber: formData.get("lessonNumber").toString(),
+            completedStatus: formData.get("completedStatus").toString(),
+            expectedOutcomes: expectedOutcomesEditorRef.current.getContent().toString(),
+            assessment: assessmentEditorRef.current.getContent().toString(),
+            unitId: formData.get("unitId").toString()
+        }
+        
+        // clean and validate the form data
         try {
-            // do something
-            setMessage("Lesson created successfully");
+            if (!isNotEmpty(formDataObj.lessonName)) {
+                throw new Error("Lesson Name is required");
+            }
+            if (!isNotEmpty(formDataObj.lessonNumber)) {
+                throw new Error("Lesson Number is required");
+            }
+            if (!isNotEmpty(formDataObj.completedStatus)) {
+                throw new Error("Completed Status is required");
+            }
+            if (!isNotEmpty(formDataObj.expectedOutcomes)) {
+                throw new Error("Expected Outcomes is required");
+            }
+            if (!isNotEmpty(formDataObj.assessment)) {
+                throw new Error("Assessment is required");
+            }
+            if (!isSanitizedStringZod(formDataObj.lessonName)) {
+                throw new Error("Lesson Name is not valid");
+            }
+            if (!isSanitizedStringZod(formDataObj.completedStatus)) {
+                throw new Error("Completed Status is not valid");
+            }
+            if (!isSanitizedStringZod(formDataObj.expectedOutcomes)) {
+                throw new Error("Expected Outcomes is not valid");
+            }
+            if (!isSanitizedStringZod(formDataObj.assessment)) {
+                throw new Error("Assessment is not valid");
+            }
+
+            // attempt to fetch the data to the server
+            const response = await fetch(`/api/course/${props.courseId}/lesson/new`, {
+                method: "POST",
+                body: JSON.stringify(formDataObj),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            // if the response is not ok, throw an error
+            if (!response.ok) {
+                throw new Error("There was a problem creating the lesson, please try again later");
+            }
+
+            // if the response is ok, redirect to the unit page
+            router.push(`/course/${props.courseId}/unit/${props.unitId}`);
+
         } catch (error) {
             setError(error.message);
         }
+
+
 
         setIsLoading(false);
     }
@@ -84,13 +153,6 @@ export default function newPage(props) {
 
         {/*
             the form to create a new lesson
-            form body:
-            - lessonName: string
-            - lessonNumber: integer
-            - completedStatus: text defaults to not prepped, select options: not prepped, prepped, done
-            - epectedOutcomes: tinyMCE editor text
-            - assessment: tinyMCE editor text
-            - unitId hidden input
          */}
         <form
             onSubmit={handleSubmit}
@@ -120,6 +182,7 @@ export default function newPage(props) {
                 name="lessonNumber"
                 id="lessonNumber"
                 className="border border-primary-600 rounded-md px-3 py-2"
+                defaultValue={props.defaultLessonNumber}
             />
 
             <label
@@ -147,6 +210,7 @@ export default function newPage(props) {
             <CustomEditor
                 apiKey={props.apiKey}
                 fieldName="expectedOutcomes"
+                editorRef={expectedOutcomesEditorRef}
             />
 
             <label
@@ -158,6 +222,13 @@ export default function newPage(props) {
             <CustomEditor
                 apiKey={props.apiKey}
                 fieldName="assessment"
+                editorRef={assessmentEditorRef}
+            />
+
+            <input
+                type="hidden"
+                name="unitId"
+                value={props.unitId}
             />
 
 
@@ -175,9 +246,36 @@ export default function newPage(props) {
 export async function getServerSideProps(ctx) {
     // get the tinyMCE editor api key
     const apiKey = process.env.TINYMCE_API_KEY;
-    return {
-        props: {
-            apiKey: apiKey
+    
+
+    // get the course id from the url slug /course/1
+    const courseId = ctx.query.courseId;
+
+    // get the unit id
+    const unitId = ctx.query.unitId;
+
+    try {
+        // get the number of lessons to determine the last index
+        const lessons = await getLessonsForUnit(parseInt(courseId), parseInt(unitId));
+        const lessonNumber = lessons.length + 1;
+
+        return {
+            props: {
+                apiKey: apiKey,
+                error: null,
+                courseId: courseId,
+                unitId: unitId,
+                defaultLessonNumber: lessonNumber
+            }
         }
-    };
+    } catch (error) {
+        return {
+            props: {
+                apiKey: apiKey,
+                error: error.message,
+                courseId: courseId,
+                unitId: unitId
+            }
+        }
+    }
 }

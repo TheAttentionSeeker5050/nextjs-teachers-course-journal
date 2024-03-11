@@ -104,7 +104,7 @@ export const getServerSideProps = async (context) => {
         if (acc) {
             return acc;
         }
-        return unit.lessons?.filter((l, i) => l.lessonNumber === parseInt(lessonId))[0] || null;
+        return unit.lessons?.filter((l, i) => l.id === parseInt(lessonId))[0] || null;
     }, null);
 
     if (!selectedLesson) {
@@ -143,7 +143,6 @@ export default function SingleCourse(
     props
 ) {
 
-
   // the isLoading state variable
   const [isLoading, setIsLoading] = useState(true);
 
@@ -155,7 +154,6 @@ export default function SingleCourse(
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
-
       {isLoading === true &&
         <SpinnerComponent isLoadingState={isLoading} />
       }
@@ -234,26 +232,22 @@ export default function SingleCourse(
             <h3 className="text-large-content-size font-semibold">
               Expected outcomes
             </h3>
-            <ul className="list-disc list-inside pl-4">
-              {props.selectedLesson?.epectedOutcomes?.split("\n").map((outcome, i) => (
-                <li key={i} className="text-normal-content-size my-2">{outcome}</li>
-                ))}
-            </ul>
+            {/* show expected outcomes saved in db as a wysiwyg html tags */}
+            {props.selectedLesson?.expectedOutcomes && (
+              <div className="lesson-list-wrapper" dangerouslySetInnerHTML={{__html: props.selectedLesson?.expectedOutcomes}}></div>
+            ) || "No expected outcomes to show"}
           </div>
 
         {/* show the assessment of the lesson, stored the same way and displayed on page the same way as the expected outcomes */}
-          <div>
+          <div className="">
             <h3 className="text-large-content-size font-semibold">
               Assessment
             </h3>
             {props.selectedLesson?.assessment && (
-            <ul className="list-disc list-inside pl-4">
-              {props.selectedLesson?.assessment?.split("\n").map((assessment, i) => (
-                <li key={i} className="text-normal-content-size my-2">{assessment}</li>
-                ))}
-            </ul>
+            <div className="lesson-list-wrapper" dangerouslySetInnerHTML={{__html: props.selectedLesson?.assessment}}></div>
             ) || "No assessments to show"}
           </div>
+
           {/* make the files section, for uploading and downloading files, this feature will be added later */}
           {/* make a button to direct to add new note page */}
           <button
@@ -273,6 +267,7 @@ export default function SingleCourse(
               <FileListElement fileUrl="#" fileName="File-name-2.docx" />
             </ul>
           </div>
+
           {/* make a button to direct to add new note page */}
           <button
             className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
