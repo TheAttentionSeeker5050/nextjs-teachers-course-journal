@@ -101,7 +101,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function SingleCourse(
+export default function SingleUnit(
   props
 ) {
 

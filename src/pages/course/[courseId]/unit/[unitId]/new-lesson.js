@@ -28,7 +28,7 @@ import { validateCourseOwnership } from "@/utils/validation/validateCourseOwners
 
 
 
-export default function newPage(props) {
+export default function NewLesson(props) {
 
     // the isLoading state variable
     const [isLoading, setIsLoading] = useState(true);

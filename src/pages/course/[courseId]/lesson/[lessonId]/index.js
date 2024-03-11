@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import { Inter } from "next/font/google";
 import Link from "next/link";
 
@@ -139,7 +139,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function SingleCourse(
+export default function SingleLesson(
     props
 ) {
 
@@ -194,13 +194,13 @@ export default function SingleCourse(
           <div className="flex gap-3">
             <button
               className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.lessonNumber}/edit`}>
+              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.id}/edit`}>
                 Edit lesson
               </Link>
             </button>
             <button
               className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.lessonNumber}/delete`}>
+              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.id}/delete`}>
                 Delete lesson
               </Link>
             </button>
