@@ -151,7 +151,7 @@ export default function SingleCourse(
             {/* show buttons edit and delete lesson wrap it with div */}
             <div className="flex gap-3">
               <button className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit">
-                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/lesson/new`}>
+                <Link href={`/course/${props.courseId}/lesson/new`}>
                   Add a new lesson
                 </Link>
               </button>
