@@ -272,13 +272,14 @@ export async function getServerSideProps(ctx) {
     
     try {
         const course = await getCourseById(parseInt(courseId))
-        const userPayloadStr = JSON.parse(ctx.req.headers["x-user-payload"]);
+        const userPayloadStr = ctx.req.headers["x-user-payload"];
 
-        const validationResult = validateCourseOwnership(course, userPayloadStr);
+        const validationResult = await validateCourseOwnership(course, userPayloadStr);
+        
         if (validationResult) {
             return {
                 redirect: {
-                    destination: validationResult,
+                    destination: validationResult || "/404",
                     permanent: false
                 }
             }
@@ -295,7 +296,7 @@ export async function getServerSideProps(ctx) {
 
     try {
         // get the number of lessons to determine the last index
-        const lessons = await getLessonsForUnit(parseInt(courseId), parseInt(unitId));
+        const lessons = await getLessonsForUnit(parseInt(unitId));
         const lessonNumber = lessons.length + 1;
 
         return {

@@ -110,6 +110,9 @@ VALUES (
     ),
     (
         'Potions', 1, '2024-02-10 17:51:44.39', '2024-02-10 17:51:44.39', 'f', NULL
+    ),
+    (
+        'Defence Against the Dark Arts', 2, '2024-02-10 17:50:28.182', '2024-02-10 17:50:28.182', 'f', NULL
     );
 
 CREATE SEQUENCE fileuploads_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -181,6 +184,11 @@ Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus ha
         'Lesson Name 8', 8, 'not prepped', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
 Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
 Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.', '2024-02-13 14:02:59.13', '2024-02-13 14:02:59.13', 4
+    ),
+    (
+        'Lesson Name 1', 1, 'not prepped', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+Earum veniam sint fugit, animi ipsum, natus ex quod pariatur aut, repellendus harum totam nulla nostrum commodi.', '2024-02-13 13:59:26.841', '2024-02-13 13:59:26.841', 5
     );
 
 CREATE SEQUENCE notes_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -233,7 +241,11 @@ VALUES (
     ),
     (
         4, 'Unit Name 4', 1, '2024-02-13 13:57:03.042', '2024-02-13 13:57:03.042'
-    );
+    ),
+    (
+        1, 'Unit Name 1', 33, '2024-02-13 13:56:34.076', '2024-02-13 13:56:34.076'
+    )
+    ;
 
 CREATE SEQUENCE users_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -251,13 +263,19 @@ CREATE TABLE "public"."users" (
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+-- password for user1: Admin123**
 INSERT INTO
     "users" (
         "email", "password", "firstName", "lastName", "title", "organization", "dateCreated", "dateUpdated"
     )
 VALUES (
         'iamseverous@hogwardsschoolofmagic.com', '$2b$10$1LqxuTPcdW5AMr8V7BsZ6OnPvEc1/lRcS3mdNJ05lMA9nJxIxD4kq', 'Severous', 'Snape', 'Defense Against the Dark Arts', 'Hogwards', '2024-01-25 21:11:44.275', '2024-01-25 21:11:44.275'
+    ),
+    ( 
+        'user1@gmail.com',	'$2b$10$DVY5LzUh3TeT/rKwGedx6ONk7mRuUf8r.ImioGBu6BkIAvhVZHSgG',	'USer',	'USer',	'mr',	'user co',	'2024-03-11 22:34:10.026',	'2024-03-11 22:34:10.026'
     );
+
+
 
 ALTER TABLE ONLY "public"."courses" ADD CONSTRAINT "courses_userId_fkey" FOREIGN KEY ("userId") REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE;
 

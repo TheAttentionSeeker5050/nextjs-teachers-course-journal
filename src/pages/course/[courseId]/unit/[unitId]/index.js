@@ -17,37 +17,34 @@ import AsideCourseMenu from "@/components/AsideCourseMenu";
 import { useEffect, useState } from "react";
 import SpinnerComponent from "@/components/spinnerComponent";
 
+// validation functions
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
 
   // the the x-user-payload from the headers
   const userPayloadStr = context.req.headers['x-user-payload'];
 
-  try {
-    // transform the string into an object
-    const user = JSON.parse(userPayloadStr);
-
-    // if we can't find the user, we will redirect to the unauthorized page
-    // in the future, we will redirect to the login page
-    if (!userPayloadStr || !user || !user.userId || !user.email) {
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    return {
-      redirect: {
-        destination: '/unauthorized',
-        permanent: false,
-      },
-    }
-  }
-
   // get the course slug
   const { courseId } = context.query;
 
   try {
 
-    // get the user usign db transaction
+    // get the user using db transaction
     let courseFromDb = await getCourseByIdWithChildren(parseInt(courseId));
+
+    // validate the course ownership
+    const validationResult = await validateCourseOwnership(courseFromDb, userPayloadStr);
+
+    if (validationResult) {
+      return {
+        redirect: {
+          destination: validationResult || "/404",
+          permanent: false
+        }
+      }
+    }
 
     // serialize the course date fields
     courseFromDb.dateCreated = courseFromDb.dateCreated.toString();
