@@ -122,6 +122,11 @@ const updateLesson = async ({
 // delete a lesson by lesson id
 const deleteLessonById = async (id) => {
 
+    // get lesson by id
+    // const lesson = await getLessonById(id);
+
+    
+
     // delete the lesson
     const deletedLesson = await prisma.lesson.delete({
         where: {
@@ -129,10 +134,39 @@ const deleteLessonById = async (id) => {
         }
     });
 
-    // // if the lesson is not deleted, we will throw an error
-    // if (!deletedLesson) {
-    //     throw new Error("There was a problem deleting the lesson, please try again later");
-    // }
+    // get the unit id of the lesson
+    const unit = await prisma.unit.findUnique({
+        where: {
+            id: deletedLesson.unitId
+        },
+        include: {
+            lessons: true
+        }
+    });
+
+    // if the lesson is not deleted, we will throw an error
+    if (!deletedLesson) {
+        throw new Error("There was a problem deleting the lesson, please try again later");
+    }
+
+    // rearrange the lesson numbers for the unit
+    for (let i = 0; i < unit.lessons.length; i++) {
+        const updatedLesson = await prisma.lesson.update({
+            where: {
+                id: unit.lessons[i].id
+            },
+            data: {
+                lessonNumber: i + 1
+            }
+        });
+
+        // if the lesson is not updated, we will throw an error
+        if (!updatedLesson) {
+            throw new Error("There was a problem updating the lesson number, please try again later");
+        }
+    }
+
+    
 
     return deletedLesson;
 }
@@ -226,8 +260,8 @@ const changeLessonNumber = async (unitId, lessonId, newLessonNumber) => {
 
     return lessonsArray;
 
-
 }
+
 
 // export all the functions
 export { 
@@ -236,5 +270,5 @@ export {
     getLessonById, 
     updateLesson, 
     deleteLessonById, 
-    changeLessonNumber 
+    changeLessonNumber,
 };

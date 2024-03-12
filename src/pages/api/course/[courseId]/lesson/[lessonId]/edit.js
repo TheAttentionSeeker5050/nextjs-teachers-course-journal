@@ -100,7 +100,7 @@ export default async function (req, res) {
         // if the lesson number is different, change the lesson number
         if (updatedLesson.lessonNumber !== parseInt(formData.lessonNumber)) {
             await changeLessonNumber(
-                updateLesson.unitId,
+                updatedLesson.unitId,
                 updatedLesson.id,
                 parseInt(formData.lessonNumber)
             );
@@ -110,6 +110,7 @@ export default async function (req, res) {
         return res.status(200).json({ name: "Lesson Updated Successfully" });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: "There was a problem updating the lesson, please try again later" });
     }
 }

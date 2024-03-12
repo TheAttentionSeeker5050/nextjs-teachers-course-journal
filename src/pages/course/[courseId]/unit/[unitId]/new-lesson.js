@@ -109,7 +109,10 @@ export default function NewLesson(props) {
             setMessage("Lesson created successfully");
 
             // if the response is ok, redirect to the unit page
-            router.push(`/course/${props.courseId}/unit/${props.unitId}`);
+            setTimeout(() => {
+                setMessage(null);
+                router.push(`/course/${props.courseId}/unit/${formDataObj.unitId}`);
+            } , 4*1000);
 
         } catch (error) {
             setError(error.message);
@@ -158,7 +161,7 @@ export default function NewLesson(props) {
          */}
         <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-3 mx-auto"
+            className="flex flex-col gap-3 mx-auto py-6"
         >
             <label
                 htmlFor="lessonName"

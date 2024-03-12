@@ -1,4 +1,4 @@
-import { deleteLessonById } from "@/data/dbTransactions/lesson.dbTransaction";
+import { deleteLessonById, getLessonById } from "@/data/dbTransactions/lesson.dbTransaction";
 import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
@@ -38,9 +38,20 @@ export default async function (req, res) {
 
     // attempt to delete the lesson from the database
     try {
+        const lessonFromDB = await getLessonById(parseInt(lessonId));
+        const unitId = lessonFromDB.unitId;
+        if (!lessonFromDB) {
+            throw new Error("There was a problem deleting the lesson, please try again later");
+        }
+
+        // delete the lesson
         await deleteLessonById(parseInt(lessonId));
+
+
+
         return res.status(200).redirect(`/course/${courseId}`);
     } catch (error) {
+        // console.log(error);
         return res.status(500).redirect("/500");
     }
  

@@ -11,8 +11,6 @@ const inter = Inter({ subsets: ["latin"] });
 // import components
 import Navbar from '@/components/Navbar';
 import SpinnerComponent from "@/components/spinnerComponent";
-import AsideCourseMenu from "@/components/AsideCourseMenu";
-import DisplayErrorCard from "@/components/DisplayErrorCard";
 import CustomEditor from "@/components/editorComponent";
 
 // import database methods
@@ -109,6 +107,7 @@ export default function EditLesson(props) {
             router.push(`/course/${props.courseId}/unit/${props.lesson.unitId}`);
 
         } catch (error) {
+            console.error(error);
             setError(error.message);
         }
 
@@ -116,6 +115,15 @@ export default function EditLesson(props) {
 
         setIsLoading(false);
     }
+
+    // use effect on error message change
+    useEffect(() => {
+        // after 3 seconds, remove the error message
+        setTimeout(() => {
+            setError(null);
+        }, 8*1000);
+
+    }, [error]);
 
 
 

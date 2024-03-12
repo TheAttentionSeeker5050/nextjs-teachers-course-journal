@@ -183,11 +183,6 @@ export default function NewUnit(
 
             {/* 
                 The form to submit create a new unit
-                type: POST
-                endpoint: /api/course/[courseId]/unit/new
-                arguments:
-                unitName: string
-                unitNumber: number
             */}
 
             <form
