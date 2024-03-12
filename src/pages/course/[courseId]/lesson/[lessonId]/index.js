@@ -7,7 +7,7 @@ import NoteListElement from "@/components/NoteListElement";
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 import Navbar from '@/components/Navbar';
 import FileListElement from "@/components/FileListElement";

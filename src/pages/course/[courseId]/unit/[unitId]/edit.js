@@ -7,7 +7,6 @@ const inter = Inter({ subsets: ["latin"] });
 
 // import component CourseDashCard and Navbar
 import Navbar from '@/components/Navbar';
-import DisplayErrorCard from "@/components/DisplayErrorCard";
 
 // the db transaction functions
 import { getUnitById } from "@/data/dbTransactions/unit.dbTransaction";

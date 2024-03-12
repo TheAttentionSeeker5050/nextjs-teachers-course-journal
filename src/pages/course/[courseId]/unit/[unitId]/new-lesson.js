@@ -17,11 +17,10 @@ import { getLessonsForUnit } from "@/data/dbTransactions/lesson.dbTransaction";
 
 // import the tinyMCE editor
 import React, { useRef } from 'react';
-// import { Editor } from '@tinymce/tinymce-react';
 import CustomEditor from "@/components/editorComponent";
 
 // import the validation functions
-import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
+import { isNotEmpty, isSanitizedStringZod } from "@/utils/validation/validationAll";
 import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 

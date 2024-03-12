@@ -10,7 +10,6 @@ const inter = Inter({ subsets: ["latin"] });
 // import components
 import Navbar from '@/components/Navbar';
 import SpinnerComponent from "@/components/spinnerComponent";
-import AsideCourseMenu from "@/components/AsideCourseMenu";
 import DisplayErrorCard from "@/components/DisplayErrorCard";
 
 // import database methods
@@ -157,11 +156,6 @@ export async function getServerSideProps(ctx) {
                 lesson: null,
                 courseId: null,   
             }
-        }
-    }
-    return {
-        props: {
-            
         }
     }
 }

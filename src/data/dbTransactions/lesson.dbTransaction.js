@@ -52,8 +52,6 @@ const createLessonForUnit = async ({
 
 // get all lessons for unit
 const getLessonsForUnit = async (unitId) => {
-    // console.log("unitId", unitId);
-    // console.log("typeof unitId", typeof unitId);
     // get all lessons for the unit, in order of lesson number ascending
     const lessons = await prisma.lesson.findMany({
         where: {
