@@ -24,7 +24,7 @@ export default async function (req, res) {
         if (courseValidationResult) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        
+
     } catch (error) {
         return res.status(500).json({ message: "There was a problem retrieving the course, please try again later" });
     }
@@ -110,7 +110,6 @@ export default async function (req, res) {
         }
 
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ message: error.message });
     }
     

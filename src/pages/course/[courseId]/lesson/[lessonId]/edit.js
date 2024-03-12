@@ -107,7 +107,6 @@ export default function EditLesson(props) {
             router.push(`/course/${props.courseId}/unit/${props.lesson.unitId}`);
 
         } catch (error) {
-            console.error(error);
             setError(error.message);
         }
 
