@@ -50,9 +50,6 @@ export default function NewLesson(props) {
 
         setIsLoading(true);
 
-        // do something
-        setMessage("Lesson created successfully");
-
         // get the body of the form
         const formData = new FormData(e.target);
         const formDataObj = {
@@ -107,6 +104,9 @@ export default function NewLesson(props) {
             if (!response.ok) {
                 throw new Error("There was a problem creating the lesson, please try again later");
             }
+
+            // do something
+            setMessage("Lesson created successfully");
 
             // if the response is ok, redirect to the unit page
             router.push(`/course/${props.courseId}/unit/${props.unitId}`);

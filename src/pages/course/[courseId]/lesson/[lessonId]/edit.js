@@ -22,6 +22,7 @@ import prisma from "@/data/prisma";
 
 // validation
 import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+import { isNotEmpty, isSanitizedStringZod } from "@/utils/validation/validationAll";
 
 
 export default function EditLesson(props) {
@@ -40,6 +41,84 @@ export default function EditLesson(props) {
     useEffect(() => {
         setIsLoading(false);
     }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        setIsLoading(true);
+
+        // get the body of the form
+        const formData = new FormData(e.target);
+        const formDataObj = {
+            lessonName: formData.get("lessonName"),
+            lessonNumber: formData.get("lessonNumber"),
+            completionStatus: formData.get("completionStatus"),
+            expectedOutcomes: expectedOutcomesEditorRef.current.getContent(),
+            assessment: assessmentEditorRef.current.getContent(),
+            unitId: formData.get("unitId")
+        }
+
+        // clean and validate the form data
+        try {
+            if (!isNotEmpty(formDataObj.lessonName)) {
+                throw new Error("Lesson Name is required");
+            }
+            if (!isNotEmpty(formDataObj.lessonNumber)) {
+                throw new Error("Lesson Number is required");
+            }
+            if (!isNotEmpty(formDataObj.completionStatus)) {
+                throw new Error("Completed Status is required");
+            }
+            if (!isNotEmpty(formDataObj.expectedOutcomes)) {
+                throw new Error("Expected Outcomes is required");
+            }
+            if (!isNotEmpty(formDataObj.assessment)) {
+                throw new Error("Assessment is required");
+            }
+            if (!isSanitizedStringZod(formDataObj.lessonName)) {
+                throw new Error("Lesson Name is not valid");
+            }
+            if (!isSanitizedStringZod(formDataObj.completionStatus)) {
+                throw new Error("Completed Status is not valid");
+            }
+            if (!isSanitizedStringZod(formDataObj.expectedOutcomes)) {
+                throw new Error("Expected Outcomes is not valid");
+            }
+            if (!isSanitizedStringZod(formDataObj.assessment)) {
+                throw new Error("Assessment is not valid");
+            }
+
+            // attempt to fetch the data to the server
+            const response = await fetch(`/api/course/${props.courseId}/lesson/${props.lesson?.id}/edit`, {
+                method: "POST",
+                body: JSON.stringify(formDataObj),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            // if the response is not ok, throw an error
+            if (!response.ok) {
+                throw new Error("There was a problem creating the lesson, please try again later");
+            }
+
+            // do something
+            setMessage("Lesson created successfully");
+
+            // if the response is ok, redirect to the unit page
+            router.push(`/course/${props.courseId}/unit/${props.lesson.unitId}`);
+
+        } catch (error) {
+            setError(error.message);
+        }
+
+
+
+        setIsLoading(false);
+    }
+
+
+
 
     return (
         <main
@@ -76,18 +155,10 @@ export default function EditLesson(props) {
                 method="POST"
                 action={`/api/course/${props.courseId}/lesson/${props.lesson?.id}/edit`}
                 className="flex flex-col gap-3 mx-auto"
+                onSubmit={handleSubmit}
             >
                 {/* 
                     The form to edit a lesson
-                    method: POST
-                    endpoint: /api/course/[courseId]/lesson/[lessonId]/edit
-                    request body:
-                        lessonName: string
-                        lessonNumber: number
-                        completionStatus: string select: "prepped", "not prepped", "done"
-                        expectedOutcome: string wsywig
-                        assessment: string wsywig
-                        unitId: hidden input
                 */}
                 <label
                     htmlFor="lessonName"

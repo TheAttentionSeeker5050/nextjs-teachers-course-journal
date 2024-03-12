@@ -22,8 +22,7 @@ const createLessonForUnit = async ({
     expectedOutcomes,
     assessment
 }) => {
-    console.log("unitId", unitId);
-    console.log("typeof unitId", typeof unitId);
+    
     // we want to make sure the lesson number is unique for the unit
     // and that it is the last lesson number for the unit when we insert it
     const lessons = await getLessonsForUnit(unitId);

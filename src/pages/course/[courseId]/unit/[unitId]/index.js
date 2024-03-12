@@ -137,7 +137,7 @@ export default function SingleUnit(
         :
         <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
           {/* a section that shows the course details */}
-          <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={null} />
+          <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.id} selectedLesson={null} />
 
           {/* a section that shows the content of the lesson */}
           <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">

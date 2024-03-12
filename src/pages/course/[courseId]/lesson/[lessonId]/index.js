@@ -182,7 +182,7 @@ export default function SingleLesson(
       <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
 
         {/* if props.course, show a layered list of the units and lessons */}
-        <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={props.selectedLesson.lessonNumber} />
+        <AsideCourseMenu courseId={props.courseId} course={props.course} selectedLesson={props.selectedLesson.id} />
 
         {/* a section that shows the content of the lesson */}
         <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">

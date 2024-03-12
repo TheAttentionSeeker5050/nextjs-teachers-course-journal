@@ -18,17 +18,23 @@ export default async function (req, res) {
 
     // get the user payload from the headers x-user-payload
     const userPayloadStr = req.headers["x-user-payload"];
+    try {
+        
+        // get the course from database
+        const courseFromDB = await getCourseById(parseInt(courseId));
 
-    // get the course from database
-    const courseFromDB = await getCourseById(parseInt(courseId));
+        // validate course ownership
+        const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
 
-    // validate course ownership
-    const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
+        // if the courseValidationResult is not null, redirect to unauthorized
+        if (courseValidationResult) {
+            return res.status(302).redirect("/unauthorized");
+        }
 
-    // if the courseValidationResult is not null, redirect to unauthorized
-    if (courseValidationResult) {
+    } catch (error) {
         return res.status(302).redirect("/unauthorized");
     }
+    
 
     // attempt to delete the lesson from the database
     try {
