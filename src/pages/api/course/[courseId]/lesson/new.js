@@ -8,6 +8,27 @@ export default async function (req, res) {
         return res.status(405).json({ message: "Method not allowed" });
     }
 
+    const { courseId } = req.query;
+
+    try {
+        // get the user payload from the headers x-user-payload
+        const userPayloadStr = req.headers["x-user-payload"];
+
+        // get the course from database
+        const courseFromDB = await getCourseById(parseInt(courseId));
+
+        // validate course ownership
+        const courseValidationResult = await validateCourseOwnership(courseFromDB, userPayloadStr);
+
+        // if the courseValidationResult is not null, return unauthorized
+        if (courseValidationResult) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        
+    } catch (error) {
+        return res.status(500).json({ message: "There was a problem retrieving the course, please try again later" });
+    }
+
     // get the request body
     const formData = req.body;
     
