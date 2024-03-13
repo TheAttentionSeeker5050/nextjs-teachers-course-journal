@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function AddCourse() {
     const [courseName, setCourseName] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -19,7 +20,11 @@ export default function AddCourse() {
                 body: JSON.stringify({ courseName }),
             });
             if (response.ok) {
-                router.push('/');
+                setSuccessMessage('Course added successfully!');
+                // Redirect after a short delay
+                setTimeout(() => {
+                    router.push('/');
+                }, 2000); // Redirect after 2 seconds
             } else {
                 console.error('Error adding course:', response.statusText);
             }
@@ -33,6 +38,9 @@ export default function AddCourse() {
             <Navbar isLoggedIn={true} />
             <div className={`${inter.className} flex flex-col items-center justify-center mt-8`}>
                 <h1 className="text-3xl font-bold mb-6">Add Course</h1>
+                {successMessage && (
+                    <p className="text-green-500 mb-4">{successMessage}</p>
+                )}
                 <form onSubmit={handleSubmit} className="flex flex-col items-center">
                     <label htmlFor="courseName" className="text-lg mb-2">Course Name:</label>
                     <input
