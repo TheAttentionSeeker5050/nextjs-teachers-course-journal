@@ -21,7 +21,6 @@ export const getServerSideProps = async ({ req, res }) => {
 export default function Home(props) {
 
 
-
     return (
       <main
         className={`${inter.className}`}

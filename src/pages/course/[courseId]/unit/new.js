@@ -1,12 +1,14 @@
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
-import { useState } from "react";
 import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+
+
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -120,6 +122,10 @@ export default function NewUnit(
                     router.push(`/course/${props.courseId}`);
                 } , 4*1000);
             } else {
+                // if the response status code is 401 unauthorized, go redirect to the 401
+                if (res.status === 401) {
+                    router.push("/unauthorized")
+                } 
                 throw new Error("There was an error creating the unit");
             }
         } catch (e) {
@@ -136,95 +142,102 @@ export default function NewUnit(
 
     }, [error]);
 
+    // the isLoading state variable
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, []);
+
     return (
         <main
-      className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
-    >
-        {/* 
-            because we would not be in this page otherwise, have the isLoggedIn 
-            property set as true in this page, if no value is passed, it will default to undefined
-            which will keep the login and register buttons as if it was set to false 
-        */}
-        <Navbar isLoggedIn={true} />
-
-        <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
-            New Unit
-        </h1>
-
-        {error && 
-            <p className="text-red-600 text-center mx-auto">
-                {error}
-            </p>
-        }
-
-        {message &&
-            <p className="text-green-600 text-center mx-auto">
-                {message}
-            </p>
-        }
-
-      {/* 
-        The form to submit create a new unit
-        type: POST
-        endpoint: /api/course/[courseId]/unit/new
-        arguments:
-        unitName: string
-        unitNumber: number
-      */}
-
-        <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-3 mx-auto"
+            className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
         >
-            <label
-                htmlFor="unitName"
-                className="text-primary-600"
-            >
-                Unit Name
-            </label>
-            <input
-                type="text"
-                name="unitName"
-                id="unitName"
-                className="p-2 border-2 border-primary-600 rounded-md"
-                max={50}
-            />
 
-            <label
-                htmlFor="unitNumber"
-                className="text-primary-600"
-            >
-                Unit Number
-            </label>
-            <select
-                name="unitNumber"
-                id="unitNumber"
-                className="p-2 border-2 bg-slate-100 border-primary-600 rounded-md"
-                defaultValue={props.defaultNewUnitNumber}
-            >
-                {Array.from({length: props.defaultNewUnitNumber}, (_, i) => i + 1).map((num, i) => (
-                    <option
-                        key={i}
-                        value={num}
-                    >
-                        {num}
-                    </option>
-                ))}
-            </select>
+            {isLoading === true &&
+                <SpinnerComponent isLoadingState={isLoading} />
+            }
 
-            <div className="flex gap-3 justify-stretch text-white  my-4 text-center">
-                <button
-                    type="submit"
-                    className="p-2 bg-primary-600 rounded-lg flex-grow"
+            {/* 
+                because we would not be in this page otherwise, have the isLoggedIn 
+                property set as true in this page, if no value is passed, it will default to undefined
+                which will keep the login and register buttons as if it was set to false 
+            */}
+            <Navbar isLoggedIn={true} />
+
+            <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
+                New Unit
+            </h1>
+
+            {error && 
+                <p className="text-red-600 text-center mx-auto">
+                    {error}
+                </p>
+            }
+
+            {message &&
+                <p className="text-green-600 text-center mx-auto">
+                    {message}
+                </p>
+            }
+
+            {/* 
+                The form to submit create a new unit
+            */}
+
+            <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-3 mx-auto"
+            >
+                <label
+                    htmlFor="unitName"
+                    className="text-primary-600"
                 >
-                    Create Unit
-                </button>
+                    Unit Name
+                </label>
+                <input
+                    type="text"
+                    name="unitName"
+                    id="unitName"
+                    className="p-2 border-2 border-primary-600 rounded-md"
+                    max={50}
+                />
 
-                <Link href={`/course/${props.courseId}`} className="p-2 bg-slate-600 rounded-lg flex-grow">
-                    Cancel
-                </Link>
-            </div>
-        </form>
-      </main>
+                <label
+                    htmlFor="unitNumber"
+                    className="text-primary-600"
+                >
+                    Unit Number
+                </label>
+                <select
+                    name="unitNumber"
+                    id="unitNumber"
+                    className="p-2 border-2 bg-slate-100 border-primary-600 rounded-md"
+                    defaultValue={props.defaultNewUnitNumber}
+                >
+                    {Array.from({length: props.defaultNewUnitNumber}, (_, i) => i + 1).map((num, i) => (
+                        <option
+                            key={i}
+                            value={num}
+                        >
+                            {num}
+                        </option>
+                    ))}
+                </select>
+
+                <div className="flex gap-3 justify-stretch text-white  my-4 text-center">
+                    <button
+                        type="submit"
+                        className="p-2 bg-primary-600 rounded-lg flex-grow"
+                    >
+                        Create Unit
+                    </button>
+
+                    <Link href={`/course/${props.courseId}`} className="p-2 bg-slate-600 rounded-lg flex-grow">
+                        Cancel
+                    </Link>
+                </div>
+            </form>
+        </main>
     );
 }

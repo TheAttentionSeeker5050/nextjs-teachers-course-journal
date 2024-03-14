@@ -13,6 +13,8 @@ import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
 // validation
 import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 export async function getServerSideProps(ctx) {
 
@@ -88,9 +90,20 @@ export async function getServerSideProps(ctx) {
 export default function DeleteUnit(
     props
 ) {
+    // the isLoading state variable
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(false);
+    }, []);
 
     return (
         <main className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`} >
+
+            {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
+
             {/* 
                 because we would not be in this page otherwise, have the isLoggedIn 
                 property set as true in this page, if no value is passed, it will default to undefined

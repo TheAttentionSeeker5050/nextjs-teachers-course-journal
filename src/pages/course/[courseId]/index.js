@@ -1,8 +1,11 @@
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
+
+
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -80,7 +83,22 @@ export const getServerSideProps = async (ctx) => {
     , [])[0] || null;
 
     if (!selectedLesson) {
-      throw new Error("No lessons found in this course");
+
+      // if no lessons but there is at least one unit, return unit
+      if (courseFromDb.units.length > 0) {
+        
+        return { 
+          props: {
+            course: courseFromDb.id,
+            error: null,
+            selectedLesson: null,
+            selectedUnitId: courseFromDb.units[0].id,
+            courseId: parseInt(courseId)
+          } 
+        }
+      } else {
+        throw new Error("No lessons found in this course");
+      }
     }
 
     // serialize the lesson dates
@@ -117,16 +135,34 @@ export default function SingleCourse(
 
   // wait until the component is mounted to redirect
   useEffect(() => {
-    if (!props.selectedLesson) {
+    if (props.selectedUnitId) {
+      router.push(`/course/${props.courseId}/unit/${props.selectedUnitId}`);
       return;
     }
+
+    if (!props.selectedLesson) {
+      return;
+    } 
+    
     router.push(`/course/${props.courseId}/lesson/${props.selectedLesson?.id}`);
   } ,[]);
+  
+  // the isLoading state variable
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, 
+  []);
   
   return (
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
+
+      {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
         property set as true in this page, if no value is passed, it will default to undefined

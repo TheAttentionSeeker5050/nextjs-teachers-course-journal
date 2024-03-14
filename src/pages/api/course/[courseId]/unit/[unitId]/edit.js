@@ -55,7 +55,7 @@ export default async function handler(req, res) {
             id: parseInt(unitId), 
             newUnitName: unitName
         });
-
+        
         // compare the updated unit number to the unit number from the request body
         if (updatedUnit.unitNumber !== parseInt(unitNumber)) {
             // if the unit number is different, we will update the unit number

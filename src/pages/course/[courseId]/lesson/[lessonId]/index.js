@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import { Inter } from "next/font/google";
 import Link from "next/link";
 
@@ -7,12 +7,16 @@ import NoteListElement from "@/components/NoteListElement";
 const inter = Inter({ subsets: ["latin"] });
 
 // import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
-import { getCourseById, getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
+import { getCourseByIdWithChildren } from "@/data/dbTransactions/course.dbTransaction";
 
 import Navbar from '@/components/Navbar';
 import FileListElement from "@/components/FileListElement";
 import AsideCourseMenu from "@/components/AsideCourseMenu";
 import DisplayErrorCard from "@/components/DisplayErrorCard";
+
+
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -100,7 +104,7 @@ export const getServerSideProps = async (context) => {
         if (acc) {
             return acc;
         }
-        return unit.lessons?.filter((l, i) => l.lessonNumber === parseInt(lessonId))[0] || null;
+        return unit.lessons?.filter((l, i) => l.id === parseInt(lessonId))[0] || null;
     }, null);
 
     if (!selectedLesson) {
@@ -135,13 +139,25 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function SingleCourse(
+export default function SingleLesson(
     props
 ) {
+
+  // the isLoading state variable
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, 
+  []);
   return (
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
+      {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
+
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
         property set as true in this page, if no value is passed, it will default to undefined
@@ -153,6 +169,12 @@ export default function SingleCourse(
         {"Course - " + props.course?.courseName || props.error || "Lesson Page"}
       </h1>
 
+      {/* add buttons edit course and delete course */}
+      <div className="flex flex-row gap-4 justify-end gap-4 px-6 w-full mx-auto max-w-6xl">
+        <Link href={`/course/${props.course?.id}/edit`} className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit">Edit Course</Link>
+        <Link href={`/course/${props.course?.id}/delete`} className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit">Delete Course</Link>
+      </div>
+
       {/* if props.error, have a button go back to page "/" */}
       {props.error !== null ?
         <DisplayErrorCard error={props.error} />
@@ -160,7 +182,7 @@ export default function SingleCourse(
       <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
 
         {/* if props.course, show a layered list of the units and lessons */}
-        <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={props.selectedLesson.lessonNumber} />
+        <AsideCourseMenu courseId={props.courseId} course={props.course} selectedLesson={props.selectedLesson.id} />
 
         {/* a section that shows the content of the lesson */}
         <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
@@ -172,13 +194,13 @@ export default function SingleCourse(
           <div className="flex gap-3">
             <button
               className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.lessonNumber}/edit`}>
+              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.id}/edit`}>
                 Edit lesson
               </Link>
             </button>
             <button
               className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.lessonNumber}/delete`}>
+              <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.id}/delete`}>
                 Delete lesson
               </Link>
             </button>
@@ -210,26 +232,22 @@ export default function SingleCourse(
             <h3 className="text-large-content-size font-semibold">
               Expected outcomes
             </h3>
-            <ul className="list-disc list-inside pl-4">
-              {props.selectedLesson?.epectedOutcomes?.split("\n").map((outcome, i) => (
-                <li key={i} className="text-normal-content-size my-2">{outcome}</li>
-                ))}
-            </ul>
+            {/* show expected outcomes saved in db as a wysiwyg html tags */}
+            {props.selectedLesson?.expectedOutcomes && (
+              <div className="lesson-list-wrapper" dangerouslySetInnerHTML={{__html: props.selectedLesson?.expectedOutcomes}}></div>
+            ) || "No expected outcomes to show"}
           </div>
 
         {/* show the assessment of the lesson, stored the same way and displayed on page the same way as the expected outcomes */}
-          <div>
+          <div className="">
             <h3 className="text-large-content-size font-semibold">
               Assessment
             </h3>
             {props.selectedLesson?.assessment && (
-            <ul className="list-disc list-inside pl-4">
-              {props.selectedLesson?.assessment?.split("\n").map((assessment, i) => (
-                <li key={i} className="text-normal-content-size my-2">{assessment}</li>
-                ))}
-            </ul>
+            <div className="lesson-list-wrapper" dangerouslySetInnerHTML={{__html: props.selectedLesson?.assessment}}></div>
             ) || "No assessments to show"}
           </div>
+
           {/* make the files section, for uploading and downloading files, this feature will be added later */}
           {/* make a button to direct to add new note page */}
           <button
@@ -249,6 +267,7 @@ export default function SingleCourse(
               <FileListElement fileUrl="#" fileName="File-name-2.docx" />
             </ul>
           </div>
+
           {/* make a button to direct to add new note page */}
           <button
             className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 

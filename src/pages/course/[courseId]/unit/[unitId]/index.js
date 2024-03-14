@@ -14,6 +14,11 @@ import DisplayErrorCard from "@/components/DisplayErrorCard";
 import AsideCourseMenu from "@/components/AsideCourseMenu";
 
 
+import { useEffect, useState } from "react";
+import SpinnerComponent from "@/components/spinnerComponent";
+
+// validation functions
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -21,31 +26,25 @@ export const getServerSideProps = async (context) => {
   // the the x-user-payload from the headers
   const userPayloadStr = context.req.headers['x-user-payload'];
 
-  try {
-    // transform the string into an object
-    const user = JSON.parse(userPayloadStr);
-
-    // if we can't find the user, we will redirect to the unauthorized page
-    // in the future, we will redirect to the login page
-    if (!userPayloadStr || !user || !user.userId || !user.email) {
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    return {
-      redirect: {
-        destination: '/unauthorized',
-        permanent: false,
-      },
-    }
-  }
-
   // get the course slug
   const { courseId } = context.query;
 
   try {
 
-    // get the user usign db transaction
+    // get the user using db transaction
     let courseFromDb = await getCourseByIdWithChildren(parseInt(courseId));
+
+    // validate the course ownership
+    const validationResult = await validateCourseOwnership(courseFromDb, userPayloadStr);
+
+    if (validationResult) {
+      return {
+        redirect: {
+          destination: validationResult || "/404",
+          permanent: false
+        }
+      }
+    }
 
     // serialize the course date fields
     courseFromDb.dateCreated = courseFromDb.dateCreated.toString();
@@ -68,7 +67,7 @@ export const getServerSideProps = async (context) => {
     const { unitId } = context.query;
 
     // filter the unit from the course
-    let selectedUnit = courseFromDb.units.filter(unit => unit.unitNumber === parseInt(unitId));
+    let selectedUnit = courseFromDb.units.filter(unit => unit.id === parseInt(unitId));
 
     // if the unit does not exist, return a 404
     if (selectedUnit.length === 0) {
@@ -102,13 +101,25 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function SingleCourse(
+export default function SingleUnit(
   props
 ) {
+
+  // the isLoading state variable
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+  
   return (
     <main
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
+
+      {isLoading === true &&
+        <SpinnerComponent isLoadingState={isLoading} />
+      }
       {/* 
         because we would not be in this page otherwise, have the isLoggedIn 
         property set as true in this page, if no value is passed, it will default to undefined
@@ -126,7 +137,7 @@ export default function SingleCourse(
         :
         <div className="flex flex-col tablet:flex-row flex-wrap mobile:flex-nowrap justify-between gap-8 px-6 w-full mx-auto max-w-6xl mb-8">
           {/* a section that shows the course details */}
-          <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.unitNumber} selectedLesson={null} />
+          <AsideCourseMenu courseId={props.courseId} course={props.course} selectedUnit={props.selectedUnit?.id} selectedLesson={null} />
 
           {/* a section that shows the content of the lesson */}
           <section className="flex flex-col gap-4 px-4 py-3 rounded-md border-primary-500 w-full border-2">
@@ -137,7 +148,7 @@ export default function SingleCourse(
             {/* show buttons edit and delete lesson wrap it with div */}
             <div className="flex gap-3">
               <button className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit">
-                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/lesson/new`}>
+                <Link href={`/course/${props.courseId}/unit/${props.selectedUnit?.id}/new-lesson`}>
                   Add a new lesson
                 </Link>
               </button>
@@ -158,10 +169,10 @@ export default function SingleCourse(
 
             {/* make a list with the unit lesson name and number */}
             <ul className="flex flex-col gap-2 my-3">
-              {props.selectedUnit?.lessons.map((lesson, i) => (
+              {props.selectedUnit?.lessons.sort((a, b) => a.lessonNumber - b.lessonNumber).map((lesson, i) => (
                 <li key={i} className="flex flex-col gap-3">
                   <h3 className="text-tertiary-title-size font-semibold text-slate-800 hover:text-slate-600">
-                    <Link href={`/course/${props.courseId}/lesson/${lesson.lessonNumber}`}>
+                    <Link href={`/course/${props.courseId}/lesson/${lesson.id}`}>
                       Lesson {lesson.lessonNumber} - {lesson.lessonName}
                     </Link>
                   </h3>

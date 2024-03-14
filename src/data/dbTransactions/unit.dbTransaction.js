@@ -162,6 +162,7 @@ const updateUnitNumber = async (courseId, unitId, newUnitNumber) => {
 
         const newUnit = await prisma.unit.findFirst({
             where: {
+                courseId: courseId,
                 unitNumber: newUnitNumber
             }
         });

@@ -57,7 +57,7 @@ model Lesson {
   lessonName       String
   lessonNumber     Int
   completionStatus String       @default("not prepped")
-  epectedOutcomes  String?
+  expectedOutcomes  String?
   assessment       String?
   dateCreated      DateTime?    @default(now())
   dateUpdated      DateTime?    @default(now()) @updatedAt
