@@ -1,6 +1,8 @@
 // here we will add all the transactions related to the course model
 // import the prisma client
-import prisma from "../prisma";
+// import prisma from "../prisma";
+import prisma from "@/data/prisma";
+
 
 // crud transactions for course
 // create a course
@@ -9,6 +11,8 @@ const createCourse = async ({
     userId
 }) => {
 
+    // console.log("courseName:", courseName, typeof courseName)
+    // console.log("userId:", userId, typeof userId)
     // add the course to the database
     const createdCourse = await prisma.course.create({
         data: {

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,12 +50,14 @@ export const getServerSideProps = async (context) => {
     course.dateCreated = course.dateCreated?.toString() || null;
     course.dateUpdated = course.dateUpdated?.toString() || null;
   });
-  
-  return { props: {
-    user,
-    courses,
-    error
-   } }
+
+  return {
+    props: {
+      user,
+      courses,
+      error
+    }
+  }
 }
 
 export default function Home(props) {
@@ -87,25 +90,31 @@ export default function Home(props) {
         Courses Dashboard
       </h1>
 
-      <p className="text-secondary-title-size font-semibold text-primary-500 w-full text-center text-ellipsis break-words"> 
-        Faculty email: 
+      <p className="text-secondary-title-size font-semibold text-primary-500 w-full text-center text-ellipsis break-words">
+        Faculty email:
         {props.user.email}
 
       </p>
 
+      <div className="flex justify-center mb-5">
+        <Link className="bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded" href="/course/add">
+          Add Course
+        </Link>
+      </div>
+
       {
-        props.error 
-        ? 
+        props.error
+          ?
           <p className="text-lg text-red-500 ">{props.error}</p>
-        :
-        <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
-          {
-            props.courses.map((course) => {
-              return CourseDashCard({ course: course, imageUrl: imageUrl });
-              
-            })
-          }
-        </div>
+          :
+          <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
+            {
+              props.courses.map((course) => {
+                return CourseDashCard({ course: course, imageUrl: imageUrl });
+
+              })
+            }
+          </div>
       }
     </main>
   );

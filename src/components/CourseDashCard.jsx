@@ -3,10 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const CourseDashCard = ({ course, imageUrl }) => {
-  console.log(course);
   return (
-    <Link href={`/course/${course.id}`}>
-      <div key={course.id} className="mx-auto flex flex-col justify-start gap-2">
+    <Link href={`/course/${course.id}`} key={course.id} >
+      <div className="mx-auto flex flex-col justify-start gap-2">
         <Image
           src={imageUrl}
           alt={course.courseName + " Thumbnail"}
