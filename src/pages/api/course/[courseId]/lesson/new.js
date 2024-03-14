@@ -1,6 +1,8 @@
 // import the validation functions
 import { createLessonForUnit, changeLessonNumber } from "@/data/dbTransactions/lesson.dbTransaction";
 import { isNotEmpty, isNotUndefined, isSanitizedStringZod } from "@/utils/validation/validationAll";
+import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
 
 export default async function (req, res) {
     // if different to post request, return 405 method not allowed
