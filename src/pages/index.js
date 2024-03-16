@@ -70,8 +70,8 @@ export default function Home(props) {
 
   useEffect(() => {
     setIsLoading(false);
-  }, 
-  []);
+  },
+    []);
 
   return (
     <main
