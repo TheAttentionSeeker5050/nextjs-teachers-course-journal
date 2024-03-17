@@ -48,7 +48,7 @@ export default function AddCourse() {
                         type="text"
                         value={courseName}
                         onChange={(e) => setCourseName(e.target.value)}
-                        className="border border-gray-300 rounded px-4 py-2 mb-4"
+                        className="border border-gray-400 rounded px-3 py-2 mb-4"
                         required
                     />
                     <button type="submit" className="bg-primary-500 text-white px-6 py-2 rounded hover:bg-primary-600">Add Course</button>
