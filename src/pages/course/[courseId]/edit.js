@@ -37,6 +37,10 @@ const EditCoursePage = ({ initialCourse }) => {
         }
     };
 
+    const handleCancel = () => {
+        router.push('/');
+    };
+
     return (
         <div>
             <Navbar isLoggedIn={true} />
@@ -57,7 +61,10 @@ const EditCoursePage = ({ initialCourse }) => {
                                     className="mt-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 px-3 py-2"
                                 />
                             </div>
-                            <button type="submit" className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:bg-primary-600">Save Changes</button>
+                            <div>
+                                <button type="submit" className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:bg-primary-600">Save Changes</button>
+                                <button type="button" onClick={handleCancel} className="ml-2 text-white px-4 py-2 p-4 bg-slate-600 rounded-lg flex-grow">Cancel</button>
+                            </div>
                         </form>
                     )}
                 </div>
