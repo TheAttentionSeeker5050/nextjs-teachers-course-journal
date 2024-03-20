@@ -133,6 +133,8 @@ export default function SingleCourse(
   // use useRouter to redirect
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(true);
+
   // wait until the component is mounted to redirect
   useEffect(() => {
     if (props.selectedUnitId) {
@@ -141,40 +143,50 @@ export default function SingleCourse(
     }
 
     if (!props.selectedLesson) {
+      setIsLoading(false);
       return;
     } 
     
     router.push(`/course/${props.courseId}/lesson/${props.selectedLesson?.id}`);
   } ,[]);
   
-  // the isLoading state variable
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, 
-  []);
   
   return (
-    <main
-      className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
-    >
+    <>
+      { isLoading ?
+      <main
+        className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
+      >
+          <Navbar isLoggedIn={true} />
 
-      {isLoading === true &&
-        <SpinnerComponent isLoadingState={isLoading} />
-      }
-      {/* 
-        because we would not be in this page otherwise, have the isLoggedIn 
-        property set as true in this page, if no value is passed, it will default to undefined
-        which will keep the login and register buttons as if it was set to false 
-      */}
-      <Navbar isLoggedIn={true} />
+          {/* we show H1 because search engines benefits h1 titles, however, this page is not
+            accessible to users unless they are logged in and own the course
+          */}
+          <h1 hidden>
+            Course Grid - Course Page
+          </h1>
 
-      <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
-        {"Course - " + props.course?.courseName || props.error || "Course Page"}
-      </h1>
+          <h1 className="text-center text-md mx-auto">
+            Loading...
+          </h1>
+      </main>
+      :
+        <main
+          className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
+        >
+          {/* 
+            because we would not be in this page otherwise, have the isLoggedIn 
+            property set as true in this page, if no value is passed, it will default to undefined
+            which will keep the login and register buttons as if it was set to false 
+          */}
+          <Navbar isLoggedIn={true} />
 
-      {/* if props.error, have a button go back to page "/" */}
+      
+          <h1 className="text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words">
+            {"Course - " + props.course?.courseName || props.error || "Course Page"}
+          </h1>
+
+          {/* if props.error, have a button go back to page "/" */}
           <p className="text-center text-md mx-auto">
             {props.error ? props.error : "An error occurred, please try again later"}
           </p>
@@ -182,6 +194,8 @@ export default function SingleCourse(
           <Link href={`/course/${props.courseId}/unit/new`} className="bg-primary-600 text-white px-3 mx-auto py-2 rounded-md">
             Add a new unit
           </Link>
-    </main>
+        </main>
+      }
+    </>
   );
 }
