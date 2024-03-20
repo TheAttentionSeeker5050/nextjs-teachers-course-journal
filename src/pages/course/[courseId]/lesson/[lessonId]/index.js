@@ -170,7 +170,7 @@ export default function SingleLesson(
       </h1>
 
       {/* add buttons edit course and delete course */}
-      <div className="flex flex-row gap-4 justify-end gap-4 px-6 w-full mx-auto max-w-6xl">
+      <div className="flex flex-row gap-4 tablet:justify-end justify-between gap-4 px-6 w-full mx-auto max-w-6xl">
         <Link href={`/course/${props.course?.id}/edit`} className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit">Edit Course</Link>
         <Link href={`/course/${props.course?.id}/delete`} className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md mobile:w-fit">Delete Course</Link>
       </div>
