@@ -190,7 +190,7 @@ export default function SingleLesson(
             {props.selectedLesson?.lessonName || "Lesson Name"}
           </h2>
 
-        {/* show buttons edit and delete lesson wrap it with div */}
+          {/* show buttons edit and delete lesson wrap it with div */}
           <div className="flex gap-3">
             <button
               className="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
@@ -252,7 +252,7 @@ export default function SingleLesson(
           {/* make a button to direct to add new note page */}
           <button
             className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-            <Link href={`#`}>
+            <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.id}/new-file`}>
               Upload a file
             </Link>
           </button>
@@ -263,15 +263,21 @@ export default function SingleLesson(
               Recorded Files
             </h3>
             <ul className="pl-4">
-              <FileListElement fileUrl="#" fileName="File-name-1.docx" />
-              <FileListElement fileUrl="#" fileName="File-name-2.docx" />
+              <FileListElement 
+                fileUrl={`/course/${props.courseId}/file/1`} 
+                fileName="File-name-1.docx" 
+              />
+              <FileListElement 
+                fileUrl={`/course/${props.courseId}/file/2`} 
+                fileName="File-name-2.docx" 
+              />
             </ul>
           </div>
 
           {/* make a button to direct to add new note page */}
           <button
             className="bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-md mobile:w-fit"> 
-            <Link href={`#`}>
+            <Link href={`/course/${props.courseId}/lesson/${props.selectedLesson.id}/new-note`} >
               Add a note
             </Link>
           </button>
@@ -283,8 +289,14 @@ export default function SingleLesson(
             </h3>
 
             <ul className="pl-4">
-              <NoteListElement noteUrl="#" noteName="Note name 1" />
-              <NoteListElement noteUrl="#" noteName="Note name 2" />
+              <NoteListElement 
+                noteUrl={`/course/${props.courseId}/note/1`} 
+                noteName="Note name 1" 
+              />
+              <NoteListElement 
+                noteUrl={`/course/${props.courseId}/note/1`} 
+                noteName="Note name 2" 
+              />
             </ul>
           </div>
         </section>
