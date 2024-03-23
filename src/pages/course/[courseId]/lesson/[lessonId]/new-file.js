@@ -57,10 +57,12 @@ export async function getServerSideProps(context) {
     try {
         // get lesson data using db transaction method, from here we will just need the name
         const lesson = await getLessonById(parseInt(lessonId));
+        const userId = JSON.parse(context.req.headers["x-user-payload"]).userId;
 
         return {
             props: {
                 courseId,
+                userId: userId,
                 lessonId,
                 lessonName: lesson.lessonName,
                 error: null
@@ -71,6 +73,7 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 courseId,
+                userId: userId,
                 lessonId,
                 lessonName: null,
                 error: error.message
@@ -116,27 +119,23 @@ export default function UploadNewFileAttachment(props) {
             file: formData.get("file")
         }
 
+        console.log("formDataObj", formDataObj);
+
         // will attempt to upload the file here
         try {
             // validate the file data
             if (!formDataObj.file) {
-                setIsLoading(false);
-                setError("File is required!");
-                return;
+                throw new Error("File is required!");
             }
 
             // validate the userId
             if (!formDataObj.userId) {
-                setIsLoading(false);
-                setError("User ID is required!");
-                return;
+                throw new Error("User ID is required!");
             }
 
             // validate the lessonId
             if (!formDataObj.lessonId) {
-                setIsLoading(false);
-                setError("Lesson ID is required!");
-                return;
+                throw new Error("Lesson ID is required!");
             }
 
             // upload the file, send a POST request to the server
@@ -146,21 +145,22 @@ export default function UploadNewFileAttachment(props) {
             const response = await fetch(
                 `/api/course/${props.courseId}/file/new`, {
                     method: "POST",
-                    body: formData,
+                    body: JSON.stringify(formDataObj),
                     headers: {
-                        "Content-Type": "multipart/form-data"
+                        "Content-Type": "application/json"
                     }
                 },
             );
+
+            // print the json response
+            const jsonResponse = await response.json();
+            console.log(jsonResponse);
 
             // if the response is not okay, throw an error
             if (!response.ok) {
                 throw new Error("Failed to upload file!");
             }
 
-            // print the json response
-            const jsonResponse = await response.json();
-            console.log(jsonResponse);
             setMessage("File uploaded successfully!");
 
             // push to the lesson page  
@@ -172,12 +172,12 @@ export default function UploadNewFileAttachment(props) {
         }
 
         
-        // timeout to simulate server response
-        setTimeout(() => {
-            setIsLoading(false);
-            setMessage("File uploaded successfully!");
-            // router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
-        }, 3000);
+        // // timeout to simulate server response
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        //     setMessage("File uploaded successfully!");
+        //     // router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
+        // }, 3000);
     }
 
     return (
@@ -220,14 +220,14 @@ export default function UploadNewFileAttachment(props) {
                 <input
                     type="hidden"
                     name="userId"
-                    value="userId"
+                    value={props.userId}
                 />
 
                 {/* hidden input for lessonId */}
                 <input
                     type="hidden"
                     name="lessonId"
-                    value="lessonId"
+                    value={props.lessonId}
                 />
                 
                 {/* file input */}
