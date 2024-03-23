@@ -117,7 +117,7 @@ export default function EditLesson(props) {
 
     // use effect on error message change
     useEffect(() => {
-        // after 3 seconds, remove the error message
+        // after 8 seconds, remove the error message
         setTimeout(() => {
             setError(null);
         }, 8*1000);
