@@ -17,6 +17,7 @@ import DisplayErrorCard from "@/components/DisplayErrorCard";
 
 import { useEffect, useState } from "react";
 import SpinnerComponent from "@/components/spinnerComponent";
+import prisma from "@/data/prisma";
 
 // here we will also get cookies
 export const getServerSideProps = async (context) => {
@@ -94,11 +95,11 @@ export const getServerSideProps = async (context) => {
 
     // select selected lesson and unit number from ?a=b query params, default to first lesson of first unit
     let { lessonId } = await context.query;
-    
+
     if (!lessonId || !parseInt(lessonId) || parseInt(lessonId) < 1) {
         lessonId = "1";
     }
-    
+
     // search lesson by lesson number
     const selectedLesson = courseFromDb.units?.reduce((acc, unit) => {
         if (acc) {
@@ -117,12 +118,29 @@ export const getServerSideProps = async (context) => {
       }
     }
 
+    // lookout the files records and notes records using prisma
+    const files = await prisma.fileUpload.findMany({
+      where: {
+        lessonId: parseInt(lessonId)
+      }
+    });
+
+    // console.log(files);
+
+    const notes = await prisma.note.findMany({
+      where: {
+        lessonId: parseInt(lessonId)
+      }
+    });
+
     return { 
       props: {
         course: courseFromDb,
         error: null,
         selectedLesson: selectedLesson,
-        courseId: courseId
+        courseId: courseId,
+        files: files,
+        notes: notes
       } 
     }
     
@@ -132,8 +150,9 @@ export const getServerSideProps = async (context) => {
         course: null,
         error: error.message,
         selectedLesson: null,
-        courseId: null
-
+        courseId: null,
+        files: null,
+        notes: null
       }
     }
   }
@@ -263,14 +282,21 @@ export default function SingleLesson(
               Recorded Files
             </h3>
             <ul className="pl-4">
-              <FileListElement 
+              {props.files.map((file, i) => (
+                <FileListElement 
+                  key={i}
+                  fileUrl={`/course/${props.courseId}/file/${file.id}`} 
+                  fileName={file.fileDisplayName} 
+                />
+              ))}
+              {/* <FileListElement 
                 fileUrl={`/course/${props.courseId}/file/1`} 
                 fileName="File-name-1.docx" 
               />
               <FileListElement 
                 fileUrl={`/course/${props.courseId}/file/2`} 
                 fileName="File-name-2.docx" 
-              />
+              /> */}
             </ul>
           </div>
 
