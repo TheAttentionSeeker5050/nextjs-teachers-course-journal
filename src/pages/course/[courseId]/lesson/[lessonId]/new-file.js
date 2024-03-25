@@ -91,6 +91,16 @@ export default function UploadNewFileAttachment(props) {
     const [error, setError] = useState(props.error);
     const [message, setMessage] = useState(null);
 
+    // form data state
+    const [file, setFile] = useState(null);
+
+    // handler for file change
+    const handleFileChange = (e) => {
+        setIsLoading(true)
+        setFile(e.target.files[0])
+        setIsLoading(false);
+    }
+
     // when the component mounts, set isLoading to false to close loading spinner
     useEffect(() => {
         setIsLoading(false);
@@ -112,72 +122,57 @@ export default function UploadNewFileAttachment(props) {
         setIsLoading(true);
 
         // get the form data
-        const formData = new FormData(e.target);
-        const formDataObj = {
-            userId: formData.get("userId"),
-            lessonId: formData.get("lessonId"),
-            file: formData.get("file")
-        }
+        const formData = new FormData();
+        formData.append("userId", props.userId);
+        formData.append("lessonId", props.lessonId);
+        formData.append("file", file);
 
-        console.log("formDataObj", formDataObj);
+        // console.log("formDataObj", formDataObj);
 
         // will attempt to upload the file here
         try {
             // validate the file data
-            if (!formDataObj.file) {
+            if (!formData.get("file")) {
                 throw new Error("File is required!");
             }
 
             // validate the userId
-            if (!formDataObj.userId) {
+            if (!formData.get("userId")) {
                 throw new Error("User ID is required!");
             }
 
             // validate the lessonId
-            if (!formDataObj.lessonId) {
+            if (!formData.get("lessonId")) {
                 throw new Error("Lesson ID is required!");
             }
 
             // upload the file, send a POST request to the server
-            // url: /api/course/:courseId/file/new-file
-            // body: { userId, lessonId, file }
-            // file-compatible request: multipart/form-data
             const response = await fetch(
-                `/api/course/${props.courseId}/file/new`, {
+                `/api/course/${props.courseId}/file/upload`, {
                     method: "POST",
-                    body: JSON.stringify(formDataObj),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+                    body: formData
                 },
             );
 
             // print the json response
             const jsonResponse = await response.json();
-            console.log(jsonResponse);
 
             // if the response is not okay, throw an error
             if (!response.ok) {
-                throw new Error("Failed to upload file!");
+                throw new Error(jsonResponse.error);
             }
+
+            setIsLoading(false);
 
             setMessage("File uploaded successfully!");
 
             // push to the lesson page  
-            router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
+            await router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
             
         } catch (error) {
             setIsLoading(false);
             setError(error.message);
         }
-
-        
-        // // timeout to simulate server response
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        //     setMessage("File uploaded successfully!");
-        //     // router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
-        // }, 3000);
     }
 
     return (
@@ -190,7 +185,6 @@ export default function UploadNewFileAttachment(props) {
             }
 
             <h1 className="text-main-title-size font-semibold text-primary-600 text-center mt-3 px-5 w-full text-center text-ellipsis break-words">
-                {/* {"Course - " + props.course?.courseName || props.error || "Lesson Page"} */}
                 {`Upload File Attachment`}
             </h1>
 
@@ -240,6 +234,7 @@ export default function UploadNewFileAttachment(props) {
                 <input
                     type="file"
                     name="file"
+                    onChange={handleFileChange}
                     id="file"
                     className="border-2 border-primary-600 rounded-md px-2 py-1 w-full"
                 />
@@ -248,7 +243,9 @@ export default function UploadNewFileAttachment(props) {
                 <div className="flex gap-3 justify-stretch text-white my-4 text-center">
                     <button
                         type="submit"
-                        className="p-2 bg-primary-600 rounded-lg flex-grow">
+                        className={`p-2 bg-primary-600 rounded-lg flex-grow ${!file || isLoading ? "cursor-not-allowed bg-gray-400" : "cursor-pointer"}`}
+                        disabled={!file || isLoading}
+                        >
                         Upload File
                     </button>
 
