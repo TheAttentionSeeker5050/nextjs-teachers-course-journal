@@ -42,7 +42,6 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            foo: 'bar',
             courseId,
             fileId,
             fileName: fileRecord.fileDisplayName,
@@ -74,14 +73,12 @@ export default function DownloadFile(props) {
     });
   
     return (
-      <div className='p-4 flex flex-col gap-2 text-center'>
-        <h1 className='text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words mb-6'>
+      <div className='p-4 flex flex-col gap-8 text-center'>
+        <h1 className='text-main-title-size font-semibold text-primary-600 text-center my-3 px-5 w-full text-center text-ellipsis break-words'>
             Downloading the file: {fileName}, please wait...
         </h1>
-        <p>Foo: {props.foo}</p>
-        <p>Course ID: {props.courseId}</p>
-        <p>File ID: {fileId}</p>
-        <div className="flex flex-row gap-4 mx-auto text-white">
+        <p>File name: {props.fileName}</p>
+        <div className="flex flex-row gap-4 mx-auto text-white ">
             <Link href={`/api/course/${courseId}/file/${fileId}`} className='px-4 py-2 bg-primary-600 hover:bg-primary-500 rounded-md'>
                 Download
             </Link>
