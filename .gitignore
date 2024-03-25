@@ -36,5 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 #file types docx, pdf, pptx, txt, jpg, jpeg, png, md, doc, xls, xlsx, csv
-./private
+private/**/*
+private/*
 
