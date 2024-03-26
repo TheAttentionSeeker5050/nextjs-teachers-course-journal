@@ -125,10 +125,8 @@ export default function UploadNewFileAttachment(props) {
         const formData = new FormData();
         formData.append("userId", props.userId);
         formData.append("lessonId", props.lessonId);
-        formData.append("file", file);
-
-        // console.log("formDataObj", formDataObj);
-
+        formData.append("file", file); 
+        
         // will attempt to upload the file here
         try {
             // validate the file data
