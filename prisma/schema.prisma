@@ -92,6 +92,7 @@ model FileUpload {
 
 model Note {
   id       Int    @id @default(autoincrement())
+  title    String
   note     String
   userId   Int
   lessonId Int
