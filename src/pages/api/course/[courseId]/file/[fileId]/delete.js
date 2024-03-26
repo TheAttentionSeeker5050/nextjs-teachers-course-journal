@@ -53,7 +53,6 @@ export default async function handler(req, res) {
             res.status(404).json({ error: 'File not found' });
         }
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: 'Something went wrong' });
     }
   }
