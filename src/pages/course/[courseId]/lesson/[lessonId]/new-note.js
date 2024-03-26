@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from '@/components/Navbar';
 import { Inter } from "next/font/google";
-import { createNewNote } from '@/data/dbTransactions/note.dbTransaction';
+import { createNote } from '@/data/dbTransactions/note.dbTransaction';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +23,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
             }
 
             // Create new note in the database
-            await createNewNote(courseId, lessonId, noteContent);
+            await createNote(courseId, lessonId, noteContent);
 
             // Redirect to lesson page after creating the note
             router.push(`/course/${courseId}/lesson/${lessonId}`);
