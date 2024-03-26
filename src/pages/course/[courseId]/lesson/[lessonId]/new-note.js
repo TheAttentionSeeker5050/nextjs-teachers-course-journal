@@ -7,6 +7,7 @@ import { createNote } from '@/data/dbTransactions/note.dbTransaction';
 const inter = Inter({ subsets: ["latin"] });
 
 const NewNotePage = ({ courseId, lessonId }) => {
+    const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -17,15 +18,36 @@ const NewNotePage = ({ courseId, lessonId }) => {
         setLoading(true);
 
         try {
+            // Validate note title
+            if (!noteTitle.trim()) {
+                throw new Error('Note title is required');
+            }
+
             // Validate note content
             if (!noteContent.trim()) {
                 throw new Error('Note content is required');
             }
 
-            // Create new note in the database
-            await createNote(courseId, lessonId, noteContent);
+            // Send a request to the API route to create a new note
+            const response = await fetch('/api/course/${courseId}/note/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: noteTitle,
+                    content: noteContent,
+                    courseId: courseId,
+                    lessonId: lessonId,
+                }),
+            });
 
-            // Redirect to lesson page after creating the note
+            // Check if the request was successful
+            if (!response.ok) {
+                throw new Error('Failed to create note');
+            }
+
+            // Redirect to the lesson page after creating the note
             router.push(`/course/${courseId}/lesson/${lessonId}`);
         } catch (error) {
             setError(error.message);
@@ -33,6 +55,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
             setLoading(false);
         }
     };
+
 
     return (
         <div>
@@ -42,6 +65,19 @@ const NewNotePage = ({ courseId, lessonId }) => {
                     <h1 className="text-3xl font-semibold text-gray-800 mb-4">Add New Note</h1>
                     {error && <p className="text-red-500">{error}</p>}
                     <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
+                        <div className="mb-4">
+                            <label htmlFor="noteTitle" className="block text-sm font-medium text-gray-700">Note Title:</label>
+                            <input
+                                id="noteTitle"
+                                type="text"
+                                value={noteTitle}
+                                onChange={(e) => {
+                                    setNoteTitle(e.target.value)
+                                    console.log(noteTitle)
+                                }}
+                                className="mt-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 px-3 py-2"
+                            />
+                        </div>
                         <div className="mb-4">
                             <label htmlFor="noteContent" className="block text-sm font-medium text-gray-700">Note Content:</label>
                             <textarea
@@ -59,6 +95,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
             </div>
         </div>
     );
+
 };
 
 export default NewNotePage;
