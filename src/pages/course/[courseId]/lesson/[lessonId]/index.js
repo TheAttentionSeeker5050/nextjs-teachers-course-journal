@@ -281,22 +281,18 @@ export default function SingleLesson(
             <h3 className="text-large-content-size font-semibold">
               Recorded Files
             </h3>
-            <ul className="pl-4">
+            <ul className="pl-4 flex flex-col gap-2 laptop:w-8/12 w-full">
               {props.files.map((file, i) => (
                 <FileListElement 
                   key={i}
                   fileUrl={`/course/${props.courseId}/file/${file.id}`} 
-                  fileName={file.fileDisplayName} 
+                  fileName={
+                    file.fileDisplayName.length > 28 ?
+                    file.fileDisplayName.slice(0, 28) + "..." :
+                    file.fileDisplayName
+                  } 
                 />
               ))}
-              {/* <FileListElement 
-                fileUrl={`/course/${props.courseId}/file/1`} 
-                fileName="File-name-1.docx" 
-              />
-              <FileListElement 
-                fileUrl={`/course/${props.courseId}/file/2`} 
-                fileName="File-name-2.docx" 
-              /> */}
             </ul>
           </div>
 
@@ -314,15 +310,18 @@ export default function SingleLesson(
               Saved Notes
             </h3>
 
-            <ul className="pl-4">
-              <NoteListElement 
-                noteUrl={`/course/${props.courseId}/note/1`} 
-                noteName="Note name 1" 
-              />
-              <NoteListElement 
-                noteUrl={`/course/${props.courseId}/note/1`} 
-                noteName="Note name 2" 
-              />
+            <ul className="pl-4 flex flex-col gap-2 laptop:w-8/12 w-full">
+              {props.notes.map((note, i) => (
+                <NoteListElement 
+                  key={i}
+                  noteUrl={`/course/${props.courseId}/note/${note.id}`} 
+                  noteName={
+                    note.note.length > 28 ? 
+                    note.note.slice(0, 28) + "..." : 
+                    note.note
+                  } 
+                />
+              ))}
             </ul>
           </div>
         </section>
