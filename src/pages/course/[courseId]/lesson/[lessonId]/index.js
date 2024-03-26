@@ -125,8 +125,6 @@ export const getServerSideProps = async (context) => {
       }
     });
 
-    // console.log(files);
-
     const notes = await prisma.note.findMany({
       where: {
         lessonId: parseInt(lessonId)
