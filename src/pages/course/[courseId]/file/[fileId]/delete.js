@@ -119,11 +119,11 @@ export default function DeleteFileAttachment(props) {
                 <p>File name: {props.fileName}</p>
                 <form className="flex flex-row gap-4 mx-auto text-white" onSubmit={handleSubmit}>
                     <button type='submit' className='px-4 py-2 bg-primary-600 hover:bg-primary-500 rounded-md'>
-                        Download
+                        Delete
                     </button>
         
                     <Link href={`/course/${courseId}`} className='px-4 py-2 bg-gray-500 hover:bg-gray-400 rounded-md'>
-                        Back to course
+                        Cancel
                     </Link>
                 </form>
             
