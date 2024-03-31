@@ -3,6 +3,8 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { validateFileExtension, validateFileSize, validateFileName } from '@/utils/validation/validateFiles';
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -49,11 +51,25 @@ export default async function handler(req, res) {
 
     try {
 
+      // validate file name to be a string and no longer than 100 characters
+      const fileName = file.originalname;
+      if (validateFileName(fileName) !== null) {
+        res.status(400).json({ error: 'File name must be less than 100 characters' });
+        return;
+      }
+
       // only allow the following file types: docx, pdf, pptx, txt, jpg, jpeg, png, md, doc, xls, xlsx, csv
-      const allowedFileTypes = ['docx', 'pdf', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'md', 'doc', 'xls', 'xlsx', 'csv'];
       const fileExtension = file.originalname.split('.').pop();
-      if (!allowedFileTypes.includes(fileExtension)) {
+      if (validateFileExtension(fileExtension) !== null) {
         res.status(400).json({ error: 'Invalid file type: only docx, pdf, pptx, txt, jpg, jpeg, png, md, doc, xls, xlsx, csv are allowed' });
+        return;
+      }
+
+
+      // validate file size to be a number and no larger than 10MB
+      const fileSize = file.size;
+      if (validateFileSize(fileSize) !== null) {
+        res.status(400).json({ error: 'File size must be less than 10MB' });
         return;
       }
 
