@@ -8,16 +8,19 @@ import prisma from "@/data/prisma";
 // create a course
 const createCourse = async ({
     courseName,
-    userId
+    userId,
+    hideCourse
 }) => {
 
-    // console.log("courseName:", courseName, typeof courseName)
-    // console.log("userId:", userId, typeof userId)
-    // add the course to the database
+    // have hidden course as a boolean
+    const hideCourseBool = hideCourse.toLowerCase() === 'true';
+
     const createdCourse = await prisma.course.create({
         data: {
             courseName: courseName,
-            userId: userId
+            userId: userId,
+            // parse to boolean
+            isArchived: hideCourseBool
         }
     });
 
@@ -74,7 +77,8 @@ const getCourseById = async (id) => {
         return course;
 
     } catch (error) {
-        throw new Error("There was a problem retrieving the course data, please try again later");
+        // console.error('Error getting course by id:', error);
+        throw new Error("There was a problem updating the course data, please try again later");
     }
 }
 
@@ -109,7 +113,44 @@ const getCourseByIdWithChildren = async (id) => {
 
 const updateCourse = async ({
     id,
-    newCourseName
+    newCourseName,
+    hideCourse
+}) => {
+
+    // get the course by id
+    const course = await getCourseById(id);
+
+    // if the course is not retrieved, we will throw an error
+    if (!course) {
+        throw new Error("There was a problem retrieving the course, please try again later");
+    }
+
+    // have hidden course as a boolean
+    const hideCourseBool = hideCourse.toLowerCase() === 'true';
+
+    // update the course
+    const updatedCourse = await prisma.course.update({
+        where: {
+            id: id
+        },
+        data: {
+            courseName: newCourseName,
+            isArchived: hideCourseBool
+        }
+    });
+
+    // if the course is not updated, we will throw an error
+    if (!updatedCourse) {
+        throw new Error("There was a problem updating the course, please try again later");
+    }
+
+    return updatedCourse;
+}
+
+// update course thumbnail
+const updateCourseThumbnail = async ({
+    id,
+    newThumbnail
 }) => {
 
     // get the course by id
@@ -126,7 +167,7 @@ const updateCourse = async ({
             id: id
         },
         data: {
-            courseName: newCourseName,
+            thumbnail: newThumbnail
         }
     });
 
@@ -170,5 +211,6 @@ export {
     getCourseById,
     updateCourse,
     deleteCourse,
-    getCourseByIdWithChildren
+    getCourseByIdWithChildren,
+    updateCourseThumbnail
 }

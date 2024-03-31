@@ -39,3 +39,7 @@ next-env.d.ts
 private/**/*
 private/*
 
+public/thumbnails
+public/thumbnails/**/*
+public/uploads
+public/uploads/**/*

@@ -10,11 +10,11 @@ export const validateFileName = (fileName) => {
 };
 
 // validate file size to be a number and no larger than 10MB
-export const validateFileSize = (fileSize) => {
+export const validateFileSize = (fileSize, maxFileExtenstion = 10000000) => {
     if (typeof fileSize !== 'number') {
         return 'File size must be a number';
     }
-    if (fileSize > 10000000) {
+    if (fileSize > maxFileExtenstion) {
         return 'File size must be less than 10MB';
     }
     return null;
@@ -23,13 +23,14 @@ export const validateFileSize = (fileSize) => {
 // allowed file extensions
 const allowedExtensions = ['docx', 'pdf', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'md', 'doc', 'xls', 'xlsx', 'csv', 'zip', 'rar', '7z', 'sql'];
 // validate file extension to be a string and match the allowed extensions
-export const validateFileExtension = (fileExtension) => {
+export const validateFileExtension = (fileExtension, myAllowedExtensions = allowedExtensions) => {
     if (typeof fileExtension !== 'string') {
         return 'File extension must be a string';
     }
-    if (!allowedExtensions.includes(fileExtension)) {
+    if (!myAllowedExtensions.includes(fileExtension)) {
         return 'File extension is not allowed';
     }
+
     return null;
 };
 

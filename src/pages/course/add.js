@@ -21,6 +21,10 @@ export default function AddCourse() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // delete the error and success messages
+        setErrorMessage('');
+        setSuccessMessage('');
+
         // set is loading
         setIsLoading(true);
 
@@ -46,9 +50,6 @@ export default function AddCourse() {
 
             const response = await fetch('/api/course/new', {
                 method: 'POST',
-                // headers: {
-                //     'Content-Type': 'application/json'
-                // },
                 body: formData
             });
 
@@ -59,6 +60,8 @@ export default function AddCourse() {
                 setIsLoading(false);
 
                 setSuccessMessage('Course added successfully!');
+
+
                 // Redirect after a short delay
                 setTimeout(() => {
                     router.push('/');
@@ -78,9 +81,22 @@ export default function AddCourse() {
             <Navbar isLoggedIn={true} />
             <div className={`${inter.className} flex flex-col items-center justify-center mt-8`}>
                 <h1 className="text-3xl font-bold mb-6">Add Course</h1>
+                
+                {/* show loading screen */}
+                {isLoading && (
+                    <p className="text-blue-500 mb-4">Loading...</p>
+                )}
+                
+                {/* show success message */}
                 {successMessage && (
                     <p className="text-green-500 mb-4">{successMessage}</p>
                 )}
+
+                {/* show error message */}
+                {errorMessage && (
+                    <p className="text-red-500 mb-4">{errorMessage}</p>
+                )}
+
                 <form onSubmit={handleSubmit} className="flex flex-col items-center">
                     <label htmlFor="courseName" className="text-lg mb-2">Course Name:</label>
                     <input
@@ -97,6 +113,7 @@ export default function AddCourse() {
                         type="file"
                         className="border border-gray-400 rounded px-3 py-2 mb-4"
                         onChange={(e) => setThumbnail(e.target.files[0])}
+                        accept=".png, .jpg, .jpeg"
                     />
 
                     <div className="flex items-center  gap-3 mb-4">
