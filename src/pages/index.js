@@ -6,6 +6,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 import { getCoursesByUserId } from "@/data/dbTransactions/course.dbTransaction";
 
+// import fontawesome arrow down
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 
 // import component CourseDashCard and Navbar
 import CourseDashCard from '@/components/CourseDashCard';
@@ -68,15 +74,16 @@ export default function Home(props) {
 
   // the isLoading state variable
   const [isLoading, setIsLoading] = useState(true);
-
+  const [archiveCoursesCollapsed, setArchiveCoursesCollapsed] = useState(true);
   useEffect(() => {
     setIsLoading(false);
-  },
-    []);
+  }, []);
+
+  
 
   return (
     <main
-      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 w-full overflow-hidden`}
+      className={`${inter.className} flex flex-col items-center min-h-screen gap-5 w-full overflow-hidden mb-12`}
     >
       {isLoading === true &&
         <SpinnerComponent isLoadingState={isLoading} />
@@ -108,18 +115,52 @@ export default function Home(props) {
           ?
           <p className="text-lg text-red-500 ">{props.error}</p>
           :
-          <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
-            {
-              props.courses.map((course) => {
-                // if image thumbnail is not available, we will use the default image
+          <>
+            <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
+              {
+                // filter by hidden courses equals to false
+                props.courses
+                .filter((course) => course.isArchived === false)
+                .map((course) => {
                 
-                return CourseDashCard({ course: course, imageUrl: 
-                  course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl
-                });
+                  // if image thumbnail is not available, we will use the default image
+                  return CourseDashCard({ course: course, imageUrl: 
+                    course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl
+                  });
 
-              })
-            }
-          </div>
+                })
+              }
+            </div>
+            {/* make a toggle section for the isArchived === true courses */}
+            <button className="text-lg place-self-start max-w-6xl mx-auto w-full px-5 py-3 border-2 border-primary-500 text-primary-500 font-semibold flex justify-between items-center" onClick={ 
+              () => setArchiveCoursesCollapsed(!archiveCoursesCollapsed) 
+              }>
+              <span>Show Archived Courses</span>
+              {
+                archiveCoursesCollapsed === true
+                  ?
+                    <FontAwesomeIcon icon={faChevronDown} />
+                  :
+                    <FontAwesomeIcon icon={faChevronUp} />
+              }
+            </button>
+            
+            <div className={`grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5 ${archiveCoursesCollapsed ? 'hidden' : ''}`}>
+              {
+                // filter by hidden courses equals to true
+                props.courses
+                .filter((course) => course.isArchived === true)
+                .map((course) => {
+                
+                  // if image thumbnail is not available, we will use the default image
+                  return CourseDashCard({ course: course, imageUrl: 
+                    course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl
+                  });
+
+                })
+              }
+            </div>
+          </>
       }
     </main>
   );
