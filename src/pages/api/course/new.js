@@ -92,8 +92,6 @@ export default async function handler(req, res) {
                 // move the file to the public directory
                 fs.renameSync(thumbnail.path, path.join(process.cwd(), 'public/thumbnails', newFileName));
 
-                console.log('Course id:', newCourse.id);
-
                 // update the course with the new thumbnail
                 await updateCourseThumbnail({
                         id: newCourse.id,
@@ -104,7 +102,6 @@ export default async function handler(req, res) {
                 return res.status(201).json({ message: 'Course created successfully' });
 
             } catch (error) {
-                console.log(error)
                 return res.status(500).json({ error: error.message });
             }
         });
