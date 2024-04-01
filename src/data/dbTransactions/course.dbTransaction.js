@@ -39,6 +39,11 @@ const getCoursesByUserId = async (userId) => {
     const courses = await prisma.course.findMany({
         where: {
             userId: userId
+        },
+        // order by id ascending
+        orderBy: {
+            // dateCreated: 'asc'
+            id: 'asc'
         }
     });
 

@@ -63,12 +63,14 @@ export const getServerSideProps = async (context) => {
 export default function Home(props) {
 
   // for the moment we have a dummy image, which we get from the following url
-  const imageUrl = "/api/images?imageName=course-image.png"
+  // const imageUrl = "/api/images?imageName=course-image.png"
+  const imageUrl = "/api/images?imageName=default"
 
   // the isLoading state variable
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // console.log(props.courses);
     setIsLoading(false);
   },
     []);
@@ -110,7 +112,11 @@ export default function Home(props) {
           <div className="grid grid-cols-1 mobile:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 max-w-6xl gap-6 my-5">
             {
               props.courses.map((course) => {
-                return CourseDashCard({ course: course, imageUrl: imageUrl });
+                // if image thumbnail is not available, we will use the default image
+                
+                return CourseDashCard({ course: course, imageUrl: 
+                  course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl
+                });
 
               })
             }
