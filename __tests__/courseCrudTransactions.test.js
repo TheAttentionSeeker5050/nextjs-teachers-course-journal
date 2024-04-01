@@ -35,7 +35,7 @@ describe("Course CRUD Transactions", () => {
         const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
         // create a course
-        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
 
         // get the course by id
         const retrievedCourse = await getCourseById(createdCourse.id);
@@ -74,9 +74,9 @@ describe("Course CRUD Transactions", () => {
         const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
         // create a course
-        const createdCourse1 = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
-        const createdCourse2 = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
-        const createdCourse3 = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+        const createdCourse1 = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
+        const createdCourse2 = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
+        const createdCourse3 = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
 
         // get the courses by user id
         const retrievedCourses = await getCoursesByUserId(createdUser.id);
@@ -120,10 +120,10 @@ describe("Course CRUD Transactions", () => {
         const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
         // create a course
-        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
 
         // update the course
-        const updatedCourse = await updateCourse({id: createdCourse.id, courseName: "Potions", userId: createdUser.id});
+        const updatedCourse = await updateCourse({id: createdCourse.id, courseName: "Potions", userId: createdUser.id, hideCourse: "false"});
 
         // get the course by id
         const retrievedCourse = await getCourseById(createdCourse.id);
@@ -161,7 +161,7 @@ describe("Course CRUD Transactions", () => {
         const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
         // create a course
-        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
 
         // delete the course
         await Prisma.course.delete({
@@ -195,7 +195,7 @@ describe("Course CRUD Transactions", () => {
         const createdUser = await createUser({email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization});
 
         // create a course
-        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id});
+        const createdCourse = await createCourse({courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false"});
 
         // // delete the user
         // await Prisma.user.delete({

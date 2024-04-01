@@ -40,7 +40,7 @@ describe("Unit CRUD Transactions", () => {
         const createdUser = await createUser({ email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization });
 
         // create a course
-        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id });
+        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false" });
 
         // create a unit
         const createdUnit = await createUnit({ unitName: unitData.unitName, courseId: createdCourse.id });
@@ -67,7 +67,7 @@ describe("Unit CRUD Transactions", () => {
         const createdUser = await createUser({ email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization });
 
         // create a course
-        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id });
+        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false" });
 
         // create a unit
         const createdUnit = await createUnit({ unitName: unitData.unitName, courseId: createdCourse.id });
@@ -121,7 +121,7 @@ describe("Unit CRUD Transactions", () => {
         const createdUser = await createUser({ email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization });
 
         // create a course
-        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id });
+        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false" });
 
         // // create the units
         const createdUnit1 = await createUnit({ unitName: initialUnitNamesAndNumbers[0].unitName, courseId: createdCourse.id });
@@ -177,7 +177,7 @@ describe("Unit CRUD Transactions", () => {
         const createdUser = await createUser({ email: userData.email, password: userData.password, firstName: userData.firstName, lastName: userData.lastName, title: userData.title, organization: userData.organization });
 
         // create a course
-        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id });
+        const createdCourse = await createCourse({ courseName: courseData.courseName, userId: createdUser.id, hideCourse: "false" });
 
         // // create the units
         const createdUnit1 = await createUnit({ unitName: initialUnitNamesAndNumbers[0].unitName, courseId: createdCourse.id });
@@ -205,11 +205,6 @@ describe("Unit CRUD Transactions", () => {
         expectedUnitNamesAndNumbers.forEach(expectedUnit => {
             // find the unit number of the expected unit name
             const retrievedUnitNumber = retrievedUnits.find(unit => unit.unitName === expectedUnit.unitName).unitNumber;
-
-            // console.log(retrievedUnitNumber, 
-            //     expectedUnit.unitNumber,
-            //     expectedUnit.unitName
-            // );
 
             // expect the retrieved unit number to be the same as the expected unit number
             expect(retrievedUnitNumber).toEqual(expectedUnit.unitNumber);
