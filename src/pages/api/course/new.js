@@ -1,11 +1,10 @@
 import { createCourse, getCourseById, updateCourseThumbnail } from '@/data/dbTransactions/course.dbTransaction';
 
-import prisma from '@/data/prisma';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
-import { validateFileExtension, validateFileSize, validateFileName } from '@/utils/validation/validateFiles';
+import { validateFileExtension, validateFileSize } from '@/utils/validation/validateFiles';
+import { validateCourseOwnership } from '@/utils/validation/validateCourseOwnership';
 
 
 // Define storage location and filename
@@ -26,12 +25,19 @@ export const config = {
 
 
 export default async function handler(req, res) {
+    const { courseId } = req.query;
+
     if (req.method === 'POST') {
         // Get userId from user payload
         const userId = req.headers['x-user-payload'] ? JSON.parse(req.headers['x-user-payload']).userId : null;
 
         // Check if userId is available
         if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        // validate user ownership of course
+        if (!validateCourseOwnership(courseId, userId)) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
@@ -49,12 +55,14 @@ export default async function handler(req, res) {
 
             // get the request data and file
             const thumbnail = req.file;
-            const thumbnailName = thumbnail.originalname;
-            const { courseName, hideCourse } = req.body;
-
+            
             if (!thumbnail) {
                 return res.status(400).json({ error: 'No thumbnail uploaded' });
             }
+            
+            const thumbnailName = thumbnail.originalname;
+            const { courseName, hideCourse } = req.body;
+
 
             try {
                 // validate file to be an image
@@ -79,7 +87,7 @@ export default async function handler(req, res) {
                 }
 
                 // make a new file name to be: courseName + courseId + 'thumbnail' + fileExtension, separated by '-'
-                const newFileName = `${newCourse.courseId}-${courseName.toLowerCase()}-thumbnail.${fileExtension}`;
+                const newFileName = `${newCourse.id}-${courseName.toLowerCase()}-thumbnail.${fileExtension}`;
                 
                 // move the file to the public directory
                 fs.renameSync(thumbnail.path, path.join(process.cwd(), 'public/thumbnails', newFileName));
@@ -93,11 +101,7 @@ export default async function handler(req, res) {
                     });
 
                 // get the updated course data
-                const updatedCourse = await getCourseById(newCourse.id);
-
-                // return the course data response
-                return res.status(201).json(updatedCourse);
-
+                return res.status(201).json({ message: 'Course created successfully' });
 
             } catch (error) {
                 console.log(error)

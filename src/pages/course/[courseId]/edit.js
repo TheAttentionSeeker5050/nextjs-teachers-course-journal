@@ -33,7 +33,7 @@ const EditCoursePage = ({ initialCourse }) => {
         // the form data
         const formData = new FormData();
         formData.append('courseName', courseName);
-        formData.append('thumbnail', thumbnail ? thumbnail : '');
+        formData.append('thumbnail', thumbnail);
         formData.append('hideCourse', hideCourse);
 
         // logic to submit updated course data to the API
@@ -46,9 +46,6 @@ const EditCoursePage = ({ initialCourse }) => {
 
             const response = await fetch(`/api/course/${courseId}/edit`, {
                 method: 'POST',
-                // headers: {
-                //     'Content-Type': 'application/json'
-                // },
                 body: formData
             });
 
@@ -82,8 +79,22 @@ const EditCoursePage = ({ initialCourse }) => {
             <div className={`${inter.className} min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8`}>
                 <div className="max-w-3xl mx-auto">
                     <h1 className="text-3xl font-semibold text-gray-800 mb-4 text-center">Edit Course</h1>
-                    {loading && <p>Loading...</p>}
-                    {error && <p className="text-red-500">{error}</p>}
+
+                    {loading && <p className="text-lg my-2 text-center">Loading...</p>}
+                    
+                    {
+                        error && 
+                        <p className="text-red-500 my-2 text-center">
+                            {error}
+                        </p>
+                    }
+
+                    {
+                        successMessage &&
+                        <p className="text-green-500 my-2 text-center">
+                            {successMessage}
+                        </p>
+                    }
                     {!loading && !error && (
                         <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
                             <div className="mb-4">
@@ -96,16 +107,6 @@ const EditCoursePage = ({ initialCourse }) => {
                                     className="mt-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 px-3 py-2"
                                 />
                             </div>
-                            <div className="mb-4 ">
-                                <label htmlFor="hideCourse" className="block text-sm font-medium text-gray-700">Hide Course:</label>
-                                <input
-                                    id="hideCourse"
-                                    type="checkbox"
-                                    className="mt-2 block"
-                                    checked={hideCourse}
-                                    onChange={(e) => setHideCourse(e.target.checked)}
-                                />
-                            </div>
 
                             <div className="mb-4">
                                 <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700">Thumbnail:</label>
@@ -114,6 +115,18 @@ const EditCoursePage = ({ initialCourse }) => {
                                     type="file"
                                     className="mt-2 block"
                                     onChange={(e) => setThumbnail(e.target.files[0])}
+                                    accept=".png, .jpg, .jpeg"
+                                />
+                            </div>
+
+                            <div className="mb-4 ">
+                                <label htmlFor="hideCourse" className="block text-sm font-medium text-gray-700">Hide Course:</label>
+                                <input
+                                    id="hideCourse"
+                                    type="checkbox"
+                                    className="mt-2 block"
+                                    checked={hideCourse}
+                                    onChange={(e) => setHideCourse(e.target.checked)}
                                 />
                             </div>
 
