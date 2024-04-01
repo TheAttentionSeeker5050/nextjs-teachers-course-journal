@@ -153,7 +153,7 @@ export async function getServerSideProps(context) {
             props: { initialCourse }
         };
     } catch (error) {
-        console.error('Error fetching course data:', error);
+        
         return {
             props: { initialCourse: null }
         };

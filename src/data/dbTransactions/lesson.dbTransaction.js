@@ -3,14 +3,6 @@
 // import the prisma client
 import prisma from "../prisma";
 
-// lesson columns
-// id
-// lessonName
-// lessonNumber
-// unitId
-// comletionStatus
-// epectedOutcomes
-// assessment
 
 
 

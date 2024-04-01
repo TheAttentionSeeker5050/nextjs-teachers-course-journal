@@ -70,7 +70,6 @@ export default function Home(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // console.log(props.courses);
     setIsLoading(false);
   },
     []);

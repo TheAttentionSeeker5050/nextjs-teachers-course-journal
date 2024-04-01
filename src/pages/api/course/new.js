@@ -49,62 +49,106 @@ export default async function handler(req, res) {
         // attempt to upload the course thumbnail
         upload.single('thumbnail')(req, res, async (err) => {
 
-            if (err) {
-                return res.status(500).json({ error: 'Error uploading file' });
-            }
-
-            // get the request data and file
-            const thumbnail = req.file;
-            
-            if (!thumbnail) {
-                return res.status(400).json({ error: 'No thumbnail uploaded' });
-            }
-            
-            const thumbnailName = thumbnail.originalname;
-            const { courseName, hideCourse } = req.body;
-
-
             try {
-                // validate file to be an image
-                const fileExtension = thumbnailName.split('.').pop();
-                const allowedExtensions = ['jpg', 'jpeg', 'png'];
-                if (validateFileExtension(fileExtension, allowedExtensions) !== null) {
-                    return res.status(400).json({ error: 'Invalid file type: only jpg, jpeg, png are allowed' });
+                if (err) {
+                    return res.status(500).json({ error: 'Error uploading file' });
                 }
 
-                // validate file size to be less than 10MB
-                const fileSize = thumbnail.size;
-                if (validateFileSize(fileSize) !== null) {
-                    return res.status(400).json({ error: 'File size must be less than 10MB' });
-                }
+                // get the request data and file
+                const thumbnail = req.file;
+                const { courseName, hideCourse } = req.body;
 
                 // create the course entry on db
                 const newCourse = await createCourse({ courseName, userId, hideCourse });
 
-                // validate the course creation
+
                 if (!newCourse) {
                     return res.status(500).json({ error: 'Failed to create course' });
                 }
-
-                // make a new file name to be: courseName + courseId + 'thumbnail' + fileExtension, separated by '-'
-                const newFileName = `${newCourse.id}-${courseName.toLowerCase()}-thumbnail.${fileExtension}`;
                 
-                // move the file to the public directory
-                fs.renameSync(thumbnail.path, path.join(process.cwd(), 'public/thumbnails', newFileName));
+                if (thumbnail) {
+                    // get the thumbnail file name
+                    const thumbnailName = thumbnail.originalname;
+                    // get the thumbnail file extension
+                    const fileExtension = thumbnailName.split('.').pop();
+                    // get the allowed file extensions
+                    const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-                // update the course with the new thumbnail
-                await updateCourseThumbnail({
+                    // validate file extension
+                    if (validateFileExtension(fileExtension, allowedExtensions) !== null) {
+                        return res.status(400).json({ error: 'Invalid file type: only jpg, jpeg, png are allowed' });
+                    }
+
+                    // validate file size to be less than 10MB
+                    const fileSize = thumbnail.size;
+                    if (validateFileSize(fileSize) !== null) {
+                        return res.status(400).json({ error: 'File size must be less than 10MB' });
+                    }
+
+                    // make a new file name to be: courseName + courseId + 'thumbnail' + fileExtension, separated by '-'
+                    const newFileName = `${newCourse.id}-${courseName.toLowerCase()}-thumbnail.${fileExtension}`;
+
+                    // move the file to the public directory
+                    fs.renameSync(thumbnail.path, path.join(process.cwd(), 'public/thumbnails', newFileName));
+
+                    // update the course with the new thumbnail
+                    await updateCourseThumbnail({
                         id: newCourse.id,
                         newThumbnail: newFileName
                     });
-
-                // get the updated course data
-                return res.status(201).json({ message: 'Course created successfully' });
-
+                }
+            
+            const thumbnailName = thumbnail.originalname;
+            
+        
             } catch (error) {
                 return res.status(500).json({ error: error.message });
             }
         });
+
+        //     try {
+        //         // validate file to be an image
+        //         const fileExtension = thumbnailName.split('.').pop();
+        //         const allowedExtensions = ['jpg', 'jpeg', 'png'];
+        //         if (validateFileExtension(fileExtension, allowedExtensions) !== null) {
+        //             return res.status(400).json({ error: 'Invalid file type: only jpg, jpeg, png are allowed' });
+        //         }
+
+        //         // validate file size to be less than 10MB
+        //         const fileSize = thumbnail.size;
+        //         if (validateFileSize(fileSize) !== null) {
+        //             return res.status(400).json({ error: 'File size must be less than 10MB' });
+        //         }
+
+        //         // create the course entry on db
+        //         const newCourse = await createCourse({ courseName, userId, hideCourse });
+
+        //         // validate the course creation
+        //         if (!newCourse) {
+        //             return res.status(500).json({ error: 'Failed to create course' });
+        //         }
+
+        //         // make a new file name to be: courseName + courseId + 'thumbnail' + fileExtension, separated by '-'
+        //         const newFileName = `${newCourse.id}-${courseName.toLowerCase()}-thumbnail.${fileExtension}`;
+                
+        //         // move the file to the public directory
+        //         fs.renameSync(thumbnail.path, path.join(process.cwd(), 'public/thumbnails', newFileName));
+
+        //         // update the course with the new thumbnail
+        //         await updateCourseThumbnail({
+        //                 id: newCourse.id,
+        //                 newThumbnail: newFileName
+        //             });
+
+        //         // get the updated course data
+        //         return res.status(201).json({ message: 'Course created successfully' });
+
+        //     } catch (error) {
+        //         return res.status(500).json({ error: error.message });
+        //     }
+        // });
+
+        res.status(200).json({ message: 'Course created successfully' });
     } else {
         res.status(405).json({ error: 'Method Not Allowed' });
     }

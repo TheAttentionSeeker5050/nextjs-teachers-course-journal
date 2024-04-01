@@ -42,12 +42,6 @@ export default function AddCourse() {
                 return;
             }
 
-            // validate thumbnail
-            if (thumbnail === '') {
-                setErrorMessage('Thumbnail is required');
-                return;
-            }
-
             const response = await fetch('/api/course/new', {
                 method: 'POST',
                 body: formData

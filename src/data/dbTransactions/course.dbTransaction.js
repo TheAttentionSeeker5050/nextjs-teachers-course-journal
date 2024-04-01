@@ -82,7 +82,6 @@ const getCourseById = async (id) => {
         return course;
 
     } catch (error) {
-        // console.error('Error getting course by id:', error);
         throw new Error("There was a problem updating the course data, please try again later");
     }
 }

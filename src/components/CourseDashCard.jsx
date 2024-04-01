@@ -4,7 +4,6 @@ import Link from 'next/link';
 import CourseOptionsMenu from './CourseOptionsMenu';
 
 const CourseDashCard = ({ course, imageUrl }) => {
-  console.log('imageUrl', imageUrl);
   return (
     <div className="relative mx-auto flex flex-col justify-start gap-2" key={course.id}>
       <CourseOptionsMenu courseId={course.id} />

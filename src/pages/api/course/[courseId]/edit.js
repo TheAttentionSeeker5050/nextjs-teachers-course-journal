@@ -86,6 +86,7 @@ export default async function handler(req, res) {
 
             // we want the new course upload to be optional
             if (thumbnail) {
+                
                 // get thumbnail name
                 const thumbnailName = thumbnail.originalname;
                 // get the file extension
@@ -108,8 +109,10 @@ export default async function handler(req, res) {
                 fs.renameSync(thumbnail.path, path.join(process.cwd(), 'public/thumbnails', newFileName));
 
                 // if the new name and old name are not the same, and the old name exists, delete the old thumbnail
-                if (newFileName !== oldThumbnail && fs.existsSync(path.join(process.cwd(), 'public/thumbnails', oldThumbnail))) {
-                    fs.unlinkSync(path.join(process.cwd(), 'public/thumbnails', oldThumbnail));
+                if (oldThumbnail) {
+                    if (newFileName !== oldThumbnail && fs.existsSync(path.join(process.cwd(), 'public/thumbnails', oldThumbnail))) {
+                        fs.unlinkSync(path.join(process.cwd(), 'public/thumbnails', oldThumbnail));
+                    }
                 }
 
                 // update the course with the new thumbnail
@@ -119,7 +122,7 @@ export default async function handler(req, res) {
                 });
 
                 
-            }
+            } 
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

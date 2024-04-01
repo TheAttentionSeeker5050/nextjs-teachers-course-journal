@@ -42,8 +42,6 @@ export default async function handler(req, res) {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        console.log("Deleting course:", courseFromDB);
-
         // delete the thumbnail if it exists
         if (courseFromDB.thumbnail !== null) {
             const thumbnailPath = path.join(process.cwd(), 'public/thumbnails', courseFromDB.thumbnail);
@@ -59,7 +57,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ message: "Course deleted successfully" });
     } catch (error) {
         // Return a server error if an error occurs
-        console.error("Error deleting course:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 }
