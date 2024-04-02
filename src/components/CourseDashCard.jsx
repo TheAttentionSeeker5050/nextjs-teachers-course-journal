@@ -15,7 +15,7 @@ const CourseDashCard = ({ course, imageUrl, triggerCourseDropdown, setTriggerCou
             alt={course.courseName + " Thumbnail"}
             width={200}
             height={200}
-            className="mx-auto w-max h-max object-cover rounded-lg flex-grow shadow-md shadow-slate-500"
+            className="mx-auto w-fit h-fit object-cover rounded-lg flex-grow shadow-md shadow-slate-500"
           />
           {/* if the course name is longer than 30 characters, we will show the first 30 characters and add "..." */}
           <p className="text-large-content-size text-secondary-500 text-center">
