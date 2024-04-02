@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from '@/components/Navbar';
 import { Inter } from "next/font/google";
-import { createNote } from '@/data/dbTransactions/note.dbTransaction';
+import CustomEditor from "@/components/editorComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +12,10 @@ const NewNotePage = ({ courseId, lessonId }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const router = useRouter();
+
+    // the tinyMCE editor reference hook
+    const assessmentEditorRef = useRef(null);
+    const expectedOutcomesEditorRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,7 +33,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
             }
 
             // Send a request to the API route to create a new note
-            const response = await fetch('/api/course/${courseId}/note/new', {
+            const response = await fetch(`/api/course/${courseId}/note/new`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,7 +59,6 @@ const NewNotePage = ({ courseId, lessonId }) => {
             setLoading(false);
         }
     };
-
 
     return (
         <div>
@@ -95,7 +98,20 @@ const NewNotePage = ({ courseId, lessonId }) => {
             </div>
         </div>
     );
-
 };
 
+export async function getServerSideProps(context) {
+    const { courseId, lessonId } = context.params;
+    return {
+        props: {
+            courseId: courseId,
+            lessonId: lessonId
+        }
+    };
+}
+
 export default NewNotePage;
+
+
+
+
