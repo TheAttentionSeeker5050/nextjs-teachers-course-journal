@@ -87,7 +87,7 @@ export default async function (req, res) {
         const updatedLesson = await updateLesson({
             id: parseInt(lessonId),
             lessonName: formData.lessonName,
-            completionStatus: formData.completedStatus,
+            completionStatus: formData.completionStatus,
             expectedOutcomes: formData.expectedOutcomes,
             assessment: formData.assessment
         });
