@@ -79,6 +79,9 @@ export default function Home(props) {
     setIsLoading(false);
   }, []);
 
+  // make a variable to trigger the course dropdown menus
+  const [triggerCourseDropdown, setTriggerCourseDropdown] = useState(false);
+
   
 
   return (
@@ -124,8 +127,11 @@ export default function Home(props) {
                 .map((course) => {
                 
                   // if image thumbnail is not available, we will use the default image
-                  return CourseDashCard({ course: course, imageUrl: 
-                    course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl
+                  return CourseDashCard({ 
+                    course: course, 
+                    imageUrl: course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl,
+                    triggerCourseDropdown: triggerCourseDropdown,
+                    setTriggerCourseDropdown: setTriggerCourseDropdown,
                   });
 
                 })
@@ -153,8 +159,11 @@ export default function Home(props) {
                 .map((course) => {
                 
                   // if image thumbnail is not available, we will use the default image
-                  return CourseDashCard({ course: course, imageUrl: 
-                    course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl
+                  return CourseDashCard({ 
+                    course: course, 
+                    imageUrl: course.thumbnail ? `/api/images?imageName=${course.thumbnail}` : imageUrl,
+                    triggerCourseDropdown: triggerCourseDropdown,
+                    setTriggerCourseDropdown: setTriggerCourseDropdown,
                   });
 
                 })

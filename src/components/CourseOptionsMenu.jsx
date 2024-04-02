@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
-const CourseOptionsMenu = ({ courseId }) => {
+const CourseOptionsMenu = ({ courseId, triggerCourseDropdown, setTriggerCourseDropdown }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggleDropdown = () => {
+    const toggleDropdown = async () => {
+        await setTriggerCourseDropdown(!triggerCourseDropdown);
         setIsOpen(!isOpen);
     };
+
+    useEffect(() => {
+        setIsOpen(false);
+    }, [triggerCourseDropdown]);
 
     return (
         <div className="relative">
