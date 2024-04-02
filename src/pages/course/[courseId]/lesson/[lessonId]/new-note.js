@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from '@/components/Navbar';
 import { Inter } from "next/font/google";
@@ -13,9 +13,8 @@ const NewNotePage = ({ courseId, lessonId }) => {
     const [error, setError] = useState(null);
     const router = useRouter();
 
-    // the tinyMCE editor reference hook
-    const assessmentEditorRef = useRef(null);
-    const expectedOutcomesEditorRef = useRef(null);
+    // Refs for TinyMCE editors
+    const noteContentEditorRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,10 +26,8 @@ const NewNotePage = ({ courseId, lessonId }) => {
                 throw new Error('Note title is required');
             }
 
-            // Validate note content
-            if (!noteContent.trim()) {
-                throw new Error('Note content is required');
-            }
+            // Get note content from TinyMCE editor
+            const noteContent = noteContentEditorRef.current.getContent();
 
             // Send a request to the API route to create a new note
             const response = await fetch(`/api/course/${courseId}/note/new`, {
@@ -76,18 +73,17 @@ const NewNotePage = ({ courseId, lessonId }) => {
                                 value={noteTitle}
                                 onChange={(e) => {
                                     setNoteTitle(e.target.value)
-                                    console.log(noteTitle)
                                 }}
                                 className="mt-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 px-3 py-2"
                             />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="noteContent" className="block text-sm font-medium text-gray-700">Note Content:</label>
-                            <textarea
-                                id="noteContent"
-                                value={noteContent}
-                                onChange={(e) => setNoteContent(e.target.value)}
-                                className="mt-2 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-32 px-3 py-2"
+                            {/* TinyMCE Editor */}
+                            <CustomEditor
+                                apiKey={process.env.TINYMCE_API_KEY}
+                                fieldName="noteContent"
+                                editorRef={noteContentEditorRef}
                             />
                         </div>
                         <button type="submit" className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:bg-primary-600" disabled={loading}>
@@ -111,7 +107,3 @@ export async function getServerSideProps(context) {
 }
 
 export default NewNotePage;
-
-
-
-
