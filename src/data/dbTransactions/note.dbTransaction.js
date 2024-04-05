@@ -28,13 +28,17 @@ async function updateNote({ id, title, note }) {
     });
 }
 
-// Function to get a note by its ID
-async function getNoteById(id) {
-    return prisma.note.findUnique({
-        where: {
-            id
-        }
-    });
+async function getNoteById(noteId) {
+    try {
+        return await prisma.note.findUnique({
+            where: {
+                id: noteId
+            }
+        });
+    } catch (error) {
+        console.error('Error retrieving note by ID:', error);
+        throw new Error('Failed to retrieve note by ID');
+    }
 }
 
 // Function to delete a note by its ID
