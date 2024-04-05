@@ -7,7 +7,7 @@ import { getNoteById } from '@/data/dbTransactions/note.dbTransaction';
 
 const inter = Inter({ subsets: ["latin"] });
 
-const EditNotePage = ({ courseId, noteId, note, error }) => {
+const EditNotePage = ({ courseId, noteId, note, error, lessonId }) => {
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [loading, setLoading] = useState(false);
@@ -52,7 +52,7 @@ const EditNotePage = ({ courseId, noteId, note, error }) => {
             }
 
             // Redirect to note page after updating
-            router.push(`/course/${courseId}/note/${noteId}`);
+            router.push(`/course/${courseId}/lesson/${lessonId}`);
         } catch (error) {
             console.error('Error updating note:', error);
             // Set error state if update fails
@@ -110,7 +110,8 @@ export async function getServerSideProps(context) {
             props: {
                 courseId: courseId,
                 noteId: noteId,
-                note: note
+                note: note,
+                lessonId: note.lessonId
             }
         };
     } catch (error) {
@@ -128,3 +129,6 @@ export async function getServerSideProps(context) {
 }
 
 export default EditNotePage;
+
+
+
