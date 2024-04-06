@@ -57,6 +57,10 @@ const NewNotePage = ({ courseId, lessonId }) => {
         }
     };
 
+    const handleCancel = () => {
+        router.push(`/course/${courseId}/lesson/${lessonId}`);
+    };
+
     return (
         <div>
             <Navbar isLoggedIn={true} />
@@ -86,9 +90,13 @@ const NewNotePage = ({ courseId, lessonId }) => {
                                 editorRef={noteContentEditorRef}
                             />
                         </div>
-                        <button type="submit" className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 focus:outline-none focus:bg-primary-600" disabled={loading}>
-                            {loading ? 'Creating...' : 'Create Note'}
-                        </button>
+                        <div>
+                            <button type="submit" className="bg-primary-500 text-white px-4 py-2 mr-3 rounded-md hover:bg-primary-600 focus:outline-none focus:bg-primary-600" disabled={loading}>
+                                {loading ? 'Creating...' : 'Create Note'}
+                            </button>
+                            <button type="button" onClick={handleCancel} className="bg-gray-500 text-white px-4 py-2 p-4 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600">Cancel
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
