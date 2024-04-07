@@ -92,7 +92,7 @@ export default function DeleteFileAttachment(props) {
             // after 3 seconds, redirect to the course page
             setTimeout(() => {
                 router.push(`/course/${courseId}`);
-            }, 3*1000);
+            }, 3 * 1000);
 
         } catch (error) {
             setLoading(false);
