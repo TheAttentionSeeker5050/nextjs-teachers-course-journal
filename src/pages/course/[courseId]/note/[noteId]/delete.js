@@ -69,7 +69,6 @@ export async function getServerSideProps(context) {
             }
         };
     } catch (error) {
-        console.error('Error fetching note data:', error);
         return {
             props: {
                 initialNote: null,

@@ -4,25 +4,21 @@ import Navbar from '@/components/Navbar';
 import { Inter } from "next/font/google";
 import CustomEditor from "@/components/editorComponent";
 import { getNoteById } from '@/data/dbTransactions/note.dbTransaction';
+import { getCourseById } from '@/data/dbTransactions/course.dbTransaction';
+import { validateCourseOwnership } from '@/utils/validation/validateCourseOwnership';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
-const EditNotePage = ({ courseId, noteId, note, error, lessonId }) => {
-    const [noteTitle, setNoteTitle] = useState('');
-    const [noteContent, setNoteContent] = useState('');
+const EditNotePage = (props) => {
+    const [noteTitle, setNoteTitle] = useState(props.note.title);
+    const [noteContent, setNoteContent] = useState(props.note.note);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const [error, setError] = useState(props.error);
 
     // Ref for TinyMCE editor
     const noteContentEditorRef = useRef(null);
-
-    // Set note title and content from the fetched note data
-    useState(() => {
-        if (note) {
-            setNoteTitle(note.title);
-            setNoteContent(note.note);
-        }
-    }, [note]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,7 +34,7 @@ const EditNotePage = ({ courseId, noteId, note, error, lessonId }) => {
             const content = noteContentEditorRef.current.getContent();
 
             // Send request to update note
-            const response = await fetch(`/api/course/${courseId}/note/${noteId}/edit`, {
+            const response = await fetch(`/api/course/${props.courseId}/note/${props.noteId}/edit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,18 +48,17 @@ const EditNotePage = ({ courseId, noteId, note, error, lessonId }) => {
             }
 
             // Redirect to note page after updating
-            router.push(`/course/${courseId}/lesson/${lessonId}`);
-        } catch (error) {
-            console.error('Error updating note:', error);
+            router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
+        } catch (e) {
             // Set error state if update fails
-            setError(error.message);
+            setError(e.message);
         } finally {
             setLoading(false);
         }
     };
 
     const handleCancel = () => {
-        router.push(`/course/${courseId}/lesson/${lessonId}`);
+        router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
     };
 
     return (
@@ -88,7 +83,7 @@ const EditNotePage = ({ courseId, noteId, note, error, lessonId }) => {
                             <label htmlFor="noteContent" className="block text-sm font-medium text-gray-700">Note Content:</label>
                             {/* TinyMCE Editor */}
                             <CustomEditor
-                                apiKey={process.env.TINYMCE_API_KEY}
+                                apiKey={props.tinyMCEApiKey}
                                 fieldName="noteContent"
                                 editorRef={noteContentEditorRef}
                                 initialValue={noteContent}
@@ -110,6 +105,37 @@ const EditNotePage = ({ courseId, noteId, note, error, lessonId }) => {
 
 export async function getServerSideProps(context) {
     const { courseId, noteId } = context.params;
+
+    const tinyMCEApiKey = process.env.TINYMCE_API_KEY;
+
+    try {
+        // verify user is authorized to view this page
+        // get the course data using db transaction
+        const course = await getCourseById(parseInt(courseId));  
+        // get user payload from the context
+        const userPayloadString = context.req.headers["x-user-payload"];
+
+        // use our validate ownership method
+        const validationResult = await validateCourseOwnership(course, userPayloadString);
+
+        if (validationResult) {
+            return {
+                redirect: {
+                    destination: validationResult || "/unauthorized",
+                    permanent: false
+                }
+            }
+        }
+
+    } catch (error) {
+        return {
+            redirect: {
+                destination: "/unauthorized",
+                permanent: false
+            }
+        }
+    }
+
     try {
         // Fetch the note data using the noteId
         const note = await getNoteById(parseInt(noteId));
@@ -119,17 +145,21 @@ export async function getServerSideProps(context) {
                 courseId: courseId,
                 noteId: noteId,
                 note: note,
-                lessonId: note.lessonId
+                lessonId: note.lessonId,
+                tinyMCEApiKey: tinyMCEApiKey,
+                error: null
+
             }
         };
     } catch (error) {
-        console.error('Error fetching note:', error);
         // In case of an error
         return {
             props: {
                 courseId: courseId,
                 noteId: noteId,
                 note: null,
+                lessonId: null,
+                tinyMCEApiKey: tinyMCEApiKey,
                 error: 'Failed to fetch note'
             }
         };
