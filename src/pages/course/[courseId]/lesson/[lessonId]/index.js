@@ -172,7 +172,7 @@ export default function SingleLesson(
       className={`${inter.className} flex flex-col items-baseline min-h-screen gap-5`}
     >
       {isLoading === true &&
-        <SpinnerComponent isLoadingState={isLoading} />
+        <p className="text-center text-2xl text-primary-600">Loading...</p>
       }
 
       {/* 
@@ -314,9 +314,9 @@ export default function SingleLesson(
                   key={i}
                   noteUrl={`/course/${props.courseId}/note/${note.id}`} 
                   noteName={
-                    note.note.length > 28 ? 
-                    note.note.slice(0, 28) + "..." : 
-                    note.note
+                    note.title.length > 28 ? 
+                    note.title.slice(0, 28) + "..." : 
+                    note.title
                   } 
                 />
               ))}
