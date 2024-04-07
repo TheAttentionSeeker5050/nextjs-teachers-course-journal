@@ -50,7 +50,6 @@ const EditNotePage = (props) => {
             // Redirect to note page after updating
             router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
         } catch (e) {
-            console.error('Error updating note:', e);
             // Set error state if update fails
             setError(e.message);
         } finally {
@@ -129,7 +128,6 @@ export async function getServerSideProps(context) {
         }
 
     } catch (error) {
-        console.error('Error fetching course:', error);
         return {
             redirect: {
                 destination: "/unauthorized",
@@ -154,7 +152,6 @@ export async function getServerSideProps(context) {
             }
         };
     } catch (error) {
-        console.error('Error fetching note:', error);
         // In case of an error
         return {
             props: {
