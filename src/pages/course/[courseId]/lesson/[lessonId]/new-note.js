@@ -3,14 +3,17 @@ import { useRouter } from 'next/router';
 import Navbar from '@/components/Navbar';
 import { Inter } from "next/font/google";
 import CustomEditor from "@/components/editorComponent";
+import { getCourseById } from "@/data/dbTransactions/course.dbTransaction";
+import { validateCourseOwnership } from "@/utils/validation/validateCourseOwnership";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
-const NewNotePage = ({ courseId, lessonId }) => {
+const NewNotePage = (props) => {
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(props.error);
     const router = useRouter();
 
     // Refs for TinyMCE editors
@@ -30,7 +33,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
             const noteContent = noteContentEditorRef.current.getContent();
 
             // Send a request to the API route to create a new note
-            const response = await fetch(`/api/course/${courseId}/note/new`, {
+            const response = await fetch(`/api/course/${props.courseId}/note/new`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,8 +41,8 @@ const NewNotePage = ({ courseId, lessonId }) => {
                 body: JSON.stringify({
                     title: noteTitle,
                     content: noteContent,
-                    courseId: courseId,
-                    lessonId: lessonId,
+                    courseId: props.courseId,
+                    lessonId: props.lessonId,
                 }),
             });
 
@@ -49,7 +52,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
             }
 
             // Redirect to the lesson page after creating the note
-            router.push(`/course/${courseId}/lesson/${lessonId}`);
+            router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -58,7 +61,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
     };
 
     const handleCancel = () => {
-        router.push(`/course/${courseId}/lesson/${lessonId}`);
+        router.push(`/course/${props.courseId}/lesson/${props.lessonId}`);
     };
 
     return (
@@ -85,7 +88,7 @@ const NewNotePage = ({ courseId, lessonId }) => {
                             <label htmlFor="noteContent" className="block text-sm font-medium text-gray-700">Note Content:</label>
                             {/* TinyMCE Editor */}
                             <CustomEditor
-                                apiKey={process.env.TINYMCE_API_KEY}
+                                apiKey={props.tinyMCEApiKey}
                                 fieldName="noteContent"
                                 editorRef={noteContentEditorRef}
                             />
@@ -106,12 +109,62 @@ const NewNotePage = ({ courseId, lessonId }) => {
 
 export async function getServerSideProps(context) {
     const { courseId, lessonId } = context.params;
-    return {
-        props: {
-            courseId: courseId,
-            lessonId: lessonId
+
+    const tinyMCEApiKey = process.env.TINYMCE_API_KEY;
+
+    try {
+        // verify user is authorized to view this page
+        // get the course data using db transaction
+        const course = await getCourseById(parseInt(courseId));  
+        // get user payload from the context
+        const userPayloadString = context.req.headers["x-user-payload"];
+
+        // use our validate ownership method
+        const validationResult = await validateCourseOwnership(course, userPayloadString);
+
+        if (validationResult) {
+            return {
+                redirect: {
+                    destination: validationResult || "/404",
+                    permanent: false
+                }
+            }
         }
-    };
+
+    } catch (error) {
+        return {
+            redirect: {
+                destination: "/404",
+                permanent: false
+            }
+        }
+    }
+
+    // now attempt to get the lesson data and the editor key
+    try {
+
+
+        return {
+            props: {
+                courseId: courseId,
+                lessonId: lessonId,
+                tinyMCEApiKey: tinyMCEApiKey,
+                error: null
+            }
+        };
+    } catch (error) {
+        return {
+            props: {
+                courseId: courseId,
+                lessonId: lessonId,
+                tinyMCEApiKey: tinyMCEApiKey,
+                error: error.message
+            }
+        }
+    }
+    
+
+    
 }
 
 export default NewNotePage;
