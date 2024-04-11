@@ -37,7 +37,11 @@ Please note that this solution is intended for individual instructor use and is 
    1. Revert the database URL change in `.prisma/schema.prisma` back to `DATABASE_URL`
 
       ```
-
+      // in prisma/schema.prisma
+      datasource db {
+        provider = "postgresql"
+        url      = env("`DATABASE_URL`")
+      }
       ```
 6. Run tests: `npm run test`
 7. Run local development build: `npm run dev`
